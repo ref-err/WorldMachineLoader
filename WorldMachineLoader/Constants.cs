@@ -15,6 +15,7 @@ namespace WorldMachineLoader
         /// <summary>The path to the all mods folder.</summary>
         public static string ModsPath { get; } = Path.Combine(GamePath, "mods");
 
+        /// <summary>The path to loader's config file</summary>
         public static string SettingsPath { get; } = Path.Combine(ModsPath, "settings.json");
     }
 }

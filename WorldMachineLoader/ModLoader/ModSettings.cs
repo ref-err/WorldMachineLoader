@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace WorldMachineLoader.ModLoader
 {
+    /// <summary>Settings JSON config</summary>
     internal class ModSettings
     {
+        /// <summary>Disabled mods list</summary>
         [JsonProperty(PropertyName = "disabled", Required = Required.Always)]
-        public List<String> Disabled { get; set; } = new List<string>();
+        public List<string> Disabled { get; set; } = new List<string>();
     }
 }

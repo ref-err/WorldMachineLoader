@@ -72,6 +72,7 @@ namespace WorldMachineLoader.ModLoader
             return false;
         }
 
+        /// <summary>Creates a config file in mods directory</summary>
         public void CreateConfigFile()
         {
             if (!settingsFile.Exists)
@@ -92,6 +93,11 @@ namespace WorldMachineLoader.ModLoader
             Console.WriteLine("[WML] Default config file for WorldMachineLoader created.");
         }
 
+        /// <summary>
+        /// Loads config file from mods directory
+        /// </summary>
+        /// <returns>ModSettings object</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public ModSettings LoadConfigFile()
         {
             if (!settingsFile.Exists)
