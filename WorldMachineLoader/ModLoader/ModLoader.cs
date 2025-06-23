@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using HarmonyLib;
 using WorldMachineLoader.Modding;
 
-namespace WorldMachineLoader
+namespace WorldMachineLoader.ModLoader
 {
     /// <summary>The core mod loader class.</summary>
     internal class ModLoader
@@ -17,7 +17,11 @@ namespace WorldMachineLoader
 
         private readonly DirectoryInfo modsDirectory;
 
+        private readonly FileInfo settingsFile;
+
         private readonly List<Mod> mods = new List<Mod>();
+
+        private ModSettings modSettings;
 
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
@@ -28,6 +32,9 @@ namespace WorldMachineLoader
             
             // Get the mods directory
             modsDirectory = new DirectoryInfo(Constants.ModsPath);
+
+            // Get settings file
+            settingsFile = new FileInfo(Constants.SettingsPath);
         }
 
         /// <summary>Check that the game assembly is available.</summary>
@@ -44,25 +51,57 @@ namespace WorldMachineLoader
             }
             catch (BadImageFormatException ex)
             {
-                Console.WriteLine($"Could not load \"{ex.FileName}.exe\"!");
-                Console.WriteLine($"Bad Image Format Exception: {ex.Message}");
+                Console.WriteLine($"[WML ERROR] Could not load \"{ex.FileName}.exe\"!");
+                Console.WriteLine($"[WML ERROR] Bad Image Format Exception: {ex.Message}");
 
                 if (!Environment.Is64BitProcess)
-                    Console.WriteLine("It seems we are running in 32-bit mode. Consider to use 64-bit instead.");
+                    Console.WriteLine("[WML ERROR] It seems we are running in 32-bit mode. Consider to use 64-bit instead.");
             }
             catch (Exception ex)
             {
                 if (!File.Exists(Path.Combine(Constants.GamePath, $"{Constants.GameAssemblyName}.exe")))
                 {
-                    Console.WriteLine("Could not find the game executable file. Please check if it's running inside game folder.");
+                    Console.WriteLine("[WML ERROR] Could not find the game executable file. Please check if it's running inside game folder.");
                 }
                 else
                 {
-                    Console.WriteLine($"Exception while trying to get game assembly:\n{ex}");
+                    Console.WriteLine($"[WML ERROR] Exception while trying to get game assembly:\n{ex}");
                 }
             }
 
             return false;
+        }
+
+        public void CreateConfigFile()
+        {
+            if (!settingsFile.Exists)
+                using(settingsFile.Create()) { /* create & close */ }
+
+            var defaultSettings = new ModSettings()
+            {
+                Disabled = new List<string> { }
+            };
+
+            string json = JsonConvert.SerializeObject(
+                defaultSettings,
+                Formatting.Indented
+            );
+
+            File.WriteAllText(settingsFile.FullName, json);
+
+            Console.WriteLine("[WML] Default config file for WorldMachineLoader created.");
+        }
+
+        public ModSettings LoadConfigFile()
+        {
+            if (!settingsFile.Exists)
+            {
+                CreateConfigFile();
+                return null;
+            }
+
+            string json = File.ReadAllText(settingsFile.FullName);
+            return JsonConvert.DeserializeObject<ModSettings>(json) ?? throw new InvalidOperationException("Failed to load config file.");
         }
 
         /// <summary>Checks all mods in the directory to parse them for further loading it.</summary>
@@ -71,6 +110,12 @@ namespace WorldMachineLoader
             // Create the mods directory
             if (!modsDirectory.Exists)
                 modsDirectory.Create();
+
+            if (!settingsFile.Exists)
+                CreateConfigFile();
+
+            if (settingsFile.Exists)
+                modSettings = LoadConfigFile();
 
             // List all mods subdirectories
             string[] modsSubdirs = Directory.GetDirectories(modsDirectory.FullName);
@@ -98,6 +143,14 @@ namespace WorldMachineLoader
             {
                 Mod mod = Mod.FromPath(modPath);
 
+                if (modSettings != null && modSettings.Disabled.Contains(mod.Name))
+                {
+                    Console.WriteLine($"[WML] Skipping mod \"{mod.Name}\" because it is disabled in config file.");
+                    return false;
+                }
+
+                Console.WriteLine($"[WML] Loading mod \"{mod.Name}\"...");
+
                 mods.Add(mod);
 
                 return true;
@@ -119,7 +172,7 @@ namespace WorldMachineLoader
         /// <summary>Loads game assembly, patches and launches the game.</summary>
         public void Start()
         {
-            Console.WriteLine("Patching...");
+            Console.WriteLine("[WML] Patching...");
 
             // Patch any Harmony annotations from this assembly before mods assemblies
             harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -138,7 +191,7 @@ namespace WorldMachineLoader
             }
 
             // Invoke OneShotMG entry point to run the game
-            Console.WriteLine("Starting OneShotMG...");
+            Console.WriteLine("[WML] Starting OneShotMG...");
             MethodBase gameEntrypoint = gameAssembly.ManifestModule.ResolveMethod(gameAssembly.EntryPoint.MetadataToken);
             gameEntrypoint.Invoke(null, null);
         }

@@ -35,10 +35,11 @@
   <ItemGroup>
     <Compile Include="Globals.cs" />
     <Compile Include="Modding\ModListWindow.cs" />
+    <Compile Include="ModLoader\ModSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="ModLoader.cs" />
+    <Compile Include="ModLoader\ModLoader.cs" />
     <Compile Include="Modding\Mod.cs" />
     <Compile Include="Modding\ModMetadata.cs" />
     <Compile Include="Patches\Patches.cs" />

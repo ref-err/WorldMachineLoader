@@ -46,8 +46,6 @@ namespace WorldMachineLoader.Modding
                 throw new FileNotFoundException($"Mod \"{modDir.Name}\" does not contain metadata file \"mod.json\".");
             }
 
-            Console.WriteLine($"[WML] Loading mod \"{modDir.Name}\"...");
-
             modMetadata = JsonConvert.DeserializeObject<ModMetadata>(File.ReadAllText(modMetadataPath));
 
             if (!string.IsNullOrEmpty(modMetadata.AssemblyName) && !HasAssembly)

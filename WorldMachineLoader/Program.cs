@@ -18,7 +18,7 @@ namespace WorldMachineLoader
             Directory.SetCurrentDirectory(Constants.GamePath);
 
             // Initialize the mod loader
-            ModLoader modLoader = new ModLoader(args);
+            ModLoader.ModLoader modLoader = new ModLoader.ModLoader(args);
 
             if (!modLoader.CheckGameAssembly())
                 Environment.Exit(1);
