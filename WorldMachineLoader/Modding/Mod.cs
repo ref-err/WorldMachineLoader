@@ -1,9 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using OneShotMG.src.EngineSpecificCode;
+using System;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace WorldMachineLoader.Modding
 {
+    public class ModItem
+    {
+        public TempTexture titleTexture;
+
+        public TempTexture descriptionTexture;
+
+        public string title;
+
+        public string description;
+
+        public ModItem(string author, string name, string version, string description)
+        {
+            this.title = $"{author} - {name} ({version})";
+            this.description = description;
+        }
+    }
+
     /// <summary>Represents a mod object and metadata.</summary>
     internal class Mod
     {

@@ -10,7 +10,8 @@ namespace WorldMachineLoader
         /// <param name="args">The provided command line arguments.</param>
         internal static void Main(string[] args)
         {
-            Console.Title = "hat_kid's World Machine Loader";
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Title = "World Machine Loader";
             Console.WriteLine("The World Machine Loader");
 
             // Set Current Working Directory to game's folder (where's this assembly located at)

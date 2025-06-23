@@ -14,10 +14,13 @@ game install path and sets the 'GamePath' property.
         <!-- Derive from Steam Library path -->
         <_SteamLibraryPath>$([MSBuild]::GetRegistryValueFromView('HKEY_CURRENT_USER\SOFTWARE\Valve\Steam', 'SteamPath', null, RegistryView.Registry32))</_SteamLibraryPath>
         <GamePath Condition="!Exists('$(GamePath)') AND '$(_SteamLibraryPath)' != ''">$(_SteamLibraryPath)\steamapps\common\OneShot World Machine Edition</GamePath>
-
+		
         <!-- Direct Steam Library paths -->
         <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files\Steam\steamapps\common\OneShot World Machine Edition</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\OneShot World Machine Edition</GamePath>
+		
+		<!-- My own Steam Library path -->
+		<GamePath Condition="!Exists('$(GamePath)')">D:\games\steamapps\common\OneShot World Machine Edition</GamePath>
       </PropertyGroup>
     </When>
   </Choose>

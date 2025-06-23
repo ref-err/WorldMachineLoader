@@ -24,7 +24,7 @@ namespace WorldMachineLoader
         public ModLoader(string[] args)
         {
             // Create Harmony instance
-            harmony = new Harmony("io.github.thehatkid.oswmeloader");
+            harmony = new Harmony("io.github.referr.oswmeloader");
             
             // Get the mods directory
             modsDirectory = new DirectoryInfo(Constants.ModsPath);
@@ -131,6 +131,9 @@ namespace WorldMachineLoader
                 {
                     Assembly modAssembly = Assembly.LoadFrom(mod.AssemblyFilePath);
                     harmony.PatchAll(modAssembly);
+
+                    // Adding every mod to mod list
+                    Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description));
                 }
             }
 
