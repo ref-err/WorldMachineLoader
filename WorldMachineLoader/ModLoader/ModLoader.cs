@@ -192,7 +192,7 @@ namespace WorldMachineLoader.ModLoader
                     harmony.PatchAll(modAssembly);
 
                     // Adding every mod to mod list
-                    Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description));
+                    Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL));
                 }
             }
 

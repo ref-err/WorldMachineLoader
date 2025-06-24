@@ -33,7 +33,7 @@ namespace WorldMachineLoader.Patches
         {
             if (node is TWMFile file && file.program == LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS)
             {
-                __instance.AddWindow(new ModListWindow("Mod List"));
+                __instance.AddWindow(new ModListWindow());
             }
             return true;
         }
@@ -43,7 +43,6 @@ namespace WorldMachineLoader.Patches
         [HarmonyPatch("LoadDesktop")]
         static void LoadDesktop_Postfix(TWMDesktopManager desktop, WindowManager __instance)
         {
-            //__instance.AddWindow(new ModListWindow("Mod List"));
             TWMFile tWMFile = new TWMFile("oneshot", "Mod List", LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS);
             __instance.FileSystem.Delete("/Mod List");
             __instance.FileSystem.WriteFile("/", tWMFile);

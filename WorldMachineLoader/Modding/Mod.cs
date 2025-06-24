@@ -15,9 +15,21 @@ namespace WorldMachineLoader.Modding
 
         public string description;
 
-        public ModItem(string author, string name, string version, string description)
+        public string author;
+
+        public string name;
+
+        public string version;
+
+        public string url;
+
+        public ModItem(string author, string name, string version, string description, string url)
         {
-            this.title = $"{author} - {name} ({version})";
+            this.author = author;
+            this.name = name;
+            this.version = version;
+            this.url = url;
+            this.title = $"{this.author} - {this.name} ({this.version})";
             this.description = description;
         }
     }

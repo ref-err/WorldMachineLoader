@@ -7,7 +7,7 @@ namespace WorldMachineLoader.ModLoader
     internal class ModSettings
     {
         /// <summary>Disabled mods list</summary>
-        [JsonProperty(PropertyName = "disabled", Required = Required.Always)]
+        [JsonProperty(PropertyName = "disabled", Required = Required.DisallowNull)]
         public List<string> Disabled { get; set; } = new List<string>();
     }
 }

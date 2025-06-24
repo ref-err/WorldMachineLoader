@@ -2,7 +2,9 @@
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
+using System;
 using System.Collections.Generic;
+using WorldMachineLoader.Modding.UI;
 
 namespace WorldMachineLoader.Modding
 {
@@ -10,14 +12,19 @@ namespace WorldMachineLoader.Modding
     {
         private List<ModItem> mods;
 
+        private List<TextButton> infoButtons = new List<TextButton>();
+
         private TempTexture noModsTexture;
 
-        public ModListWindow(string displayName)
+        public ModListWindow()
         {
             mods = Globals.mods;
             base.WindowIcon = "oneshot";
-            base.WindowTitle = displayName;
+            base.WindowTitle = $"Mod List (Loaded {mods.Count} mods.)";
             base.ContentsSize = new Vec2(300, 200);
+
+            CreateInfoButtons();
+
             AddButton(TWMWindowButtonType.Close);
             AddButton(TWMWindowButtonType.Minimize);
         }
@@ -29,7 +36,6 @@ namespace WorldMachineLoader.Modding
         public override void DrawContents(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
             Vec2 position = new Vec2(6, 6) + screenPos;
-
             GameColor gColor = theme.Background(alpha);
             GameColor gameColor = theme.Primary(alpha);
             Rect boxRect = new Rect(screenPos.X, screenPos.Y, base.ContentsSize.X, base.ContentsSize.Y);
@@ -47,6 +53,9 @@ namespace WorldMachineLoader.Modding
                 Game1.gMan.MainBlit(mod.descriptionTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
                 position.Y += 20;
             }
+
+            foreach (var btn in infoButtons)
+                btn.Draw(screenPos, theme, alpha);
         }
 
         public override bool Update(bool cursorOccluded)
@@ -70,6 +79,10 @@ namespace WorldMachineLoader.Modding
                 mod.titleTexture.KeepAlive();
                 mod.descriptionTexture.KeepAlive();
             }
+            if (!IsModalWindowOpen())
+                foreach (var btn in infoButtons)
+                    btn.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
+
             return base.Update(cursorOccluded);
         }
 
@@ -90,13 +103,37 @@ namespace WorldMachineLoader.Modding
         {
             foreach (var mod in mods)
             {
-                mod.descriptionTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, mod.description);
+                var desc = mod.description;
+                if (string.IsNullOrEmpty(desc))
+                    desc = "No description provided";
+                else if (desc.Length < 55)
+                    desc = mod.description;
+                else
+                    desc = mod.description.Substring(0, 40) + "...";
+                mod.descriptionTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, desc);
             }
         }
 
         private void DrawNoModsTexture()
         {
             noModsTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, "You don't have any mods loaded!");
+        }
+
+        private void OnInfoButtonClicked(ModItem mod)
+        {
+            Game1.windowMan.AddWindow(new ModInfoWindow(mod));
+            
+        }
+
+        private void CreateInfoButtons()
+        {
+            int y = 8;
+            foreach (var mod in mods)
+            {
+                var btn = new TextButton("Info", new Vec2(252, y), delegate { OnInfoButtonClicked(mod); }, buttonWidth: 40);
+                infoButtons.Add(btn);
+                y += 32;
+            }
         }
     }
 }
