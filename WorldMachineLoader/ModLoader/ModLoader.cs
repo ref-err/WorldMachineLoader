@@ -17,11 +17,7 @@ namespace WorldMachineLoader.ModLoader
 
         private readonly DirectoryInfo modsDirectory;
 
-        private readonly FileInfo settingsFile;
-
         private readonly List<Mod> mods = new List<Mod>();
-
-        private ModSettings modSettings;
 
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
@@ -32,9 +28,6 @@ namespace WorldMachineLoader.ModLoader
             
             // Get the mods directory
             modsDirectory = new DirectoryInfo(Constants.ModsPath);
-
-            // Get settings file
-            settingsFile = new FileInfo(Constants.SettingsPath);
         }
 
         /// <summary>Check that the game assembly is available.</summary>
@@ -72,56 +65,12 @@ namespace WorldMachineLoader.ModLoader
             return false;
         }
 
-        /// <summary>Creates a config file in mods directory</summary>
-        public void CreateConfigFile()
-        {
-            if (!settingsFile.Exists)
-                using(settingsFile.Create()) { /* create & close */ }
-
-            var defaultSettings = new ModSettings()
-            {
-                Disabled = new List<string> { }
-            };
-
-            string json = JsonConvert.SerializeObject(
-                defaultSettings,
-                Formatting.Indented
-            );
-
-            File.WriteAllText(settingsFile.FullName, json);
-
-            Console.WriteLine("[WML] Default config file for WorldMachineLoader created.");
-        }
-
-        /// <summary>
-        /// Loads config file from mods directory
-        /// </summary>
-        /// <returns>ModSettings object</returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public ModSettings LoadConfigFile()
-        {
-            if (!settingsFile.Exists)
-            {
-                CreateConfigFile();
-                return null;
-            }
-
-            string json = File.ReadAllText(settingsFile.FullName);
-            return JsonConvert.DeserializeObject<ModSettings>(json) ?? throw new InvalidOperationException("Failed to load config file.");
-        }
-
         /// <summary>Checks all mods in the directory to parse them for further loading it.</summary>
         public void CheckMods()
         {
             // Create the mods directory
             if (!modsDirectory.Exists)
                 modsDirectory.Create();
-
-            if (!settingsFile.Exists)
-                CreateConfigFile();
-
-            if (settingsFile.Exists)
-                modSettings = LoadConfigFile();
 
             // List all mods subdirectories
             string[] modsSubdirs = Directory.GetDirectories(modsDirectory.FullName);
@@ -149,7 +98,7 @@ namespace WorldMachineLoader.ModLoader
             {
                 Mod mod = Mod.FromPath(modPath);
 
-                if (modSettings != null && modSettings.Disabled.Contains(mod.Name))
+                if (!ModSettings.IsEnabled(mod.Name))
                 {
                     Console.WriteLine($"[WML] Skipping mod \"{mod.Name}\" because it is disabled in config file.");
                     return false;

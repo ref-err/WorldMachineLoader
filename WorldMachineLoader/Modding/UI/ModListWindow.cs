@@ -2,8 +2,8 @@
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using WorldMachineLoader.Modding.UI;
 
 namespace WorldMachineLoader.Modding
@@ -13,6 +13,8 @@ namespace WorldMachineLoader.Modding
         private List<ModItem> mods;
 
         private List<TextButton> infoButtons = new List<TextButton>();
+
+        private TextButton restartGameButton;
 
         private TempTexture noModsTexture;
 
@@ -24,6 +26,11 @@ namespace WorldMachineLoader.Modding
             base.ContentsSize = new Vec2(300, 200);
 
             CreateInfoButtons();
+
+            restartGameButton = new TextButton("Restart", new Vec2(240, 180), delegate
+            {
+                RestartGame();
+            });
 
             AddButton(TWMWindowButtonType.Close);
             AddButton(TWMWindowButtonType.Minimize);
@@ -54,6 +61,8 @@ namespace WorldMachineLoader.Modding
                 position.Y += 20;
             }
 
+            restartGameButton.Draw(screenPos, theme, alpha);
+
             foreach (var btn in infoButtons)
                 btn.Draw(screenPos, theme, alpha);
         }
@@ -80,6 +89,7 @@ namespace WorldMachineLoader.Modding
                 mod.descriptionTexture.KeepAlive();
             }
             if (!IsModalWindowOpen())
+                restartGameButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
                 foreach (var btn in infoButtons)
                     btn.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
 
@@ -134,6 +144,27 @@ namespace WorldMachineLoader.Modding
                 infoButtons.Add(btn);
                 y += 32;
             }
+        }
+
+        private void RestartGame()
+        {
+            if (Game1.windowMan.IsOneshotWindowOpen())
+            {
+                ShowModalWindow(ModalWindow.ModalType.Error, "cant_shutdown_while_oneshot_running");
+                return;
+            }
+            ShowModalWindow(ModalWindow.ModalType.YesNo, "Do you really want to restart?", delegate (ModalWindow.ModalResponse res)
+            {
+                if (res == ModalWindow.ModalResponse.Yes)
+                {
+                    Game1.windowMan.SaveDesktopAndFileSystem();
+
+                    Process currentProcess = Process.GetCurrentProcess();
+                    Process.Start(currentProcess.MainModule.FileName);
+
+                    Game1.ShutDown();
+                }
+            });
         }
     }
 }

@@ -51,6 +51,7 @@
     <Reference Include="MonoGame.Framework" HintPath="$(GamePath)\MonoGame.Framework.dll" Private="False" />
     <Reference Include="Newtonsoft.Json" HintPath="$(GamePath)\Newtonsoft.Json.dll" Private="False" />
     <Reference Include="OneShotMG" HintPath="$(GamePath)\OneShotMG.exe" Private="False" />
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Icon.ico" />
