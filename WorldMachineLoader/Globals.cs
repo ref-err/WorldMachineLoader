@@ -8,5 +8,10 @@ namespace WorldMachineLoader
     {
         /// <summary>Contains all loaded mods</summary>
         public static List<ModItem> mods = new List<ModItem>();
+
+        public static List<ModItem> disabledMods = new List<ModItem>();
+
+        public static bool restartPending = false;
+        public static bool restartWillEnable;
     }
 }

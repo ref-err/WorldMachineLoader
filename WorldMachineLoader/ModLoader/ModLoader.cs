@@ -101,6 +101,7 @@ namespace WorldMachineLoader.ModLoader
                 if (!ModSettings.IsEnabled(mod.Name))
                 {
                     Console.WriteLine($"[WML] Skipping mod \"{mod.Name}\" because it is disabled in config file.");
+                    Globals.disabledMods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, false));
                     return false;
                 }
 
@@ -141,7 +142,7 @@ namespace WorldMachineLoader.ModLoader
                     harmony.PatchAll(modAssembly);
 
                     // Adding every mod to mod list
-                    Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL));
+                    Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, true));
                 }
             }
 

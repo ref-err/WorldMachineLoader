@@ -44,6 +44,7 @@
     <Compile Include="Modding\Mod.cs" />
     <Compile Include="Modding\ModMetadata.cs" />
     <Compile Include="Patches\Patches.cs" />
+    <Compile Include="Utils\GameUtils.cs" />
     <Compile Include="Utils\TextUtils.cs" />
   </ItemGroup>
   <ItemGroup>

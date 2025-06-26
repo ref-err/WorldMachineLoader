@@ -23,13 +23,16 @@ namespace WorldMachineLoader.Modding
 
         public string url;
 
-        public ModItem(string author, string name, string version, string description, string url)
+        public bool isEnabled;
+
+        public ModItem(string author, string name, string version, string description, string url, bool isEnabled)
         {
             this.author = author;
             this.name = name;
             this.version = version;
             this.url = url;
-            this.title = $"{this.author} - {this.name} ({this.version})";
+            this.isEnabled = isEnabled;
+            this.title = $"{(isEnabled ? "" : "[DISABLED] ")}{this.author} - {this.name} ({this.version})";
             this.description = description;
         }
     }

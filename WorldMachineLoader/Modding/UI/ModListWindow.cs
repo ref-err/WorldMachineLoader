@@ -3,14 +3,18 @@ using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
 using System.Collections.Generic;
-using System.Diagnostics;
 using WorldMachineLoader.Modding.UI;
+using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.Modding
 {
     public class ModListWindow : TWMWindow
     {
+        private List<ModItem> totalMods = new List<ModItem>();
+
         private List<ModItem> mods;
+
+        private List<ModItem> disabledMods;
 
         private List<TextButton> infoButtons = new List<TextButton>();
 
@@ -21,6 +25,18 @@ namespace WorldMachineLoader.Modding
         public ModListWindow()
         {
             mods = Globals.mods;
+            disabledMods = Globals.disabledMods;
+
+            foreach (var mod in mods)
+            {
+                totalMods.Add(mod);
+            }
+
+            foreach (var mod in disabledMods)
+            {
+                totalMods.Add(mod);
+            }
+
             base.WindowIcon = "oneshot";
             base.WindowTitle = $"Mod List (Loaded {mods.Count} mods.)";
             base.ContentsSize = new Vec2(300, 200);
@@ -29,7 +45,18 @@ namespace WorldMachineLoader.Modding
 
             restartGameButton = new TextButton("Restart", new Vec2(240, 180), delegate
             {
-                RestartGame();
+                if (Game1.windowMan.IsOneshotWindowOpen())
+                {
+                    ShowModalWindow(ModalWindow.ModalType.Error, "cant_shutdown_while_oneshot_running");
+                    return;
+                }
+                ShowModalWindow(ModalWindow.ModalType.YesNo, "Do you really want to restart?", delegate (ModalWindow.ModalResponse res)
+                {
+                    if (res == ModalWindow.ModalResponse.Yes)
+                    {
+                        GameUtils.RestartGame();
+                    }
+                });
             });
 
             AddButton(TWMWindowButtonType.Close);
@@ -53,7 +80,7 @@ namespace WorldMachineLoader.Modding
                 Game1.gMan.MainBlit(noModsTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             }
             
-            foreach (var mod in mods)
+            foreach (var mod in totalMods)
             {
                 Game1.gMan.MainBlit(mod.titleTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
                 position.Y += 12;
@@ -69,7 +96,7 @@ namespace WorldMachineLoader.Modding
 
         public override bool Update(bool cursorOccluded)
         {
-            if ((noModsTexture == null || !noModsTexture.isValid) && mods.Count == 0)
+            if ((noModsTexture == null || !noModsTexture.isValid) && totalMods.Count == 0)
             {
                 DrawNoModsTexture();
             }
@@ -78,21 +105,54 @@ namespace WorldMachineLoader.Modding
             {
                 if (mod.titleTexture == null || !mod.titleTexture.isValid)
                 {
-                    DrawTitleTexture();
+                    DrawTitleTexture(mod);
                 }
                 if (mod.descriptionTexture == null || !mod.descriptionTexture.isValid)
                 {
-                    DrawDescriptionTexture();
+                    DrawDescriptionTexture(mod);
                 }
 
                 mod.titleTexture.KeepAlive();
                 mod.descriptionTexture.KeepAlive();
             }
+
+            foreach (var mod in disabledMods)
+            {
+                if (mod.titleTexture == null || !mod.titleTexture.isValid)
+                {
+                    DrawTitleTexture(mod);
+                }
+                if (mod.descriptionTexture == null || !mod.descriptionTexture.isValid)
+                {
+                    DrawDescriptionTexture(mod);
+                }
+
+                mod.titleTexture.KeepAlive();
+                mod.descriptionTexture.KeepAlive();
+            }
+
             if (!IsModalWindowOpen())
                 restartGameButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
                 foreach (var btn in infoButtons)
                     btn.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
+            
+            if (Globals.restartPending)
+            {
+                Globals.restartPending = false;
 
+                var msg = Globals.restartWillEnable
+                    ? "It seems that you have enabled a mod. Do you want to restart the game to load this mod?"
+                     : "It seems that you have disabled a mod. Do you want to restart the game to unload this mod?";
+
+                ShowModalWindow(ModalWindow.ModalType.YesNo, msg,
+                    delegate (ModalWindow.ModalResponse res)
+                    {
+                        if (res == ModalWindow.ModalResponse.Yes)
+                        {
+                            GameUtils.RestartGame();
+                        }
+                    });
+            }
             return base.Update(cursorOccluded);
         }
 
@@ -101,27 +161,21 @@ namespace WorldMachineLoader.Modding
             return window is ModListWindow;
         }
 
-        private void DrawTitleTexture()
+        private void DrawTitleTexture(ModItem mod)
         {
-            foreach (var mod in mods)
-            {
-                mod.titleTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, mod.title);
-            }
+            mod.titleTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, mod.title);
         }
 
-        private void DrawDescriptionTexture()
+        private void DrawDescriptionTexture(ModItem mod)
         {
-            foreach (var mod in mods)
-            {
-                var desc = mod.description;
-                if (string.IsNullOrEmpty(desc))
-                    desc = "No description provided";
-                else if (desc.Length < 55)
-                    desc = mod.description;
-                else
-                    desc = mod.description.Substring(0, 40) + "...";
-                mod.descriptionTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, desc);
-            }
+            var desc = mod.description;
+            if (string.IsNullOrEmpty(desc))
+                desc = "No description provided";
+            else if (desc.Length < 55)
+                desc = mod.description;
+            else
+                desc = mod.description.Substring(0, 40) + "...";
+            mod.descriptionTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, desc);
         }
 
         private void DrawNoModsTexture()
@@ -138,33 +192,12 @@ namespace WorldMachineLoader.Modding
         private void CreateInfoButtons()
         {
             int y = 8;
-            foreach (var mod in mods)
+            foreach (var mod in totalMods)
             {
                 var btn = new TextButton("Info", new Vec2(252, y), delegate { OnInfoButtonClicked(mod); }, buttonWidth: 40);
                 infoButtons.Add(btn);
                 y += 32;
             }
-        }
-
-        private void RestartGame()
-        {
-            if (Game1.windowMan.IsOneshotWindowOpen())
-            {
-                ShowModalWindow(ModalWindow.ModalType.Error, "cant_shutdown_while_oneshot_running");
-                return;
-            }
-            ShowModalWindow(ModalWindow.ModalType.YesNo, "Do you really want to restart?", delegate (ModalWindow.ModalResponse res)
-            {
-                if (res == ModalWindow.ModalResponse.Yes)
-                {
-                    Game1.windowMan.SaveDesktopAndFileSystem();
-
-                    Process currentProcess = Process.GetCurrentProcess();
-                    Process.Start(currentProcess.MainModule.FileName);
-
-                    Game1.ShutDown();
-                }
-            });
         }
     }
 }

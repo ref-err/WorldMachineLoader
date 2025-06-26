@@ -1,10 +1,9 @@
-﻿using FMOD;
-using OneShotMG;
+﻿using OneShotMG;
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
-using System;
 using System.Collections.Generic;
+using WorldMachineLoader.ModLoader;
 using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.Modding.UI
@@ -19,15 +18,24 @@ namespace WorldMachineLoader.Modding.UI
 
         private TempTexture authorTexture;
 
+        private TempTexture stateTexture;
+
         private TempTexture urlLabelTexture;
 
         private TempTexture urlTexture;
 
         private TextButton okButton;
+
+        private TextButton enableButton;
+
+        private TextButton disableButton;
+
+        private bool previousState;
         
         public ModInfoWindow(ModItem mod)
         {
             this.mod = mod;
+            previousState = mod.isEnabled;
 
             base.WindowTitle = $"\"{mod.name}\" Info";
             base.WindowIcon = "info";
@@ -37,7 +45,6 @@ namespace WorldMachineLoader.Modding.UI
 
             foreach (var line in lines)
             {
-                Console.WriteLine(line);
                 var tex = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, line);
 
                 descriptionTextures.Add(tex);
@@ -46,8 +53,24 @@ namespace WorldMachineLoader.Modding.UI
             okButton = new TextButton("OK", new Vec2(220, 130), delegate
             {
                 Game1.windowMan.RemoveWindow(this);
+                OnWindowClose();
             }, buttonWidth: 26);
 
+            enableButton = new TextButton("Enable", new Vec2(4, 130), delegate
+            {
+                ModSettings.EnableMod(mod.name);
+                mod.isEnabled = true;
+            });
+
+            disableButton = new TextButton("Disable", new Vec2(4, 130), delegate
+            {
+                ModSettings.DisableMod(mod.name);
+                mod.isEnabled = false;
+            });
+            onClose = delegate
+            {
+                OnWindowClose();
+            };
             AddButton(TWMWindowButtonType.Close);
             AddButton(TWMWindowButtonType.Minimize);
         }
@@ -70,9 +93,19 @@ namespace WorldMachineLoader.Modding.UI
             position.Y += 8;
             Game1.gMan.MainBlit(authorTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             position.Y += 20;
+            Game1.gMan.MainBlit(stateTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+            position.Y += 20;
             Game1.gMan.MainBlit(urlLabelTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             position.Y += 12;
             Game1.gMan.MainBlit(urlTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+
+            if (mod.isEnabled)
+            {
+                disableButton.Draw(screenPos, theme, alpha);
+            } else
+            {
+                enableButton.Draw(screenPos, theme, alpha);
+            }
 
             okButton.Draw(screenPos, theme, alpha);
         }
@@ -96,6 +129,10 @@ namespace WorldMachineLoader.Modding.UI
             {
                 DrawAuthorTexture();
             }
+            if (stateTexture == null || !stateTexture.isValid)
+            {
+                DrawStateTexture();
+            }
             if (urlLabelTexture == null || !urlLabelTexture.isValid)
             {
                 DrawURLLabelTexture();
@@ -107,10 +144,18 @@ namespace WorldMachineLoader.Modding.UI
             
             titleTexture.KeepAlive();
             authorTexture.KeepAlive();
+            stateTexture.KeepAlive();
             urlLabelTexture.KeepAlive();
             urlTexture.KeepAlive();
 
             if (!IsModalWindowOpen())
+                if (mod.isEnabled)
+                {
+                    disableButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
+                } else
+                {
+                    enableButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
+                }
                 okButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
 
             return base.Update(cursorOccluded);
@@ -124,6 +169,11 @@ namespace WorldMachineLoader.Modding.UI
         private void DrawAuthorTexture()
         {
             authorTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, $"Author: {mod.author}");
+        }
+
+        private void DrawStateTexture()
+        {
+            stateTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, $"State: {(mod.isEnabled ? "Enabled" : "Disabled")}");
         }
 
         private void DrawURLLabelTexture()
@@ -143,6 +193,14 @@ namespace WorldMachineLoader.Modding.UI
             else
                 url = $"{mod.url}";
             urlTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, url);
+        }
+
+        private void OnWindowClose()
+        {
+            if (mod.isEnabled == previousState || Game1.windowMan.IsOneshotWindowOpen()) return;
+
+            Globals.restartPending = true;
+            Globals.restartWillEnable = mod.isEnabled;
         }
     }
 }
