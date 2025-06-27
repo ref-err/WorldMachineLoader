@@ -23,14 +23,17 @@ namespace WorldMachineLoader.Modding
 
         public string url;
 
+        public string iconPath;
+
         public bool isEnabled;
 
-        public ModItem(string author, string name, string version, string description, string url, bool isEnabled)
+        public ModItem(string author, string name, string version, string description, string url, string iconPath, bool isEnabled)
         {
             this.author = author;
             this.name = name;
             this.version = version;
             this.url = url;
+            this.iconPath = iconPath;
             this.isEnabled = isEnabled;
             this.title = $"{(isEnabled ? "" : "[DISABLED] ")}{this.author} - {this.name} ({this.version})";
             this.description = description;
@@ -93,6 +96,9 @@ namespace WorldMachineLoader.Modding
 
         /// <summary>The mod's home URL address string.</summary>
         public string URL { get => modMetadata.URL; }
+
+        /// <summary>The mod's icon</summary>
+        public string Icon { get => modMetadata.Icon; }
 
         /// <summary>The mod's assembly filename to load.</summary>
         public string AssemblyName { get => modMetadata.AssemblyName; }

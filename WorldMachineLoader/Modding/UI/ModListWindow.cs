@@ -1,8 +1,10 @@
-﻿using OneShotMG;
+﻿using Microsoft.Xna.Framework.Graphics;
+using OneShotMG;
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
 using System.Collections.Generic;
+using System.IO;
 using WorldMachineLoader.Modding.UI;
 using WorldMachineLoader.Utils;
 
@@ -22,6 +24,8 @@ namespace WorldMachineLoader.Modding
 
         private TempTexture noModsTexture;
 
+        private List<Texture2D> modIcons = new List<Texture2D>();
+
         public ModListWindow()
         {
             mods = Globals.mods;
@@ -36,6 +40,8 @@ namespace WorldMachineLoader.Modding
             {
                 totalMods.Add(mod);
             }
+
+            CreateModIcons();
 
             base.WindowIcon = "oneshot";
             base.WindowTitle = $"Mod List (Loaded {mods.Count} mods.)";
@@ -69,23 +75,39 @@ namespace WorldMachineLoader.Modding
         // i think it's easier to implement it.
         public override void DrawContents(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
-            Vec2 position = new Vec2(6, 6) + screenPos;
+            Vec2 position = new Vec2(32, 6) + screenPos;
+            Vec2 iconPos = new Vec2(6, 6) + screenPos;
             GameColor gColor = theme.Background(alpha);
             GameColor gameColor = theme.Primary(alpha);
             Rect boxRect = new Rect(screenPos.X, screenPos.Y, base.ContentsSize.X, base.ContentsSize.Y);
             Game1.gMan.ColorBoxBlit(boxRect, gColor);
 
-            if (mods.Count == 0)
+            if (totalMods.Count == 0)
             {
                 Game1.gMan.MainBlit(noModsTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             }
-            
             foreach (var mod in totalMods)
             {
                 Game1.gMan.MainBlit(mod.titleTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
                 position.Y += 12;
                 Game1.gMan.MainBlit(mod.descriptionTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
                 position.Y += 20;
+            }
+
+            foreach (var icon in modIcons)
+            {
+                if (icon != null)
+                {
+                    float xScale = 48f / icon.Width;
+                    float yScale = 48f / icon.Width;
+                    Game1.gMan.MainBlit(icon, iconPos * 2, new Rect(0, 0, icon.Width, icon.Height), xScale, yScale);
+                }
+                else
+                {
+                    Vec2 size = Game1.gMan.TextureSize("the_world_machine/achievements/unknown");
+                    Game1.gMan.MainBlit("the_world_machine/achievements/unknown", iconPos * 2, new Rect(0, 0, size.X, size.Y), 1.5f, 1.5f, 1f);
+                }
+                iconPos.Y += 32;
             }
 
             restartGameButton.Draw(screenPos, theme, alpha);
@@ -171,7 +193,7 @@ namespace WorldMachineLoader.Modding
             var desc = mod.description;
             if (string.IsNullOrEmpty(desc))
                 desc = "No description provided";
-            else if (desc.Length < 55)
+            else if (desc.Length < 40)
                 desc = mod.description;
             else
                 desc = mod.description.Substring(0, 40) + "...";
@@ -197,6 +219,24 @@ namespace WorldMachineLoader.Modding
                 var btn = new TextButton("Info", new Vec2(252, y), delegate { OnInfoButtonClicked(mod); }, buttonWidth: 40);
                 infoButtons.Add(btn);
                 y += 32;
+            }
+        }
+
+        private void CreateModIcons()
+        {
+            foreach (var mod in totalMods)
+            {
+                if (!string.IsNullOrEmpty(mod.iconPath) && File.Exists(mod.iconPath))
+                {
+                    using (var stream = File.OpenRead(mod.iconPath))
+                    {
+                        var texture = Texture2D.FromStream(Globals.monoGame.GraphicsDevice, stream);
+                        modIcons.Add(texture);
+                        continue;
+                    }
+                }
+
+                modIcons.Add(null);
             }
         }
     }

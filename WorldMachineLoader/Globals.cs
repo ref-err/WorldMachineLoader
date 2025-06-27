@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using WorldMachineLoader.Modding;
 
 namespace WorldMachineLoader
@@ -13,5 +14,7 @@ namespace WorldMachineLoader
 
         public static bool restartPending = false;
         public static bool restartWillEnable;
+
+        public static Game monoGame;
     }
 }

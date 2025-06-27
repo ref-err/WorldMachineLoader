@@ -97,17 +97,24 @@ namespace WorldMachineLoader.ModLoader
             try
             {
                 Mod mod = Mod.FromPath(modPath);
+                string iconName = mod.Icon;
+
+                if (string.IsNullOrEmpty(iconName))
+                {
+                    iconName = "";
+                }
 
                 if (!ModSettings.IsEnabled(mod.Name))
                 {
                     Console.WriteLine($"[WML] Skipping mod \"{mod.Name}\" because it is disabled in config file.");
-                    Globals.disabledMods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, false));
+                    Globals.disabledMods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, Path.Combine(modPath, iconName), false));
                     return false;
                 }
 
                 Console.WriteLine($"[WML] Loading mod \"{mod.Name}\"...");
 
                 mods.Add(mod);
+                Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, Path.Combine(modPath, iconName), true));
 
                 return true;
             }
@@ -140,9 +147,6 @@ namespace WorldMachineLoader.ModLoader
                 {
                     Assembly modAssembly = Assembly.LoadFrom(mod.AssemblyFilePath);
                     harmony.PatchAll(modAssembly);
-
-                    // Adding every mod to mod list
-                    Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, true));
                 }
             }
 

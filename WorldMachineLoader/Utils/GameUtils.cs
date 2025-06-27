@@ -3,6 +3,9 @@ using System.Diagnostics;
 
 namespace WorldMachineLoader.Utils
 {
+    /// <summary>
+    /// This class contains utils that are used in modloader.
+    /// </summary>
     internal class GameUtils
     {
         /// <summary>

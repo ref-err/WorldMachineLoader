@@ -25,6 +25,10 @@ namespace WorldMachineLoader.Modding
         [JsonProperty(PropertyName = "url", Required = Required.Default)]
         public string URL { get; set; }
 
+        /// <summary>The mod's icon</summary>
+        [JsonProperty(PropertyName = "icon", Required = Required.DisallowNull)]
+        public string Icon { get; set; }
+
         /// <summary>The mod's assembly filename to load.</summary>
         [JsonProperty(PropertyName = "assembly_name", Required = Required.DisallowNull)]
         public string AssemblyName { get; set; }

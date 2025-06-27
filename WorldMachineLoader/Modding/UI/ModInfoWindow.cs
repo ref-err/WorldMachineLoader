@@ -1,8 +1,10 @@
-﻿using OneShotMG;
+﻿using Microsoft.Xna.Framework.Graphics;
+using OneShotMG;
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
 using System.Collections.Generic;
+using System.IO;
 using WorldMachineLoader.ModLoader;
 using WorldMachineLoader.Utils;
 
@@ -10,7 +12,7 @@ namespace WorldMachineLoader.Modding.UI
 {
     internal class ModInfoWindow : TWMWindow
     {
-        private ModItem mod;
+        private readonly ModItem mod;
 
         private TempTexture titleTexture;
 
@@ -30,12 +32,16 @@ namespace WorldMachineLoader.Modding.UI
 
         private TextButton disableButton;
 
+        private Texture2D icon;
+
         private bool previousState;
         
         public ModInfoWindow(ModItem mod)
         {
             this.mod = mod;
             previousState = mod.isEnabled;
+
+            DrawModIconTexture();
 
             base.WindowTitle = $"\"{mod.name}\" Info";
             base.WindowIcon = "info";
@@ -48,21 +54,22 @@ namespace WorldMachineLoader.Modding.UI
                 var tex = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, line);
 
                 descriptionTextures.Add(tex);
+                ContentsSize += new Vec2(0, 12);
             }
 
-            okButton = new TextButton("OK", new Vec2(220, 130), delegate
+            okButton = new TextButton("OK", new Vec2(220, ContentsSize.Y - 20), delegate
             {
                 Game1.windowMan.RemoveWindow(this);
                 OnWindowClose();
             }, buttonWidth: 26);
 
-            enableButton = new TextButton("Enable", new Vec2(4, 130), delegate
+            enableButton = new TextButton("Enable", new Vec2(4, ContentsSize.Y - 20), delegate
             {
                 ModSettings.EnableMod(mod.name);
                 mod.isEnabled = true;
             });
 
-            disableButton = new TextButton("Disable", new Vec2(4, 130), delegate
+            disableButton = new TextButton("Disable", new Vec2(4, ContentsSize.Y - 20), delegate
             {
                 ModSettings.DisableMod(mod.name);
                 mod.isEnabled = false;
@@ -91,9 +98,20 @@ namespace WorldMachineLoader.Modding.UI
                 position.Y += 12;
             }
             position.Y += 8;
-            Game1.gMan.MainBlit(authorTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+            if (icon != null)
+            {
+                float xScale = 64f / icon.Width;
+                float yScale = 64f / icon.Width;
+                Game1.gMan.MainBlit(icon, position * 2, new Rect(0, 0, icon.Width, icon.Height), xScale, yScale);
+            }
+            else
+            {
+                Vec2 size = Game1.gMan.TextureSize("the_world_machine/achievements/unknown");
+                Game1.gMan.MainBlit("the_world_machine/achievements/unknown", position * 2, new Rect(0, 0, size.X, size.Y), 2f, 2f, 1f);
+            }
+            Game1.gMan.MainBlit(authorTexture, (position + new Vec2(35, 0)) * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             position.Y += 20;
-            Game1.gMan.MainBlit(stateTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+            Game1.gMan.MainBlit(stateTexture, (position + new Vec2(35, 0)) * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             position.Y += 20;
             Game1.gMan.MainBlit(urlLabelTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             position.Y += 12;
@@ -102,7 +120,8 @@ namespace WorldMachineLoader.Modding.UI
             if (mod.isEnabled)
             {
                 disableButton.Draw(screenPos, theme, alpha);
-            } else
+            }
+            else
             {
                 enableButton.Draw(screenPos, theme, alpha);
             }
@@ -201,6 +220,17 @@ namespace WorldMachineLoader.Modding.UI
 
             Globals.restartPending = true;
             Globals.restartWillEnable = mod.isEnabled;
+        }
+
+        private void DrawModIconTexture()
+        {
+            if (!string.IsNullOrEmpty(mod.iconPath) && File.Exists(mod.iconPath))
+            {
+                using (var stream = File.OpenRead(mod.iconPath))
+                {
+                    icon = Texture2D.FromStream(Globals.monoGame.GraphicsDevice, stream);
+                }
+            }
         }
     }
 }

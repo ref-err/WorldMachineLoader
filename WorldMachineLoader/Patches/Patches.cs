@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
+using System;
+using Microsoft.Xna.Framework;
 using OneShotMG;
 using OneShotMG.src;
+using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
@@ -46,6 +49,16 @@ namespace WorldMachineLoader.Patches
             TWMFile tWMFile = new TWMFile("oneshot", "Mod List", LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS);
             __instance.FileSystem.Delete("/Mod List");
             __instance.FileSystem.WriteFile("/", tWMFile);
+        }
+    }
+
+    [HarmonyPatch(typeof(GraphicsManager))]
+    [HarmonyPatch(MethodType.Constructor, new Type[] { typeof(Game) })]
+    public static class GraphicsManagerCtorPatch
+    {
+        static void Prefix(Game mGame)
+        {
+            Globals.monoGame = mGame;
         }
     }
 }
