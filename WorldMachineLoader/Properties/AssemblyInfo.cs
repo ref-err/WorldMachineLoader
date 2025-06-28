@@ -7,10 +7,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("World Machine Loader")]
 [assembly: AssemblyDescription("Modloader for OneShot: World Machine Edition PC")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("hat_kid")]
+[assembly: AssemblyCompany("referr")]
 [assembly: AssemblyProduct("WorldMachineLoader")]
 [assembly: AssemblyCopyright("Copyright (c) 2024, hat_kid. Licensed under the MIT license.")]
-[assembly: AssemblyTrademark("https://github.com/thehatkid/WorldMachineLoader")]
+[assembly: AssemblyTrademark("https://github.com/ref-err/WorldMachineLoader")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

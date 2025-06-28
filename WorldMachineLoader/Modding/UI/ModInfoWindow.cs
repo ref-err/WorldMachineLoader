@@ -26,6 +26,8 @@ namespace WorldMachineLoader.Modding.UI
 
         private TempTexture urlTexture;
 
+        private TempTexture experimentalTexture;
+
         private TextButton okButton;
 
         private TextButton enableButton;
@@ -101,7 +103,7 @@ namespace WorldMachineLoader.Modding.UI
             if (icon != null)
             {
                 float xScale = 64f / icon.Width;
-                float yScale = 64f / icon.Width;
+                float yScale = 64f / icon.Height;
                 Game1.gMan.MainBlit(icon, position * 2, new Rect(0, 0, icon.Width, icon.Height), xScale, yScale);
             }
             else
@@ -112,11 +114,22 @@ namespace WorldMachineLoader.Modding.UI
             Game1.gMan.MainBlit(authorTexture, (position + new Vec2(35, 0)) * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             position.Y += 20;
             Game1.gMan.MainBlit(stateTexture, (position + new Vec2(35, 0)) * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
-            position.Y += 20;
-            Game1.gMan.MainBlit(urlLabelTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
-            position.Y += 12;
-            Game1.gMan.MainBlit(urlTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
-
+            if (string.IsNullOrEmpty(mod.url))
+            {
+                position.Y += 20;
+                Game1.gMan.MainBlit(urlLabelTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+                position.Y += 12;
+                Game1.gMan.MainBlit(urlTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+            }
+            if (mod.experimental && mod.isEnabled)
+            {
+                position.Y += 20;
+                var size = Game1.gMan.TextureSize("the_world_machine/window_icons/error");
+                var scale = 20f / size.X;
+                Game1.gMan.MainBlit("the_world_machine/window_icons/error", position * 2, new Rect(0, 0, size.X, size.Y), scale, scale, red: gameColor.r / 255f, green: gameColor.g / 255f, blue: gameColor.b / 255f);
+                position.X += 12;
+                Game1.gMan.MainBlit(experimentalTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+            }
             if (mod.isEnabled)
             {
                 disableButton.Draw(screenPos, theme, alpha);
@@ -160,12 +173,17 @@ namespace WorldMachineLoader.Modding.UI
             {
                 DrawURLTexture();
             }
+            if (experimentalTexture == null || !experimentalTexture.isValid)
+            {
+                DrawExperimentalTexture();
+            }
             
             titleTexture.KeepAlive();
             authorTexture.KeepAlive();
             stateTexture.KeepAlive();
             urlLabelTexture.KeepAlive();
             urlTexture.KeepAlive();
+            experimentalTexture.KeepAlive();
 
             if (!IsModalWindowOpen())
                 if (mod.isEnabled)
@@ -231,6 +249,11 @@ namespace WorldMachineLoader.Modding.UI
                     icon = Texture2D.FromStream(Globals.monoGame.GraphicsDevice, stream);
                 }
             }
+        }
+
+        private void DrawExperimentalTexture()
+        {
+            experimentalTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.Game, "This mod is marked as experimental! Be careful!");
         }
     }
 }

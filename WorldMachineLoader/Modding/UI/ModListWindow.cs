@@ -88,7 +88,13 @@ namespace WorldMachineLoader.Modding
             }
             foreach (var mod in totalMods)
             {
-                Game1.gMan.MainBlit(mod.titleTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+                if (mod.experimental && mod.isEnabled)
+                {
+                    var size = Game1.gMan.TextureSize("the_world_machine/window_icons/error");
+                    Game1.gMan.MainBlit("the_world_machine/window_icons/error", position * 2, new Rect(0, 0, size.X, size.Y), 1.5f, 1.5f, red: gameColor.r / 255f, green: gameColor.g / 255f, blue: gameColor.b / 255f);
+                }
+                var titlePos = mod.experimental ? ((position * 2) + new Vec2(24, 0)) : (position * 2);
+                Game1.gMan.MainBlit(mod.titleTexture, titlePos, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
                 position.Y += 12;
                 Game1.gMan.MainBlit(mod.descriptionTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
                 position.Y += 20;
@@ -99,7 +105,7 @@ namespace WorldMachineLoader.Modding
                 if (icon != null)
                 {
                     float xScale = 48f / icon.Width;
-                    float yScale = 48f / icon.Width;
+                    float yScale = 48f / icon.Height;
                     Game1.gMan.MainBlit(icon, iconPos * 2, new Rect(0, 0, icon.Width, icon.Height), xScale, yScale);
                 }
                 else

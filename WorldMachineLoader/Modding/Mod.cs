@@ -5,43 +5,8 @@ using System.IO;
 
 namespace WorldMachineLoader.Modding
 {
-    public class ModItem
-    {
-        public TempTexture titleTexture;
-
-        public TempTexture descriptionTexture;
-
-        public string title;
-
-        public string description;
-
-        public string author;
-
-        public string name;
-
-        public string version;
-
-        public string url;
-
-        public string iconPath;
-
-        public bool isEnabled;
-
-        public ModItem(string author, string name, string version, string description, string url, string iconPath, bool isEnabled)
-        {
-            this.author = author;
-            this.name = name;
-            this.version = version;
-            this.url = url;
-            this.iconPath = iconPath;
-            this.isEnabled = isEnabled;
-            this.title = $"{(isEnabled ? "" : "[DISABLED] ")}{this.author} - {this.name} ({this.version})";
-            this.description = description;
-        }
-    }
-
     /// <summary>Represents a mod object and metadata.</summary>
-    internal class Mod
+    public class Mod
     {
         private readonly DirectoryInfo modDir;
 
@@ -100,6 +65,8 @@ namespace WorldMachineLoader.Modding
         /// <summary>The mod's icon</summary>
         public string Icon { get => modMetadata.Icon; }
 
+        public bool Experimental { get => modMetadata.Experimental; }
+
         /// <summary>The mod's assembly filename to load.</summary>
         public string AssemblyName { get => modMetadata.AssemblyName; }
 
@@ -124,6 +91,44 @@ namespace WorldMachineLoader.Modding
                 if (string.IsNullOrEmpty(AssemblyFilePath)) return false;
                 return File.Exists(AssemblyFilePath);
             }
+        }
+    }
+
+    public class ModItem
+    {
+        public TempTexture titleTexture;
+
+        public TempTexture descriptionTexture;
+
+        public string title;
+
+        public string description;
+
+        public string author;
+
+        public string name;
+
+        public string version;
+
+        public string url;
+
+        public string iconPath;
+
+        public bool isEnabled;
+
+        public bool experimental;
+
+        public ModItem(Mod mod, string modPath, bool isEnabled)
+        {
+            author = mod.Author;
+            name = mod.Name;
+            version = mod.Version;
+            url = mod.URL;
+            iconPath = string.IsNullOrEmpty(mod.Icon) ? "" : Path.Combine(modPath, mod.Icon);
+            this.isEnabled = isEnabled;
+            title = $"{(isEnabled ? "" : "[DISABLED] ")}{author} - {name} ({version})";
+            description = mod.Description;
+            experimental = mod.Experimental;
         }
     }
 }

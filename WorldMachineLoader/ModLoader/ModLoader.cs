@@ -107,15 +107,21 @@ namespace WorldMachineLoader.ModLoader
                 if (!ModSettings.IsEnabled(mod.Name))
                 {
                     Console.WriteLine($"[WML] Skipping mod \"{mod.Name}\" because it is disabled in config file.");
-                    Globals.disabledMods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, Path.Combine(modPath, iconName), false));
+                    Globals.disabledMods.Add(new ModItem(mod, modPath, false));
                     return false;
                 }
 
                 Console.WriteLine($"[WML] Loading mod \"{mod.Name}\"...");
 
                 mods.Add(mod);
-                Globals.mods.Add(new ModItem(mod.Author, mod.Name, mod.Version, mod.Description, mod.URL, Path.Combine(modPath, iconName), true));
+                Globals.mods.Add(new ModItem(mod, modPath, true));
 
+                if (mod.Experimental)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"[WML WARN] \"{mod.Name}\" is marked as experimental. Be careful!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
                 return true;
             }
             catch (JsonSerializationException ex)

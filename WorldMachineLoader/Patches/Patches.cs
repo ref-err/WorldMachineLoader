@@ -32,7 +32,7 @@ namespace WorldMachineLoader.Patches
         // because in oneshot's source this window type literally does nothing at all.
         [HarmonyPrefix]
         [HarmonyPatch("RunFile")]
-        public static bool InterceptRunFile(object node, WindowManager __instance)
+        static bool InterceptRunFile(object node, WindowManager __instance)
         {
             if (node is TWMFile file && file.program == LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS)
             {

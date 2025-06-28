@@ -29,6 +29,9 @@ namespace WorldMachineLoader.Modding
         [JsonProperty(PropertyName = "icon", Required = Required.DisallowNull)]
         public string Icon { get; set; }
 
+        [JsonProperty(PropertyName = "experimental", Required = Required.DisallowNull)]
+        public bool Experimental { get; set; }
+
         /// <summary>The mod's assembly filename to load.</summary>
         [JsonProperty(PropertyName = "assembly_name", Required = Required.DisallowNull)]
         public string AssemblyName { get; set; }
