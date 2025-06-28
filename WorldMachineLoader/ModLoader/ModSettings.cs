@@ -11,6 +11,8 @@ namespace WorldMachineLoader.ModLoader
         [JsonProperty(PropertyName = "disabled", Required = Required.DisallowNull)]
         public List<string> Disabled { get; set; } = new List<string>();
 
+        [JsonProperty(PropertyName = "skip_intro", Required = Required.DisallowNull)]
+        public bool skipIntro { get; set; } = false;
 
         private static ModSettings _instance;
 

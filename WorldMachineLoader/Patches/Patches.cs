@@ -7,6 +7,7 @@ using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
+using WorldMachineLoader.ModLoader;
 
 namespace WorldMachineLoader.Patches
 {
@@ -22,6 +23,29 @@ namespace WorldMachineLoader.Patches
             Game1.VersionString = $"{Game1.VersionString} + WorldMachineLoader";
 
             __instance.Window.Title = $"OneShot [{Game1.VersionString}]";
+        }
+    }
+
+    [HarmonyPatch(typeof(BootManager))]
+    class BootManagerPatch
+    {
+        static bool Prepare()
+        {
+            return ModSettings.Instance.skipIntro;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(MethodType.Constructor, new Type[] { typeof(Game1) })]
+        static void Postfix(BootManager __instance)
+        {
+            try
+            {
+                __instance.RestartBootSequence();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 
