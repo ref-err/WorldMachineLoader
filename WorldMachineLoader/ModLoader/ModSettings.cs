@@ -4,18 +4,27 @@ using System.IO;
 
 namespace WorldMachineLoader.ModLoader
 {
-    /// <summary>Settings JSON config</summary>
+    /// <summary>
+    /// Manages persistent settings for the mod loader.
+    /// Uses JSON file to load and save settings on disk.
+    /// </summary>
     internal class ModSettings
     {
-        /// <summary>Disabled mods list</summary>
+        /// <summary>Gets or sets the currently disabled mod names.</summary>
         [JsonProperty(PropertyName = "disabled", Required = Required.DisallowNull)]
         public List<string> Disabled { get; set; } = new List<string>();
 
+        /// <summary>Gets or sets value indicating whether intro sequence should be skipped.</summary>
         [JsonProperty(PropertyName = "skip_intro", Required = Required.DisallowNull)]
         public bool skipIntro { get; set; } = false;
 
         private static ModSettings _instance;
 
+        /// <summary>
+        /// Gets the instance of <see cref="ModSettings"/>.
+        /// If there's no settings file or instance has not yet loaded,
+        /// automatically calls <see cref="Load"/>
+        /// </summary>
         public static ModSettings Instance
         {
             get
@@ -26,6 +35,11 @@ namespace WorldMachineLoader.ModLoader
             }
         }
 
+        /// <summary>
+        /// Loads the settings from the JSON file specified by <see cref="Constants.SettingsPath"/>.
+        /// If the file does not exist, it creates a new <see cref="ModSettings"/> instance
+        /// with default values and saves immediately to disk.
+        /// </summary>
         public static void Load()
         {
             if (!File.Exists(Constants.SettingsPath))
@@ -39,6 +53,10 @@ namespace WorldMachineLoader.ModLoader
             _instance = JsonConvert.DeserializeObject<ModSettings>(json) ?? new ModSettings();
         }
 
+        /// <summary>
+        /// Saves the current settings instance into the JSON file.
+        /// If no instance is loaded, this method does nothing.
+        /// </summary>
         public static void Save()
         {
             if (_instance == null) return;
@@ -47,6 +65,8 @@ namespace WorldMachineLoader.ModLoader
             File.WriteAllText(Constants.SettingsPath, json);
         }
 
+        /// <summary>Disables the specified mod by name.</summary>
+        /// <param name="modName">The name of the mod to disable.</param>
         public static void DisableMod(string modName)
         {
             if (!Instance.Disabled.Contains(modName))
@@ -56,6 +76,8 @@ namespace WorldMachineLoader.ModLoader
             }
         }
 
+        /// <summary>Enables the specified mod by name.</summary>
+        /// <param name="modName">The name of the mod to enable.</param>
         public static void EnableMod(string modName)
         {
             if (Instance.Disabled.Remove(modName))
@@ -64,6 +86,9 @@ namespace WorldMachineLoader.ModLoader
             }
         }
 
+        /// <summary>Determines whether the specified mod is enabled.</summary>
+        /// <param name="modName">The name of the mod to check.</param>
+        /// <returns><c>true</c> if the mod is enabled; otherwise <c>false</c>.</returns>
         public static bool IsEnabled(string modName)
         {
             return !Instance.Disabled.Contains(modName);

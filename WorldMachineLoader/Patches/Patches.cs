@@ -26,6 +26,9 @@ namespace WorldMachineLoader.Patches
         }
     }
 
+    // this patch is made for skipping intro (logos that show up when game's starting).
+    // it checks for "skip_intro" boolean value in mods/settings.json. if it's true,
+    // then we apply patch.
     [HarmonyPatch(typeof(BootManager))]
     class BootManagerPatch
     {
@@ -76,6 +79,8 @@ namespace WorldMachineLoader.Patches
         }
     }
 
+    // this patch is made so we can get Game instance, and out of Game i can get GraphicsDevice,
+    // which is important for rendering images (in my case, i was rendering mod icons).
     [HarmonyPatch(typeof(GraphicsManager))]
     [HarmonyPatch(MethodType.Constructor, new Type[] { typeof(Game) })]
     public static class GraphicsManagerCtorPatch

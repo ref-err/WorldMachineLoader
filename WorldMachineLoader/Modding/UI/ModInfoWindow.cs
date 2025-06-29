@@ -8,6 +8,7 @@ using System.IO;
 using WorldMachineLoader.ModLoader;
 using WorldMachineLoader.Utils;
 
+// i swear i'll add comments to this later
 namespace WorldMachineLoader.Modding.UI
 {
     internal class ModInfoWindow : TWMWindow

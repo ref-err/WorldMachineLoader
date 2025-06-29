@@ -6,6 +6,15 @@ namespace WorldMachineLoader.Utils
 {
     public static class TextUtils
     {
+        /// <summary>
+        /// Splits the given <paramref name="text"/> into multiple lines, each of which has a length
+        /// not exceeding <paramref name="maxLineLength"/>.
+        /// </summary>
+        /// <param name="text">The input string to wrap.</param>
+        /// <param name="maxLineLength">The maximum allowed length for each line.</param>
+        /// <returns>A list of strings, where each string represents one wrapped line.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="text"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="maxLineLength"/> is less than 1.</exception>
         public static List<string> WrapText(string text, int maxLineLength)
         {
             if (text == null) throw new ArgumentNullException(nameof(text));

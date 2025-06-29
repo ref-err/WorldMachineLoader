@@ -25,10 +25,11 @@ namespace WorldMachineLoader.Modding
         [JsonProperty(PropertyName = "url", Required = Required.Default)]
         public string URL { get; set; }
 
-        /// <summary>The mod's icon</summary>
+        /// <summary>The mod's icon.</summary>
         [JsonProperty(PropertyName = "icon", Required = Required.DisallowNull)]
         public string Icon { get; set; }
 
+        /// <summary>The mod's experimental flag.</summary>
         [JsonProperty(PropertyName = "experimental", Required = Required.DisallowNull)]
         public bool Experimental { get; set; }
 
