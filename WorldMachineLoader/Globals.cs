@@ -4,20 +4,23 @@ using WorldMachineLoader.Modding;
 
 namespace WorldMachineLoader
 {
-    /// <summary>Contains global methods/variables</summary>
+    /// <summary>Contains global methods/variables.</summary>
     internal class Globals
     {
-        /// <summary>Contains all loaded mods</summary>
+        /// <summary>Contains all loaded mods.</summary>
         public static List<ModItem> mods = new List<ModItem>();
 
-        /// <summary>Contains all disabled mods</summary>
+        /// <summary>Contains all disabled mods.</summary>
         public static List<ModItem> disabledMods = new List<ModItem>();
 
-        // These 2 booleans are needed to ask the user to restart the game if the mod state changes
+        // These 2 booleans are needed to ask the user to restart the game if the mod state changes.
         public static bool restartPending = false;
         public static bool restartWillEnable;
 
-        /// <summary>Game instance that we get from OneShotMG by patching</summary>
+        /// <summary>Determines if safe mod is enabled.</summary>
+        public static bool isSafeModEnabled = false;
+
+        /// <summary>Game instance that we get from OneShotMG by patching.</summary>
         public static Game monoGame;
     }
 }

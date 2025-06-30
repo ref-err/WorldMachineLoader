@@ -8,6 +8,7 @@ using OneShotMG.src.TWM;
 using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
 using WorldMachineLoader.ModLoader;
+using System.IO;
 
 namespace WorldMachineLoader.Patches
 {
@@ -83,11 +84,45 @@ namespace WorldMachineLoader.Patches
     // which is important for rendering images (in my case, i was rendering mod icons).
     [HarmonyPatch(typeof(GraphicsManager))]
     [HarmonyPatch(MethodType.Constructor, new Type[] { typeof(Game) })]
-    public static class GraphicsManagerCtorPatch
+    class GraphicsManagerCtorPatch
     {
         static void Prefix(Game mGame)
         {
             Globals.monoGame = mGame;
+        }
+    }
+
+    [HarmonyPatch(typeof(LogManager))]
+    class LogManagerPatch
+    {
+        private static string _lastErrorMessage = null;
+
+        [HarmonyPostfix]
+        [HarmonyPatch("Log")]
+        static void Postfix(LogManager __instance, LogManager.LogLevel level, string message)
+        {
+            if (level == LogManager.LogLevel.Error)
+            {
+                _lastErrorMessage = message;
+            }
+            else if (level == LogManager.LogLevel.StackDump && _lastErrorMessage != null)
+            {
+                try
+                {
+                    File.Create(Path.Combine(Constants.ModsPath, "crashed"));
+                    string crashFile = Path.Combine(Constants.ModsPath, $"crash-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
+                    string content = "Oops! Game crashed!\n" +
+                                    $"Crashed at {DateTime.Now:yyyy-MM-dd HH:mm:ss}\n\n" +
+                                    $"Error: {_lastErrorMessage}\n" +
+                                    $"StackTrace:\n{message}";
+                    File.WriteAllText(crashFile, content);
+                }
+                catch { }
+                finally
+                {
+                    _lastErrorMessage = null;
+                }
+            }
         }
     }
 }

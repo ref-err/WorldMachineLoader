@@ -68,6 +68,11 @@ namespace WorldMachineLoader.ModLoader
         /// <summary>Checks all mods in the directory to parse them for further loading it.</summary>
         public void CheckMods()
         {
+            if (Globals.isSafeModEnabled)
+            {
+                Console.WriteLine("[WML] Safe mod is enabled, not loading any mods.");
+                return;
+            }
             // Create the mods directory
             if (!modsDirectory.Exists)
                 modsDirectory.Create();

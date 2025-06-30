@@ -53,6 +53,7 @@
     <Reference Include="Newtonsoft.Json" HintPath="$(GamePath)\Newtonsoft.Json.dll" Private="False" />
     <Reference Include="OneShotMG" HintPath="$(GamePath)\OneShotMG.exe" Private="False" />
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Icon.ico" />
