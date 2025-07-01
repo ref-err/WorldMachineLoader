@@ -109,8 +109,8 @@ namespace WorldMachineLoader.Patches
             {
                 try
                 {
-                    File.Create(Path.Combine(Constants.ModsPath, "crashed"));
-                    string crashFile = Path.Combine(Constants.ModsPath, $"crash-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
+                    File.Create(Path.Combine(Constants.GamePath, "logs", "crashed"));
+                    string crashFile = Path.Combine(Constants.GamePath, "logs", $"crash-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
                     string content = "Oops! Game crashed!\n" +
                                     $"Crashed at {DateTime.Now:yyyy-MM-dd HH:mm:ss}\n\n" +
                                     $"Error: {_lastErrorMessage}\n" +

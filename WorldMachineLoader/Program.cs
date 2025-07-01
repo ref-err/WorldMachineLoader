@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader
 {
@@ -11,6 +12,8 @@ namespace WorldMachineLoader
         /// <param name="args">The provided command line arguments.</param>
         internal static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+
             if (File.Exists(Path.Combine(Constants.ModsPath, "crashed")))
             {
                 DialogResult result = MessageBox.Show(
@@ -22,6 +25,14 @@ namespace WorldMachineLoader
                 if (result == DialogResult.Yes) Globals.isSafeModEnabled = true;
                 File.Delete(Path.Combine(Constants.ModsPath, "crashed"));
             }
+
+            string logsDir = Path.Combine(Constants.GamePath, "logs");
+            if (!Directory.Exists(logsDir)) Directory.CreateDirectory(logsDir);
+
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+            var fileStream = new StreamWriter(Path.Combine(logsDir, $"log-{timestamp}.log")) { AutoFlush = true };
+
+            Console.SetOut(new DualWritter(Console.Out, fileStream));
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Title = "World Machine Loader";
@@ -41,6 +52,22 @@ namespace WorldMachineLoader
 
             // Launch OneShotMG with mod loader
             modLoader.Start();
+        }
+
+        public static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception)e.ExceptionObject;
+            try
+            {
+                File.Create(Path.Combine(Constants.GamePath, "logs", "crashed"));
+                string crashFile = Path.Combine(Constants.GamePath, "logs", $"crash-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
+                string content = "Oops! Loader crashed!\n" +
+                                $"Crashed at {DateTime.Now:yyyy-MM-dd HH:mm:ss}\n\n" +
+                                $"Error: {ex.Message}\n" +
+                                $"StackTrace:\n{ex.StackTrace}";
+                File.WriteAllText(crashFile, content);
+            }
+            catch { }
         }
     }
 }
