@@ -3,8 +3,10 @@ using OneShotMG;
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using WorldMachineLoader.Modding.UI;
 using WorldMachineLoader.Utils;
 
@@ -23,9 +25,18 @@ namespace WorldMachineLoader.Modding
 
         private TextButton restartGameButton;
 
+        private TextButton prevPageButton;
+        private TextButton nextPageButton;
+
         private TempTexture noModsTexture;
 
+        private TempTexture pageCountTexture;
+
         private List<Texture2D> modIcons = new List<Texture2D>();
+
+        private int currentPage = 0;
+        private int lastPage = -1;
+        private const int ModsPerPage = 5;
 
         public ModListWindow()
         {
@@ -66,28 +77,49 @@ namespace WorldMachineLoader.Modding
                 });
             });
 
+            prevPageButton = new TextButton("<", new Vec2(125, 175), delegate
+            {
+                if (currentPage > 0)
+                {
+                    currentPage--;
+                    CreateInfoButtons();
+                    CreateModIcons();
+                }
+            }, 16);
+
+            nextPageButton = new TextButton(">", new Vec2(159, 175), delegate
+            {
+                if (currentPage < GetTotalPages())
+                {
+                    currentPage++;
+                    CreateInfoButtons();
+                    CreateModIcons();
+                }
+            }, 16);
+
             AddButton(TWMWindowButtonType.Close);
             AddButton(TWMWindowButtonType.Minimize);
         }
 
-        // currently, im not handling the scenario when there are more than ~6 mods,
-        // so it may render very strangely. i would have used SliderControl from OneShotMG.src.TWM
-        // if it weren't internal. i'll try to implement pagination instead of scrolling, just because
-        // i think it's easier to implement it.
         public override void DrawContents(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
             Vec2 position = new Vec2(32, 6) + screenPos;
             Vec2 iconPos = new Vec2(6, 6) + screenPos;
+
             GameColor gColor = theme.Background(alpha);
             GameColor gameColor = theme.Primary(alpha);
+
             Rect boxRect = new Rect(screenPos.X, screenPos.Y, base.ContentsSize.X, base.ContentsSize.Y);
+            Rect lineRect = new Rect(screenPos.X, screenPos.Y + 164, base.ContentsSize.X, 2);
+
             Game1.gMan.ColorBoxBlit(boxRect, gColor);
+            Game1.gMan.ColorBoxBlit(lineRect, gameColor);
 
             if (totalMods.Count == 0)
             {
                 Game1.gMan.MainBlit(noModsTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             }
-            foreach (var mod in totalMods)
+            foreach (var mod in GetModsForCurrentPage())
             {
                 if (mod.experimental && mod.isEnabled)
                 {
@@ -116,8 +148,14 @@ namespace WorldMachineLoader.Modding
                 }
                 iconPos.Y += 32;
             }
+            Game1.gMan.MainBlit(pageCountTexture, (new Vec2(146, 177) + screenPos) * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
 
             restartGameButton.Draw(screenPos, theme, alpha);
+
+            if (currentPage > 0)
+                prevPageButton.Draw(screenPos, theme, alpha);
+            if (currentPage < GetTotalPages())
+                nextPageButton.Draw(screenPos, theme, alpha);
 
             foreach (var btn in infoButtons)
                 btn.Draw(screenPos, theme, alpha);
@@ -160,10 +198,30 @@ namespace WorldMachineLoader.Modding
                 mod.descriptionTexture.KeepAlive();
             }
 
+            if (currentPage != lastPage)
+            {
+                DrawPageCountTexture();
+                lastPage = currentPage;
+            }
+            pageCountTexture.KeepAlive();
+            
+            pageCountTexture.KeepAlive();
+
             if (!IsModalWindowOpen())
-                restartGameButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
+            {
+                bool canInteract = !cursorOccluded && !base.IsMinimized;
+
+                restartGameButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), canInteract);
+
+                if (currentPage > 0)
+                    prevPageButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), canInteract);
+
+                if (currentPage < GetTotalPages())
+                    nextPageButton.Update(new Vec2(Pos.X + 2, Pos.Y + 26), canInteract);
+
                 foreach (var btn in infoButtons)
-                    btn.Update(new Vec2(Pos.X + 2, Pos.Y + 26), !cursorOccluded && !base.IsMinimized);
+                    btn.Update(new Vec2(Pos.X + 2, Pos.Y + 26), canInteract);
+            }
             
             if (Globals.restartPending)
             {
@@ -212,16 +270,21 @@ namespace WorldMachineLoader.Modding
             noModsTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, "You don't have any mods loaded!");
         }
 
+        private void DrawPageCountTexture()
+        {
+            pageCountTexture = Game1.gMan.TempTexMan.GetSingleLineTexture(GraphicsManager.FontType.OS, (currentPage + 1).ToString());
+        }
+
         private void OnInfoButtonClicked(ModItem mod)
         {
             Game1.windowMan.AddWindow(new ModInfoWindow(mod));
-            
         }
 
         private void CreateInfoButtons()
         {
             int y = 8;
-            foreach (var mod in totalMods)
+            infoButtons.Clear();
+            foreach (var mod in GetModsForCurrentPage())
             {
                 var btn = new TextButton("Info", new Vec2(252, y), delegate { OnInfoButtonClicked(mod); }, buttonWidth: 40);
                 infoButtons.Add(btn);
@@ -231,7 +294,8 @@ namespace WorldMachineLoader.Modding
 
         private void CreateModIcons()
         {
-            foreach (var mod in totalMods)
+            modIcons.Clear();
+            foreach (var mod in GetModsForCurrentPage())
             {
                 if (!string.IsNullOrEmpty(mod.iconPath) && File.Exists(mod.iconPath))
                 {
@@ -245,6 +309,20 @@ namespace WorldMachineLoader.Modding
 
                 modIcons.Add(null);
             }
+        }
+
+        private List<ModItem> GetModsForCurrentPage()
+        {
+            return totalMods
+                .Skip(currentPage * ModsPerPage)
+                .Take(ModsPerPage)
+                .ToList();
+        }
+
+        private int GetTotalPages()
+        {
+            int totalPages = (int)Math.Ceiling(totalMods.Count * 1.0 / ModsPerPage);
+            return totalPages - 1;
         }
     }
 }

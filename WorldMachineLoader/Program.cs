@@ -13,8 +13,9 @@ namespace WorldMachineLoader
         internal static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+            string logsDir = Path.Combine(Constants.GamePath, "logs");
 
-            if (File.Exists(Path.Combine(Constants.ModsPath, "crashed")))
+            if (File.Exists(Path.Combine(logsDir, "crashed")))
             {
                 DialogResult result = MessageBox.Show(
                     "WorldMachineLoader (or the game/one of the installed mods) has crashed. " +
@@ -23,10 +24,9 @@ namespace WorldMachineLoader
                 );
 
                 if (result == DialogResult.Yes) Globals.isSafeModEnabled = true;
-                File.Delete(Path.Combine(Constants.ModsPath, "crashed"));
+                File.Delete(Path.Combine(logsDir, "crashed"));
             }
 
-            string logsDir = Path.Combine(Constants.GamePath, "logs");
             if (!Directory.Exists(logsDir)) Directory.CreateDirectory(logsDir);
 
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
