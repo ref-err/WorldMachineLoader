@@ -1,5 +1,4 @@
 ﻿using OneShotMG;
-using System;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Interfaces;
 
@@ -7,7 +6,7 @@ namespace SampleMod
 {
     internal class SampleMod : IMod
     {
-        private ModContext context;
+        private static ModContext context;
 
         public void OnLoad(ModContext modContext)
         {
@@ -23,8 +22,11 @@ namespace SampleMod
         [GamePatch(typeof(Game1), "Initialize", PatchType.Prefix)]
         private static void SomeInitPatch()
         {
-            Console.WriteLine("my favorite part of Console is when Console said \"its writingline time\" and started writingline all over the place.");
-            //context.Logger.Log("my favorite part of Game1 is when Game1 said \"its initializing time\" and started initializing all over the place.");
+            context.Logger.Log("my favorite part of Console is when Console said \"its writingline time\" and started writingline all over the place.");
+            foreach (var modMetadata in APIServices.ModInfoProvider.GetLoadedMods())
+            {
+                context.Logger.Log(modMetadata.ID);
+            }
         }
     }
 }

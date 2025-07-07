@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Globals.cs" />
+    <Compile Include="Modding\ModInfoProvider.cs" />
     <Compile Include="Modding\UI\ModInfoWindow.cs" />
     <Compile Include="Modding\UI\ModListWindow.cs" />
     <Compile Include="ModLoader\ModSettings.cs" />

@@ -20,7 +20,7 @@ namespace WorldMachineLoader.ModLoader
 
         private readonly DirectoryInfo modsDirectory;
 
-        private readonly List<Mod> mods = new List<Mod>();
+        public static readonly List<Mod> mods = new List<Mod>();
 
         private HashSet<string> loadedAssemblies = new HashSet<string>();
 
@@ -33,6 +33,8 @@ namespace WorldMachineLoader.ModLoader
             
             // Get the mods directory
             modsDirectory = new DirectoryInfo(Constants.ModsPath);
+
+            APIServices.ModInfoProvider = new ModInfoProvider();
         }
 
         /// <summary>Check that the game assembly is available.</summary>
