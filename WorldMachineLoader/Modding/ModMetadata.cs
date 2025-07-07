@@ -9,6 +9,9 @@ namespace WorldMachineLoader.Modding
         [JsonProperty(PropertyName = "name", Required = Required.Always)]
         public string Name { get; set; }
 
+        [JsonProperty(PropertyName = "id", Required = Required.Always)]
+        public string ID { get; set; }
+
         /// <summary>The mod's description text.</summary>
         [JsonProperty(PropertyName = "description", Required = Required.DisallowNull)]
         public string Description { get; set; }
@@ -34,7 +37,7 @@ namespace WorldMachineLoader.Modding
         public bool Experimental { get; set; }
 
         /// <summary>The mod's assembly filename to load.</summary>
-        [JsonProperty(PropertyName = "assembly_name", Required = Required.DisallowNull)]
+        [JsonProperty(PropertyName = "assembly_name", Required = Required.Always)]
         public string AssemblyName { get; set; }
     }
 }

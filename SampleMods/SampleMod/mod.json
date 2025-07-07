@@ -1,27 +1,35 @@
 {
-    // World Machine Loader Mod Metadata File.
-
-    // The mod's display name.
-    // Required.
-    "name": "Sample Mod",
-
-    // The mod's description text.
-    // Optional.
-    "description": "Lorem Ipsum. Ain't no way this is placeholder.",
-
-    // The mod's author display name.
-    // Required.
-    "author": "hat_kid",
-
-    // The mod's version string.
-    // Required. Example: "1.0.0", "1.1.0b", "2.0.0-rc1".
-    "version": "0.1.0",
-
-    // The mod's home URL address string.
-    // Optional. Example: mod's page, source code page, etc.
-    "url": "https://github.com/thehatkid/WorldMachineLoader",
-
-    // The mod's assembly filename to load.
-    // Optional. When defined, mod loader will try to load mod's assembly.
-    "assembly_name": "SampleMod"
+  // World Machine Loader Mod Metadata File.
+  
+  // The mod's display name.
+  // Required.
+  "name": "Sample Mod",
+  
+  // The mod's description text.
+  // Optional.
+  "description": "Lorem Ipsum. Ain't no way this is placeholder.",
+  
+  // The mod's author display name.
+  // Required.
+  "author": "ref-err",
+  
+  // The mod's version string.
+  // Required. Example: "1.0.0", "1.1.0b", "2.0.0-rc1".
+  "version": "0.1.0",
+  
+  // The mod's home URL address string.
+  // Optional. Example: mod's page, source code page, etc.
+  "url": "https://github.com/ref-err/WorldMachineLoader",
+  
+  // The mod's icon that shows in Mod List.
+  // Optional.
+  "icon": "icon.png",
+  
+  // Indicates if mod is experimental.
+  // Optional. Example: mod is in beta or alpha.
+  "experimental": true,
+  
+  // The mod's assembly filename to load.
+  // Required.
+  "assembly_name": "SampleMod"
 }

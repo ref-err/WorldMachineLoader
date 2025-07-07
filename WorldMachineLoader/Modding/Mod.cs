@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OneShotMG.src.EngineSpecificCode;
-using System;
 using System.IO;
+using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.Modding
 {
@@ -33,7 +33,7 @@ namespace WorldMachineLoader.Modding
 
             if (!string.IsNullOrEmpty(modMetadata.AssemblyName) && !HasAssembly)
             {
-                Console.WriteLine($"[WML] Mod \"{Name}\" has assembly name in metadata but does not have it.");
+                Logger.Log($"Mod \"{Name}\" has assembly name in metadata but does not have it.");
             }
         }
 
@@ -50,6 +50,9 @@ namespace WorldMachineLoader.Modding
         /// <summary>The mod's display name.</summary>
         public string Name { get => modMetadata.Name; }
 
+        /// <summary>The mod's ID</summary>
+        public string ID { get => modMetadata.ID; }
+
         /// <summary>The mod's description text.</summary>
         public string Description { get => modMetadata.Description; }
 
@@ -65,6 +68,7 @@ namespace WorldMachineLoader.Modding
         /// <summary>The mod's icon</summary>
         public string Icon { get => modMetadata.Icon; }
 
+        /// <summary>Flag to mark that the mod is in alpha, beta, etc.</summary>
         public bool Experimental { get => modMetadata.Experimental; }
 
         /// <summary>The mod's assembly filename to load.</summary>
@@ -105,8 +109,10 @@ namespace WorldMachineLoader.Modding
         public string description;
 
         public string author;
-
+        
         public string name;
+
+        public string modId;
 
         public string version;
 
@@ -122,6 +128,7 @@ namespace WorldMachineLoader.Modding
         {
             author = mod.Author;
             name = mod.Name;
+            modId = mod.ID;
             version = mod.Version;
             url = mod.URL;
             iconPath = string.IsNullOrEmpty(mod.Icon) ? "" : Path.Combine(modPath, mod.Icon);

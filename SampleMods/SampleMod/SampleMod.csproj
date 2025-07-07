@@ -38,6 +38,12 @@
     <Reference Include="Newtonsoft.Json" HintPath="$(GamePath)\Newtonsoft.Json.dll" Private="False" />
     <Reference Include="OneShotMG" HintPath="$(GamePath)\OneShotMG.exe" Private="False" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WML.API\WML.API.csproj">
+      <Project>{6ebd178b-a658-4028-a2e6-7f75abf3ace1}</Project>
+      <Name>WML.API</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\Build\Common.targets" />
 </Project>

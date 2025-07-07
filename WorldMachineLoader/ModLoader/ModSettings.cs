@@ -66,32 +66,32 @@ namespace WorldMachineLoader.ModLoader
         }
 
         /// <summary>Disables the specified mod by name.</summary>
-        /// <param name="modName">The name of the mod to disable.</param>
-        public static void DisableMod(string modName)
+        /// <param name="modId">The name of the mod to disable.</param>
+        public static void DisableMod(string modId)
         {
-            if (!Instance.Disabled.Contains(modName))
+            if (!Instance.Disabled.Contains(modId))
             {
-                Instance.Disabled.Add(modName);
+                Instance.Disabled.Add(modId);
                 Save();
             }
         }
 
         /// <summary>Enables the specified mod by name.</summary>
-        /// <param name="modName">The name of the mod to enable.</param>
-        public static void EnableMod(string modName)
+        /// <param name="modId">The name of the mod to enable.</param>
+        public static void EnableMod(string modId)
         {
-            if (Instance.Disabled.Remove(modName))
+            if (Instance.Disabled.Remove(modId))
             {
                 Save();
             }
         }
 
         /// <summary>Determines whether the specified mod is enabled.</summary>
-        /// <param name="modName">The name of the mod to check.</param>
+        /// <param name="modId">The name of the mod to check.</param>
         /// <returns><c>true</c> if the mod is enabled; otherwise <c>false</c>.</returns>
-        public static bool IsEnabled(string modName)
+        public static bool IsEnabled(string modId)
         {
-            return !Instance.Disabled.Contains(modName);
+            return !Instance.Disabled.Contains(modId);
         }
     }
 }

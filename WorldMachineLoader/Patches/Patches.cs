@@ -9,6 +9,7 @@ using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
 using WorldMachineLoader.ModLoader;
 using System.IO;
+using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.Patches
 {
@@ -48,7 +49,7 @@ namespace WorldMachineLoader.Patches
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                 Logger.Log(ex.ToString(), Logger.LogLevel.Error);
             }
         }
     }

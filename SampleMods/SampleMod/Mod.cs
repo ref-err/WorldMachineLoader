@@ -1,22 +1,30 @@
-﻿using HarmonyLib;
-using OneShotMG.src;
+﻿using OneShotMG;
+using System;
+using WorldMachineLoader.API.Core;
+using WorldMachineLoader.API.Interfaces;
 
 namespace SampleMod
 {
-    internal class Mod
+    internal class SampleMod : IMod
     {
-    }
+        private ModContext context;
 
-    [HarmonyPatch(typeof(LanguageManager))]
-    class WME_LanguageManagerPatch
-    {
-        /// <summary>Replaces any localized strings with our "Shoutouts to Simpleflips" one.</summary>
-        [HarmonyPrefix]
-        [HarmonyPatch("GetLocString")]
-        static bool GetLocString_PrefixPatch(ref string __result)
+        public void OnLoad(ModContext modContext)
         {
-            __result = "Shoutouts to Simpleflips.";
-            return false;
+            context = modContext;
+            context.Logger.Log("Mod loading!");
+        }
+
+        public void OnShutdown()
+        {
+            context.Logger.Log("Mod shutdown!");
+        }
+
+        [GamePatch(typeof(Game1), "Initialize", PatchType.Prefix)]
+        private static void SomeInitPatch()
+        {
+            Console.WriteLine("my favorite part of Console is when Console said \"its writingline time\" and started writingline all over the place.");
+            //context.Logger.Log("my favorite part of Game1 is when Game1 said \"its initializing time\" and started initializing all over the place.");
         }
     }
 }

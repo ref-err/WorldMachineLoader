@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using HarmonyLib;
 using WorldMachineLoader.Modding;
+using WorldMachineLoader.API.Interfaces;
+using WorldMachineLoader.API.Core;
+using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.ModLoader
 {
@@ -18,6 +21,8 @@ namespace WorldMachineLoader.ModLoader
         private readonly DirectoryInfo modsDirectory;
 
         private readonly List<Mod> mods = new List<Mod>();
+
+        private HashSet<string> loadedAssemblies = new HashSet<string>();
 
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
@@ -44,21 +49,21 @@ namespace WorldMachineLoader.ModLoader
             }
             catch (BadImageFormatException ex)
             {
-                Console.WriteLine($"[WML ERROR] Could not load \"{ex.FileName}.exe\"!");
-                Console.WriteLine($"[WML ERROR] Bad Image Format Exception: {ex.Message}");
+                Logger.Log($"Could not load \"{ex.FileName}.exe\"!", Logger.LogLevel.Error);
+                Logger.Log($"Bad Image Format Exception: {ex.Message}", Logger.LogLevel.Error);
 
                 if (!Environment.Is64BitProcess)
-                    Console.WriteLine("[WML ERROR] It seems we are running in 32-bit mode. Consider to use 64-bit instead.");
+                    Logger.Log("It seems we are running in 32-bit mode. Consider to use 64-bit instead.", Logger.LogLevel.Error);
             }
             catch (Exception ex)
             {
                 if (!File.Exists(Path.Combine(Constants.GamePath, $"{Constants.GameAssemblyName}.exe")))
                 {
-                    Console.WriteLine("[WML ERROR] Could not find the game executable file. Please check if it's running inside game folder.");
+                    Logger.Log("Could not find the game executable file. Please check if it's running inside game folder.", Logger.LogLevel.Error);
                 }
                 else
                 {
-                    Console.WriteLine($"[WML ERROR] Exception while trying to get game assembly:\n{ex}");
+                    Logger.Log($"Exception while trying to get game assembly:\n{ex}", Logger.LogLevel.Error);
                 }
             }
 
@@ -70,7 +75,7 @@ namespace WorldMachineLoader.ModLoader
         {
             if (Globals.isSafeModEnabled)
             {
-                Console.WriteLine("[WML] Safe mod is enabled, not loading any mods.");
+                Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn);
                 return;
             }
             // Create the mods directory
@@ -95,7 +100,7 @@ namespace WorldMachineLoader.ModLoader
 
             if (!File.Exists(Path.Combine(modPath, "mod.json")))
             {
-                Console.WriteLine($"[WML] Skipping mod \"{modDirName}\" as it does not have mod.json file.");
+                Logger.Log($"Skipping mod \"{modDirName}\" as it does not have mod.json file.", Logger.LogLevel.Warn);
                 return false;
             }
 
@@ -109,35 +114,72 @@ namespace WorldMachineLoader.ModLoader
                     iconName = "";
                 }
 
-                if (!ModSettings.IsEnabled(mod.Name))
+                if (!ModSettings.IsEnabled(mod.ID))
                 {
-                    Console.WriteLine($"[WML] Skipping mod \"{mod.Name}\" because it is disabled in config file.");
+                    Logger.Log($"Skipping mod \"{mod.Name}\" because it is disabled in config file.");
                     Globals.disabledMods.Add(new ModItem(mod, modPath, false));
                     return false;
                 }
 
-                Console.WriteLine($"[WML] Loading mod \"{mod.Name}\"...");
-
-                mods.Add(mod);
-                Globals.mods.Add(new ModItem(mod, modPath, true));
-
-                if (mod.Experimental)
+                if (!mod.HasAssembly)
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"[WML WARN] \"{mod.Name}\" is marked as experimental. Be careful!");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    return false;
                 }
-                return true;
+                var assembly = Assembly.LoadFrom(mod.AssemblyFilePath);
+
+                if (!loadedAssemblies.Add(assembly.FullName))
+                {
+                    Logger.Log($"Mod \"{mod.Name}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error);
+                    Logger.Log("If you are a developer, please avoid using same Assembly.FullName's. If you aren't, report this error to mod's developer.", Logger.LogLevel.Error);
+                    return false;
+                }
+
+                Logger.Log($"[{mod.ID}] Loading assembly: {mod.AssemblyFilePath}");
+                Logger.Log($"[{mod.ID}] Assembly.FullName: {assembly.FullName}");
+
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (typeof(IMod).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                    {
+                        Logger.Log($"Loading mod \"{mod.Name}\"...");
+
+                        ModContext context = new ModContext(
+                            mod.Name,
+                            mod.ID,
+                            mod.Author,
+                            mod.Version,
+                            modPath
+                        );
+
+                        var modInstance = (IMod)Activator.CreateInstance(type);
+                        modInstance.OnLoad(context);
+
+                        mods.Add(mod);
+                        Globals.mods.Add(new ModItem(mod, modPath, true));
+
+                        if (mod.Experimental)
+                        {
+                            Logger.Log($"[WML WARN] \"{mod.Name}\" is marked as experimental. Be careful!", Logger.LogLevel.Warn);
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        Logger.Log($"[WML WARN] Couldn't load mod \"{mod.Name}\"", Logger.LogLevel.Warn);
+                        Logger.Log($"[WML WARN] Are you sure that this mod is supported by this version of loader?", Logger.LogLevel.Warn);
+                        return false;
+                    }
+                }
             }
             catch (JsonSerializationException ex)
             {
-                Console.Error.WriteLine($"[WML ERROR] Couldn't parse mod \"{modDirName}\" metadata!");
-                Console.Error.WriteLine($"[WML ERROR] Exception: {ex.Message}");
+                Logger.Log($"[WML ERROR] Couldn't parse mod \"{modDirName}\" metadata!", Logger.LogLevel.Error);
+                Logger.Log($"[WML ERROR] Exception: {ex.Message}", Logger.LogLevel.Error);
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"[WML ERROR] Couldn't load mod \"{modDirName}\"!");
-                Console.Error.WriteLine($"[WML ERROR] Exception: {ex}");
+                Logger.Log($"[WML ERROR] Couldn't load mod \"{modDirName}\"!", Logger.LogLevel.Error);
+                Logger.Log($"[WML ERROR] Exception: {ex}", Logger.LogLevel.Error);
             }
 
             return false;
@@ -146,23 +188,21 @@ namespace WorldMachineLoader.ModLoader
         /// <summary>Loads game assembly, patches and launches the game.</summary>
         public void Start()
         {
-            Console.WriteLine("[WML] Patching...");
+            Logger.Log("Patching...");
 
             // Patch any Harmony annotations from this assembly before mods assemblies
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+            PatchManager patchManager = new PatchManager();
 
             // Load mod's assemblies to patch the game
             foreach (Mod mod in mods)
             {
-                if (mod.HasAssembly)
-                {
-                    Assembly modAssembly = Assembly.LoadFrom(mod.AssemblyFilePath);
-                    harmony.PatchAll(modAssembly);
-                }
+                var asm = Assembly.LoadFrom(mod.AssemblyFilePath);
+                patchManager.ApplyAllPatches(asm, mod.ID);
             }
 
             // Invoke OneShotMG entry point to run the game
-            Console.WriteLine("[WML] Starting OneShotMG...");
+            Logger.Log("Starting OneShotMG...");
             MethodBase gameEntrypoint = gameAssembly.ManifestModule.ResolveMethod(gameAssembly.EntryPoint.MetadataToken);
             gameEntrypoint.Invoke(null, null);
         }

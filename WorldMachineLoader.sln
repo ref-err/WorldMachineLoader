@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleMods", "SampleMods", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleMod", "SampleMods\SampleMod\SampleMod.csproj", "{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WML.API", "WML.API\WML.API.csproj", "{6EBD178B-A658-4028-A2E6-7F75ABF3ACE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,6 +25,10 @@ Global
 		{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}.Debug|x64.Build.0 = Debug|x64
 		{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}.Release|x64.ActiveCfg = Release|x64
 		{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}.Release|x64.Build.0 = Release|x64
+		{6EBD178B-A658-4028-A2E6-7F75ABF3ACE1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EBD178B-A658-4028-A2E6-7F75ABF3ACE1}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EBD178B-A658-4028-A2E6-7F75ABF3ACE1}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EBD178B-A658-4028-A2E6-7F75ABF3ACE1}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

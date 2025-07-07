@@ -68,13 +68,13 @@ namespace WorldMachineLoader.Modding.UI
 
             enableButton = new TextButton("Enable", new Vec2(4, ContentsSize.Y - 20), delegate
             {
-                ModSettings.EnableMod(mod.name);
+                ModSettings.EnableMod(mod.modId);
                 mod.isEnabled = true;
             });
 
             disableButton = new TextButton("Disable", new Vec2(4, ContentsSize.Y - 20), delegate
             {
-                ModSettings.DisableMod(mod.name);
+                ModSettings.DisableMod(mod.modId);
                 mod.isEnabled = false;
             });
             onClose = delegate

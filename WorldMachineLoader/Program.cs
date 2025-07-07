@@ -31,8 +31,10 @@ namespace WorldMachineLoader
 
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
             var fileStream = new StreamWriter(Path.Combine(logsDir, $"log-{timestamp}.log")) { AutoFlush = true };
+            DualWritter writer = new DualWritter(Console.Out, fileStream);
 
-            Console.SetOut(new DualWritter(Console.Out, fileStream));
+            Console.SetOut(writer);
+            Console.SetError(writer);
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Title = "World Machine Loader";
