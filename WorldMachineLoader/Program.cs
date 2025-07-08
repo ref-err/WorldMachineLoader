@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using WorldMachineLoader.Utils;
+using System.Security.Principal;
 
 namespace WorldMachineLoader
 {
@@ -40,6 +41,15 @@ namespace WorldMachineLoader
             Console.Title = "World Machine Loader";
             Console.WriteLine("The World Machine Loader");
 
+            if (IsRunningAsAdmin())
+            {
+                Logger.Log("WorldMachineLoader cannot be run with administrator privileges.", Logger.LogLevel.Error);
+                Logger.Log("Please restart the program without administrator privileges.", Logger.LogLevel.Error);
+                MessageBox.Show("WorldMachineLoader cannot be run with administrator privileges." +
+                                "Please restart the program without administrator privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             // Set Current Working Directory to game's folder (where's this assembly located at)
             Directory.SetCurrentDirectory(Constants.GamePath);
 
@@ -70,6 +80,15 @@ namespace WorldMachineLoader
                 File.WriteAllText(crashFile, content);
             }
             catch { }
+        }
+
+        static bool IsRunningAsAdmin()
+        {
+            using (WindowsIdentity id = WindowsIdentity.GetCurrent())
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(id);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
         }
     }
 }

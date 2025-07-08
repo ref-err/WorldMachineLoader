@@ -1,4 +1,5 @@
-﻿using WorldMachineLoader.API.Utils;
+﻿using System.IO;
+using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.API.Core
 {
@@ -8,18 +9,21 @@ namespace WorldMachineLoader.API.Core
         public string ModID { get; }
         public string Author { get; }
         public string Version { get; }
-        public string ModDirectory { get; }
+        public string DataDirectory { get; }
 
         public Logger Logger { get; }
 
-        public ModContext(string name, string modId, string author, string version, string modDir)
+        public ModContext(string name, string modId, string author, string version, string dataDir)
         {
             Name = name;
             ModID = modId;
             Author = author;
             Version = version;
-            ModDirectory = modDir;
+            DataDirectory = dataDir;
             Logger = new Logger(Name);
+
+            if (!Directory.Exists(DataDirectory))
+                Directory.CreateDirectory(DataDirectory);
         }
     }
 }

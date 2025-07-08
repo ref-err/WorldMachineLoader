@@ -8,6 +8,7 @@ using WorldMachineLoader.Modding;
 using WorldMachineLoader.API.Interfaces;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.Utils;
+using System.Windows.Forms;
 
 namespace WorldMachineLoader.ModLoader
 {
@@ -61,7 +62,9 @@ namespace WorldMachineLoader.ModLoader
             {
                 if (!File.Exists(Path.Combine(Constants.GamePath, $"{Constants.GameAssemblyName}.exe")))
                 {
-                    Logger.Log("Could not find the game executable file. Please check if it's running inside game folder.", Logger.LogLevel.Error);
+                    var msg = "Could not find the game executable file. Please check if it's running inside game folder.";
+                    Logger.Log(msg, Logger.LogLevel.Error);
+                    MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -145,12 +148,14 @@ namespace WorldMachineLoader.ModLoader
                     {
                         Logger.Log($"Loading mod \"{mod.Name}\"...");
 
+                        var dataDir = Path.Combine(modPath, "data");
+
                         ModContext context = new ModContext(
                             mod.Name,
                             mod.ID,
                             mod.Author,
                             mod.Version,
-                            modPath
+                            dataDir
                         );
 
                         var modInstance = (IMod)Activator.CreateInstance(type);
