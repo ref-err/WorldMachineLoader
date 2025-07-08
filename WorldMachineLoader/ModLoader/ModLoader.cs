@@ -163,6 +163,7 @@ namespace WorldMachineLoader.ModLoader
 
                         mods.Add(mod);
                         Globals.mods.Add(new ModItem(mod, modPath, true));
+                        mod.Instance = modInstance;
 
                         if (mod.Experimental)
                         {

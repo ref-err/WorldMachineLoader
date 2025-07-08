@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OneShotMG.src.EngineSpecificCode;
 using System.IO;
+using WorldMachineLoader.API.Interfaces;
 using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.Modding
@@ -11,6 +12,8 @@ namespace WorldMachineLoader.Modding
         private readonly DirectoryInfo modDir;
 
         private readonly ModMetadata modMetadata;
+
+        public IMod Instance { get; set; }
 
         /// <summary>Loads a mod from path.</summary>
         /// <param name="basePath">The mod's directory path.</param>

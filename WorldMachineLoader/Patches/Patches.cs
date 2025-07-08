@@ -26,6 +26,16 @@ namespace WorldMachineLoader.Patches
 
             __instance.Window.Title = $"OneShot [{Game1.VersionString}]";
         }
+
+        [HarmonyPrefix]
+        [HarmonyPatch("ShutDown")]
+        static void ShutDown_Prefix(Game1 __instance)
+        {
+            foreach (var mod in ModLoader.ModLoader.mods)
+            {
+                mod.Instance.OnShutdown();
+            }
+        }
     }
 
     // this patch is made for skipping intro (logos that show up when game's starting).
