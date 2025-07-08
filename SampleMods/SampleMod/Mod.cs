@@ -1,16 +1,18 @@
-﻿using OneShotMG;
-using WorldMachineLoader.API.Core;
+﻿using WorldMachineLoader.API.Core;
+using WorldMachineLoader.API.Events;
 using WorldMachineLoader.API.Interfaces;
+using static WorldMachineLoader.API.Core.APIServices;
 
 namespace SampleMod
 {
     internal class SampleMod : IMod
     {
-        private static ModContext context;
+        private ModContext context;
 
         public void OnLoad(ModContext modContext)
         {
             context = modContext;
+            EventBus.Subscribe<Game1InitializeEvent>(OnGame1Initialize);
             context.Logger.Log("Mod loading!");
         }
 
@@ -19,14 +21,18 @@ namespace SampleMod
             context.Logger.Log("Mod shutdown!");
         }
 
-        [GamePatch(typeof(Game1), "Initialize", PatchType.Prefix)]
-        private static void SomeInitPatch()
+        private void OnGame1Initialize(Game1InitializeEvent e)
         {
-            context.Logger.Log("my favorite part of Console is when Console said \"its writingline time\" and started writingline all over the place.");
-            foreach (var modMetadata in APIServices.ModInfoProvider.GetLoadedMods())
+            context.Logger.Log("my favorite part of Logger is when Logger said \"its logging time\" and started logging all over the place.");
+            foreach (var modMetadata in ModInfoProvider.GetLoadedMods())
             {
                 context.Logger.Log(modMetadata.ID);
             }
+            var modByName = ModInfoProvider.FindModByName("Sample Mod");
+            var modByID = ModInfoProvider.FindModByID("net.referr.samplemod");
+            
+            context.Logger.Log(modByName.ID);
+            context.Logger.Log(modByID.Name);
         }
     }
 }
