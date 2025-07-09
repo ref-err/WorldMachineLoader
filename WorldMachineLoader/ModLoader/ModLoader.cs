@@ -15,26 +15,16 @@ namespace WorldMachineLoader.ModLoader
     /// <summary>The core mod loader class.</summary>
     internal class ModLoader
     {
-        private readonly Harmony harmony;
-
+        private readonly Harmony harmony = new Harmony("io.github.referr.oswmeloader");
         private Assembly gameAssembly;
-
-        private readonly DirectoryInfo modsDirectory;
-
+        private readonly DirectoryInfo modsDirectory = new DirectoryInfo(Constants.ModsPath);
         public static readonly List<Mod> mods = new List<Mod>();
-
-        private HashSet<string> loadedAssemblies = new HashSet<string>();
+        private readonly HashSet<string> loadedAssemblies = new HashSet<string>();
 
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
         public ModLoader(string[] args)
         {
-            // Create Harmony instance
-            harmony = new Harmony("io.github.referr.oswmeloader");
-            
-            // Get the mods directory
-            modsDirectory = new DirectoryInfo(Constants.ModsPath);
-
             APIServices.ModInfoProvider = new ModInfoProvider();
         }
 
@@ -45,9 +35,7 @@ namespace WorldMachineLoader.ModLoader
             try
             {
                 _ = Type.GetType($"OneShotMG.Game1, {Constants.GameAssemblyName}", true);
-
                 gameAssembly = Assembly.LoadFrom($"{Constants.GameAssemblyName}.exe");
-
                 return true;
             }
             catch (BadImageFormatException ex)
@@ -60,7 +48,9 @@ namespace WorldMachineLoader.ModLoader
             }
             catch (Exception ex)
             {
-                if (!File.Exists(Path.Combine(Constants.GamePath, $"{Constants.GameAssemblyName}.exe")))
+                string gamePath = Path.Combine(Constants.GamePath, $"{Constants.GameAssemblyName}.exe");
+
+                if (!File.Exists(gamePath))
                 {
                     var msg = "Could not find the game executable file. Please check if it's running inside game folder.";
                     Logger.Log(msg, Logger.LogLevel.Error);
@@ -83,17 +73,12 @@ namespace WorldMachineLoader.ModLoader
                 Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn);
                 return;
             }
-            // Create the mods directory
+
             if (!modsDirectory.Exists)
                 modsDirectory.Create();
 
-            // List all mods subdirectories
-            string[] modsSubdirs = Directory.GetDirectories(modsDirectory.FullName);
-
-            foreach (string modDir in modsSubdirs)
-            {
+            foreach (string modDir in Directory.GetDirectories(modsDirectory.FullName))
                 LoadModFromPath(modDir);
-            }
         }
 
         /// <summary>Loads the mod from specified directory path.</summary>
@@ -102,8 +87,9 @@ namespace WorldMachineLoader.ModLoader
         private bool LoadModFromPath(string modPath)
         {
             string modDirName = Path.GetFileName(modPath);
+            string modJsonPath = Path.Combine(modPath, "mod.json");
 
-            if (!File.Exists(Path.Combine(modPath, "mod.json")))
+            if (!File.Exists(modJsonPath))
             {
                 Logger.Log($"Skipping mod \"{modDirName}\" as it does not have mod.json file.", Logger.LogLevel.Warn);
                 return false;
@@ -112,12 +98,6 @@ namespace WorldMachineLoader.ModLoader
             try
             {
                 Mod mod = Mod.FromPath(modPath);
-                string iconName = mod.Icon;
-
-                if (string.IsNullOrEmpty(iconName))
-                {
-                    iconName = "";
-                }
 
                 if (!ModSettings.IsEnabled(mod.ID))
                 {
@@ -127,10 +107,9 @@ namespace WorldMachineLoader.ModLoader
                 }
 
                 if (!mod.HasAssembly)
-                {
                     return false;
-                }
-                var assembly = Assembly.LoadFrom(mod.AssemblyFilePath);
+
+                Assembly assembly = Assembly.LoadFrom(mod.AssemblyFilePath);
 
                 if (!loadedAssemblies.Add(assembly.FullName))
                 {
@@ -148,21 +127,21 @@ namespace WorldMachineLoader.ModLoader
                     {
                         Logger.Log($"Loading mod \"{mod.Name}\"...");
 
-                        var dataDir = Path.Combine(modPath, "data");
-
                         ModContext context = new ModContext(
                             mod.Name,
                             mod.ID,
                             mod.Author,
                             mod.Version,
-                            dataDir
+                            Path.Combine(modPath, "data")
                         );
 
                         var modInstance = (IMod)Activator.CreateInstance(type);
+
                         try
                         {
                             modInstance.OnLoad(context);
-                        } catch (Exception ex)
+                        }
+                        catch (Exception ex)
                         {
                             Logger.Log($"Exception while calling {mod.ID} OnLoad: {ex}", Logger.LogLevel.Error);
                             return false;
@@ -173,18 +152,14 @@ namespace WorldMachineLoader.ModLoader
                         mod.Instance = modInstance;
 
                         if (mod.Experimental)
-                        {
                             Logger.Log($"[WML WARN] \"{mod.Name}\" is marked as experimental. Be careful!", Logger.LogLevel.Warn);
-                        }
+
                         return true;
                     }
-                    else
-                    {
-                        Logger.Log($"[WML WARN] Couldn't load mod \"{mod.Name}\"", Logger.LogLevel.Warn);
-                        Logger.Log($"[WML WARN] Are you sure that this mod is supported by this version of loader?", Logger.LogLevel.Warn);
-                        return false;
-                    }
                 }
+
+                Logger.Log($"[WML WARN] Couldn't load mod \"{mod.Name}\"", Logger.LogLevel.Warn);
+                Logger.Log($"[WML WARN] Are you sure that this mod is supported by this version of loader?", Logger.LogLevel.Warn);
             }
             catch (JsonSerializationException ex)
             {
@@ -205,18 +180,15 @@ namespace WorldMachineLoader.ModLoader
         {
             Logger.Log("Patching...");
 
-            // Patch any Harmony annotations from this assembly before mods assemblies
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             PatchManager patchManager = new PatchManager();
 
-            // Load mod's assemblies to patch the game
             foreach (Mod mod in mods)
             {
-                var asm = Assembly.LoadFrom(mod.AssemblyFilePath);
+                Assembly asm = Assembly.LoadFrom(mod.AssemblyFilePath);
                 patchManager.ApplyAllPatches(asm, mod.ID);
             }
 
-            // Invoke OneShotMG entry point to run the game
             Logger.Log("Starting OneShotMG...");
             MethodBase gameEntrypoint = gameAssembly.ManifestModule.ResolveMethod(gameAssembly.EntryPoint.MetadataToken);
             gameEntrypoint.Invoke(null, null);

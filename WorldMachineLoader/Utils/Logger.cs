@@ -4,39 +4,32 @@ namespace WorldMachineLoader.Utils
 {
     public static class Logger
     {
-        private static readonly string loggerName = "WML";
-        
+        private const string LoggerName = "WML";
+
         public enum LogLevel
         {
             Info,
             Warn,
             Error
         }
-
+		//реферр нахера тут так много брейков
         public static void Log(string message, LogLevel level = LogLevel.Info)
         {
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string logMessage = $"{timestamp} [{level.ToString().ToUpper()}] [{loggerName}] {message}";
+            string timestamp = DateTime.Now:yyyy-MM-dd HH:mm:ss;
+            string logMessage = $"{timestamp} [{level.ToString().ToUpper()}] [{LoggerName}] {message}";
 
-            ConsoleColor ogColor = Console.ForegroundColor;
-            switch (level)
-            {
-                case LogLevel.Info:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-                case LogLevel.Warn:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogLevel.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                default:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-            }
-
+            ConsoleColor originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = GetColorForLevel(level);
             Console.WriteLine(logMessage);
-            Console.ForegroundColor = ogColor;
+            Console.ForegroundColor = originalColor;
         }
+
+        private static ConsoleColor GetColorForLevel(LogLevel level) => level switch
+        {
+            LogLevel.Info => ConsoleColor.White,
+            LogLevel.Warn => ConsoleColor.Yellow,
+            LogLevel.Error => ConsoleColor.Red,
+            _ => ConsoleColor.White
+        };
     }
 }
