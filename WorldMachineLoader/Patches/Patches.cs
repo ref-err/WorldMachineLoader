@@ -33,7 +33,11 @@ namespace WorldMachineLoader.Patches
         {
             foreach (var mod in ModLoader.ModLoader.mods)
             {
-                mod.Instance.OnShutdown();
+                try { mod.Instance.OnShutdown(); }
+                catch (Exception ex)
+                {
+                    Logger.Log($"Exception while calling {mod.ID} OnShutdown: {ex}", Logger.LogLevel.Error);
+                }
             }
         }
     }

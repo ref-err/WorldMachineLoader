@@ -10,6 +10,7 @@ namespace WorldMachineLoader.API.Core
         public string Author { get; }
         public string Version { get; }
         public string DataDirectory { get; }
+        public ModFileSystem FileSystem { get; }
 
         public Logger Logger { get; }
 
@@ -24,6 +25,8 @@ namespace WorldMachineLoader.API.Core
 
             if (!Directory.Exists(DataDirectory))
                 Directory.CreateDirectory(DataDirectory);
+
+            FileSystem = new ModFileSystem(DataDirectory);
         }
     }
 }

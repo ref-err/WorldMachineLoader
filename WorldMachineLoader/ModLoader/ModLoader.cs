@@ -159,7 +159,14 @@ namespace WorldMachineLoader.ModLoader
                         );
 
                         var modInstance = (IMod)Activator.CreateInstance(type);
-                        modInstance.OnLoad(context);
+                        try
+                        {
+                            modInstance.OnLoad(context);
+                        } catch (Exception ex)
+                        {
+                            Logger.Log($"Exception while calling {mod.ID} OnLoad: {ex}", Logger.LogLevel.Error);
+                            return false;
+                        }
 
                         mods.Add(mod);
                         Globals.mods.Add(new ModItem(mod, modPath, true));
