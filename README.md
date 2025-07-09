@@ -59,7 +59,7 @@ public class SampleMod : IMod
     "assembly_name": "net.referr.samplemod.dll"
 }
 ```
-See full example at [SampleMods/SampleMod](https://github.com/ref-err/WorldMachineLoader/tree/main/SampleMods/SampleMod).
+See full example at [SampleMods/SampleMod](SampleMods/SampleMod).
 
 #### 5. Build and install
 1. Build your project - you'll get `net.referr.samplemod.dll`.
