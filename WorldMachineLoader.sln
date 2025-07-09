@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldMachineLoader", "World
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleMods", "SampleMods", "{C689CC66-9DB2-4329-86CA-BFEF322F6419}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleMod", "SampleMods\SampleMod\SampleMod.csproj", "{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "net.referr.samplemod", "SampleMods\SampleMod\net.referr.samplemod.csproj", "{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WML.API", "WML.API\WML.API.csproj", "{6EBD178B-A658-4028-A2E6-7F75ABF3ACE1}"
 EndProject

@@ -7,7 +7,7 @@
     <ProjectGuid>{AA94BF28-06EE-407E-A822-A23AB6EA1B5C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>SampleMod</RootNamespace>
-    <AssemblyName>SampleMod</AssemblyName>
+    <AssemblyName>net.referr.samplemod</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -4,6 +4,10 @@
   // The mod's display name.
   // Required.
   "name": "Sample Mod",
+
+  // The mod's unique ID.
+  // Requried. Should be different for every mod to avoid conflicts.
+  "id": "net.referr.samplemod",
   
   // The mod's description text.
   // Optional.
