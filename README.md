@@ -1,4 +1,5 @@
-# WorldMachineLoader
+![Logo](.github/logo.png)
+---
 _This is a continuation/fork of the original [WorldMachineLoader](https://github.com/thehatkid/WorldMachineLoader) by hat_kid._
 
 A mod loader for [OneShot: World Machine Edition](https://store.steampowered.com/app/2915460/OneShot_World_Machine_Edition/)!  
