@@ -90,8 +90,8 @@ namespace WorldMachineLoader.Patches
         static void LoadDesktop_Postfix(TWMDesktopManager desktop, WindowManager __instance)
         {
             TWMFile tWMFile = new TWMFile("oneshot", "Mod List", LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS);
-            __instance.FileSystem.Delete("/Mod List");
-            __instance.FileSystem.WriteFile("/", tWMFile);
+            if (!__instance.FileSystem.FileExists("/Mod List"))
+                __instance.FileSystem.WriteFile("/", tWMFile);
         }
     }
 
