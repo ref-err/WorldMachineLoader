@@ -19,7 +19,7 @@ A mod loader for [OneShot: World Machine Edition](https://store.steampowered.com
 3. Run `WorldMachineLoader.exe`!
 
 ### How to Create a Mod
-Before you begin, make sure you have **Visual Studio 2022** installed. You'll also need basic knowledge of **C#** and **.NET Framework 4.6.2**. 
+Before you begin, make sure you have **Visual Studio 2022** installed. You'll also need basic knowledge of **C#** and **.NET Framework 4.6.2**, and you must have OneShot: World Machine Edition purchased in Steam.
 
 #### 1. Create your project
 1. In Visual Studio, File -> New -> Project -> Class Library (.NET Framework).
