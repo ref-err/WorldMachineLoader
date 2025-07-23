@@ -6,6 +6,9 @@ namespace WorldMachineLoader.API.Utils
     {
         private string LoggerName { get; }
         
+        /// <summary>
+        /// Specifies the log level.
+        /// </summary>
         public enum LogLevel
         {
             Info,
@@ -13,11 +16,20 @@ namespace WorldMachineLoader.API.Utils
             Error
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Logger"/> class.
+        /// </summary>
+        /// <param name="loggerName">The name of a logger.</param>
         public Logger(string loggerName)
         {
             LoggerName = loggerName;
         }
 
+        /// <summary>
+        /// Logs the specified message with the specified log level type.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        /// <param name="level">The log level.</param>
         public void Log(string message, LogLevel level = LogLevel.Info)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");

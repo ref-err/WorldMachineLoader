@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("referr")]
 [assembly: AssemblyProduct("WorldMachineLoader")]
-[assembly: AssemblyCopyright("Copyright (c) 2024, hat_kid. Licensed under the MIT license.")]
+[assembly: AssemblyCopyright("Copyright © 2025, referr. Licensed under the MIT license.")]
 [assembly: AssemblyTrademark("https://github.com/ref-err/WorldMachineLoader")]
 [assembly: AssemblyCulture("")]
 

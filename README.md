@@ -35,6 +35,8 @@ Before you begin, make sure you have **Visual Studio 2022** installed. You'll al
 ```cs
 public class SampleMod : IMod
 {
+    private ModContext context;
+
     public void OnLoad(ModContext context) 
     {
         context.Logger.Log("Hello from SampleMod!");
