@@ -34,7 +34,13 @@ namespace WorldMachineLoader.API.Core
         
         /// <summary>Gets the <see cref="PatchType"/> indicating how patch is applied.</summary>
         public PatchType PatchType { get; }
-    
+
+        /// <summary>
+        /// Gets the list of parameter types of the original method in the exact declaration order.
+        /// If no types are specified, this defaults to <see cref="Type.EmptyTypes"/>
+        /// </summary>
+        public Type[] ArgumentTypes { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GamePatch"/> attribute.
         /// </summary>
@@ -46,6 +52,22 @@ namespace WorldMachineLoader.API.Core
             TargetType = targetType;
             MethodName = methodName;
             PatchType = patchType;
+            ArgumentTypes = Type.EmptyTypes;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GamePatch"/> attribute.
+        /// </summary>
+        /// <param name="targetType">The type containing the method to patch.</param>
+        /// <param name="methodName">The name of the method on target type to patch.</param>
+        /// <param name="patchType">The type of a patch to apply.</param>
+        /// <param name="argumentTypes">The list of parameter types of the original method.</param>
+        public GamePatch(Type targetType, string methodName, PatchType patchType, params Type[] argumentTypes)
+        {
+            TargetType = targetType;
+            MethodName = methodName;
+            PatchType = patchType;
+            ArgumentTypes = argumentTypes ?? Type.EmptyTypes;
         }
     }
 }

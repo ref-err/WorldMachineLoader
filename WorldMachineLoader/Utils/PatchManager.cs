@@ -16,7 +16,7 @@ namespace WorldMachineLoader.Utils
                 {
                     foreach (var attr in method.GetCustomAttributes<GamePatch>())
                     {
-                        var original = AccessTools.Method(attr.TargetType, attr.MethodName);
+                        var original = AccessTools.Method(attr.TargetType, attr.MethodName, attr.ArgumentTypes);
                         //string methodKey = $"{original.DeclaringType.FullName}.{original.Name}";
 
                         Logger.Log($"Patching {original.Name} with {method.Name} as {attr.PatchType} from {assembly.FullName}");
@@ -29,7 +29,7 @@ namespace WorldMachineLoader.Utils
                                 harmony.Patch(original, prefix: patch);
                                 break;
                             case PatchType.Postfix:
-                                harmony.Patch(original, postfix: patch);
+                                harmony.Patch(original, postfix: patch);    
                                 break;
                             case PatchType.Transpiler:
                                 harmony.Patch(original, transpiler: patch);
