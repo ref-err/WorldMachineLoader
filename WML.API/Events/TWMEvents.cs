@@ -1,6 +1,6 @@
 ﻿namespace WorldMachineLoader.API.Events
 {
-    /// <summary>Event that triggers when a game window is opened.</summary>
+    /// <summary>Event that is triggered when a game window is opened.</summary>
     public class TWMWindowAddedEvent
     {
         /// <summary>An instance of a window.</summary>
@@ -13,7 +13,7 @@
         public TWMWindowAddedEvent(object windowInstance) { WindowInstance = windowInstance; }
     }
 
-    /// <summary>Event that triggers when a game window is closed.</summary>
+    /// <summary>Event that is triggered when a game window is closed.</summary>
     public class TWMWindowRemovedEvent
     {
         /// <summary>An instance of a window.</summary>
@@ -26,7 +26,7 @@
         public TWMWindowRemovedEvent(object windowInstance) { WindowInstance = windowInstance; }
     }
 
-    /// <summary>Event that triggers when the desktop finishes loading.</summary>
+    /// <summary>Event that is triggered when the desktop finishes loading.</summary>
     public class TWMDesktopLoadedEvent
     {
         /// <summary>An instance of the desktop.</summary>
