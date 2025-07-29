@@ -171,6 +171,7 @@ namespace WorldMachineLoader.ModLoader
                         mods.Add(mod);
                         Globals.mods.Add(new ModItem(mod, modPath, true));
                         mod.Instance = modInstance;
+                        mod.ModContext = context;
 
                         if (mod.Experimental)
                         {

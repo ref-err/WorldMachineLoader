@@ -10,6 +10,7 @@ using WorldMachineLoader.Modding;
 using WorldMachineLoader.ModLoader;
 using System.IO;
 using WorldMachineLoader.Utils;
+using WorldMachineLoader.API.Scheduling;
 
 namespace WorldMachineLoader.Patches
 {
@@ -38,6 +39,17 @@ namespace WorldMachineLoader.Patches
                 {
                     Logger.Log($"Exception while calling {mod.ID} OnShutdown: {ex}", Logger.LogLevel.Error);
                 }
+            }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("Update")]
+        static void UpdatePatch(GameTime gameTime)
+        {
+            var delta = gameTime.ElapsedGameTime;
+            foreach (var mod in ModLoader.ModLoader.mods)
+            {
+                mod.ModContext.Scheduler.Update(delta);
             }
         }
     }

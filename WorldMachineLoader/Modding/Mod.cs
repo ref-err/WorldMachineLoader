@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OneShotMG.src.EngineSpecificCode;
 using System.IO;
+using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Interfaces;
 using WorldMachineLoader.Utils;
 
@@ -79,6 +80,8 @@ namespace WorldMachineLoader.Modding
 
         /// <summary>The mod's directory path.</summary>
         public string DirectoryPath { get => modDir.FullName; }
+
+        public ModContext ModContext { get; set; }
 
         /// <summary>The mod's file path to the assembly.</summary>
         public string AssemblyFilePath

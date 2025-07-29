@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using WorldMachineLoader.API.Scheduling;
 using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.API.Core
@@ -28,6 +29,8 @@ namespace WorldMachineLoader.API.Core
 
         /// <summary>The mod's logger.</summary>
         public Logger Logger { get; }
+
+        public Scheduler Scheduler = new Scheduler();
 
         /// <summary>
         /// Initializes a new instance of <see cref="ModContext"/> class.
