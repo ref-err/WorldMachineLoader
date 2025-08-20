@@ -41,13 +41,21 @@ namespace WorldMachineLoader
             Console.Title = "World Machine Loader";
             Console.WriteLine("The World Machine Loader");
 
-            if (IsRunningAsAdmin())
+            if (IsRunningAsAdmin() && !ModSettings.Instance.IgnoreAdminCheck)
             {
                 Logger.Log("WorldMachineLoader cannot be run with administrator privileges.", Logger.LogLevel.Error);
                 Logger.Log("Please restart the program without administrator privileges.", Logger.LogLevel.Error);
+                Logger.Log("If this is intended, set \"ignore_admin_check\" to true in mods\\settings.json.", Logger.LogLevel.Error);
                 MessageBox.Show("WorldMachineLoader cannot be run with administrator privileges." +
-                                "Please restart the program without administrator privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                "Please restart the program without administrator privileges." +
+                                "If this is intended, set \"ignore_admin_check\" to true in mods\\settings.json.",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+            else if (IsRunningAsAdmin() && ModSettings.Instance.IgnoreAdminCheck)
+            {
+                Logger.Log("WorldMachineLoader is running with administrator privileges, and \"ignore_admin_check\" is enabled in config.", Logger.LogLevel.Warn);
+                Logger.Log("Proceeding as requested. Be careful!", Logger.LogLevel.Warn);
             }
 
             // Set Current Working Directory to game's folder (where's this assembly located at)
@@ -66,7 +74,7 @@ namespace WorldMachineLoader
             modLoader.Start();
         }
 
-        public static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
         {
             Exception ex = (Exception)e.ExceptionObject;
             try

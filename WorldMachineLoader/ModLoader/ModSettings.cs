@@ -10,13 +10,17 @@ namespace WorldMachineLoader.ModLoader
     /// </summary>
     internal class ModSettings
     {
-        /// <summary>Gets or sets the currently disabled mod names.</summary>
+        /// <summary>Gets or sets the currently disabled mod IDs.</summary>
         [JsonProperty(PropertyName = "disabled", Required = Required.DisallowNull)]
         public List<string> Disabled { get; set; } = new List<string>();
 
         /// <summary>Gets or sets value indicating whether intro sequence should be skipped.</summary>
         [JsonProperty(PropertyName = "skip_intro", Required = Required.DisallowNull)]
-        public bool skipIntro { get; set; } = false;
+        public bool SkipIntro { get; set; } = false;
+
+        /// <summary>Gets or sets value indication whether loader should ignore if program has run as administrator.</summary>
+        [JsonProperty(PropertyName = "ignore_admin_check", Required = Required.DisallowNull)]
+        public bool IgnoreAdminCheck { get; set; } = false;
 
         private static ModSettings _instance;
 
