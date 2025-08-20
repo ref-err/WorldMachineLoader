@@ -1,5 +1,6 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
+using System.IO;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using OneShotMG;
 using OneShotMG.src;
@@ -8,15 +9,15 @@ using OneShotMG.src.TWM;
 using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
 using WorldMachineLoader.ModLoader;
-using System.IO;
-using WorldMachineLoader.Utils;
-using WorldMachineLoader.API.Scheduling;
+using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.Patches
 {
     [HarmonyPatch(typeof(Game1))]
     class Game1Patch
     {
+        static Logger Logger = new Logger("WML/GamePatch");
+
         // patching initialize to change versionstring and window title.
         [HarmonyPrefix]
         [HarmonyPatch("Initialize")]
@@ -60,9 +61,11 @@ namespace WorldMachineLoader.Patches
     [HarmonyPatch(typeof(BootManager))]
     class BootManagerPatch
     {
+        static Logger Logger = new Logger("WML/BootManagerPatch");
+
         static bool Prepare()
         {
-            return ModSettings.Instance.skipIntro;
+            return ModSettings.Instance.SkipIntro;
         }
 
         [HarmonyPostfix]

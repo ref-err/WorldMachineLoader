@@ -3,7 +3,6 @@ using OneShotMG.src.EngineSpecificCode;
 using System.IO;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Interfaces;
-using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.Modding
 {
@@ -37,7 +36,7 @@ namespace WorldMachineLoader.Modding
 
             if (!string.IsNullOrEmpty(modMetadata.AssemblyName) && !HasAssembly)
             {
-                Logger.Log($"Mod \"{Name}\" has assembly name in metadata but does not have it.");
+                Program.Logger.Log($"Mod \"{Name}\" has assembly name in metadata but does not have it.");
             }
         }
 

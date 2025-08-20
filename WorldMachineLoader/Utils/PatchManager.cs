@@ -1,11 +1,14 @@
 ﻿using HarmonyLib;
 using System.Reflection;
 using WorldMachineLoader.API.Core;
+using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.Utils
 {
     public class PatchManager
     {
+        Logger Logger = new Logger("WML/PatchManager");
+
         public void ApplyAllPatches(Assembly assembly, string modId)
         {
             foreach (var type in assembly.GetTypes())

@@ -1,14 +1,19 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.IO;
-using WorldMachineLoader.Utils;
+using System.Windows.Forms;
 using System.Security.Principal;
+using WorldMachineLoader.Utils;
+using WorldMachineLoader.ModLoader;
+using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader
 {
     /// <summary>The main entry point for WorldMachineLoader, responsible for hooking into and launching the game.</summary>
     internal static class Program
     {
+        /// <summary>Loader's logger.</summary>
+        public static Logger Logger = new Logger("WML/Program");
+
         /// <summary>The main entry point which hooks into and launches the game.</summary>
         /// <param name="args">The provided command line arguments.</param>
         internal static void Main(string[] args)
@@ -32,7 +37,7 @@ namespace WorldMachineLoader
 
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
             var fileStream = new StreamWriter(Path.Combine(logsDir, $"log-{timestamp}.log")) { AutoFlush = true };
-            DualWritter writer = new DualWritter(Console.Out, fileStream);
+            DualWriter writer = new DualWriter(Console.Out, fileStream);
 
             Console.SetOut(writer);
             Console.SetError(writer);

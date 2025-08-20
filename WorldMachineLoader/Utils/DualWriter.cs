@@ -3,14 +3,14 @@ using System.Text;
 
 namespace WorldMachineLoader.Utils
 {
-    public class DualWritter : TextWriter
+    public class DualWriter : TextWriter
     {
         private readonly TextWriter originalConsole;
         private readonly StreamWriter fileWriter;
 
         public override Encoding Encoding => Encoding.UTF8;
 
-        public DualWritter(TextWriter original, StreamWriter fileWriter)
+        public DualWriter(TextWriter original, StreamWriter fileWriter)
         {
             this.originalConsole = original;
             this.fileWriter = fileWriter;

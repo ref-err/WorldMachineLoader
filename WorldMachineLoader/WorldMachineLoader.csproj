@@ -47,9 +47,8 @@
     <Compile Include="Modding\Mod.cs" />
     <Compile Include="Modding\ModMetadata.cs" />
     <Compile Include="Patches\Patches.cs" />
-    <Compile Include="Utils\DualWritter.cs" />
+    <Compile Include="Utils\DualWriter.cs" />
     <Compile Include="Utils\GameUtils.cs" />
-    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\PatchManager.cs" />
     <Compile Include="Utils\TextUtils.cs" />
   </ItemGroup>

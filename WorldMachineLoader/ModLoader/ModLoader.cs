@@ -1,20 +1,23 @@
-﻿using System;
+﻿using HarmonyLib;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using HarmonyLib;
-using WorldMachineLoader.Modding;
-using WorldMachineLoader.API.Interfaces;
-using WorldMachineLoader.API.Core;
-using WorldMachineLoader.Utils;
 using System.Windows.Forms;
+using WorldMachineLoader.API.Core;
+using WorldMachineLoader.API.Interfaces;
+using WorldMachineLoader.API.Utils;
+using WorldMachineLoader.Modding;
+using WorldMachineLoader.Utils;
 
 namespace WorldMachineLoader.ModLoader
 {
     /// <summary>The core mod loader class.</summary>
     internal class ModLoader
     {
+        public Logger Logger = new Logger("WML/ModLoader");
+
         private readonly Harmony harmony;
 
         private Assembly gameAssembly;
