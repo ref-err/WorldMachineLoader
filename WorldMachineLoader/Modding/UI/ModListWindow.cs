@@ -117,8 +117,9 @@ namespace WorldMachineLoader.Modding
 
             if (totalMods.Count == 0)
             {
-                Game1.gMan.MainBlit(noModsTexture, position * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
+                Game1.gMan.MainBlit(noModsTexture, (new Vec2(6, 6) + screenPos) * 2, gameColor, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
             }
+
             foreach (var mod in GetModsForCurrentPage())
             {
                 if (mod.experimental && mod.isEnabled)
