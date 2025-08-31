@@ -165,7 +165,8 @@ namespace WorldMachineLoader.ModLoader
                         try
                         {
                             modInstance.OnLoad(context);
-                        } catch (Exception ex)
+                        }
+                        catch (Exception ex)
                         {
                             Logger.Log($"Exception while calling {mod.ID} OnLoad: {ex}", Logger.LogLevel.Error);
                             return false;

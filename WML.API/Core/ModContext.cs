@@ -30,7 +30,9 @@ namespace WorldMachineLoader.API.Core
         /// <summary>The mod's logger.</summary>
         public Logger Logger { get; }
 
-        public Scheduler Scheduler = new Scheduler();
+        public Scheduler Scheduler { get; } = new Scheduler();
+
+        public ConfigManager Config { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="ModContext"/> class.
@@ -53,6 +55,7 @@ namespace WorldMachineLoader.API.Core
                 Directory.CreateDirectory(DataDirectory);
 
             FileSystem = new ModFileSystem(DataDirectory);
+            Config = new ConfigManager(FileSystem);
         }
     }
 }
