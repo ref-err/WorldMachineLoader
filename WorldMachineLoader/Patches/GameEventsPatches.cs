@@ -9,7 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using WorldMachineLoader.API.Core;
-using WorldMachineLoader.API.Events;
+using WorldMachineLoader.API.Events.Gameplay;
+using WorldMachineLoader.API.Events.Content;
 
 namespace WorldMachineLoader.Patches
 {

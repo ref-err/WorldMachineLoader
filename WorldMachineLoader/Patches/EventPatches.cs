@@ -3,7 +3,8 @@ using OneShotMG;
 using OneShotMG.src;
 using OneShotMG.src.TWM;
 using WorldMachineLoader.API.Core;
-using WorldMachineLoader.API.Events;
+using WorldMachineLoader.API.Events.Lifecycle;
+using WorldMachineLoader.API.Events.Environment;
 
 namespace WorldMachineLoader.Patches
 {
