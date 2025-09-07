@@ -1,6 +1,7 @@
 ﻿using OneShotMG.src.TWM;
 using WorldMachineLoader.API.Core;
-using WorldMachineLoader.API.Events;
+using WorldMachineLoader.API.Events.Lifecycle;
+using WorldMachineLoader.API.Events.Environment;
 using WorldMachineLoader.API.Interfaces;
 using static WorldMachineLoader.API.Core.APIServices;
 
