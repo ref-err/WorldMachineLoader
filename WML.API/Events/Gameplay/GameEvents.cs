@@ -1,4 +1,4 @@
-﻿namespace WorldMachineLoader.API.Events
+﻿namespace WorldMachineLoader.API.Events.Gameplay
 {
     /// <summary>
     /// Event that is triggered when the player moves to another map/location.

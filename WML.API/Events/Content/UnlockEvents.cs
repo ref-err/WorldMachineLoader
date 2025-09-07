@@ -1,4 +1,4 @@
-﻿namespace WorldMachineLoader.API.Events
+﻿namespace WorldMachineLoader.API.Events.Content
 {
     /// <summary>Event that is triggered when a new achievement gets unlocked.</summary>
     public class AchievementUnlockedEvent

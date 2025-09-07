@@ -1,4 +1,4 @@
-﻿namespace WorldMachineLoader.API.Events
+﻿namespace WorldMachineLoader.API.Events.Environment
 {
     /// <summary>Event that is triggered when a game window is opened.</summary>
     public class TWMWindowAddedEvent

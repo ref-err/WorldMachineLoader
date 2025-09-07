@@ -53,10 +53,10 @@
     <Compile Include="Core\GamePatch.cs" />
     <Compile Include="Core\ModContext.cs" />
     <Compile Include="Core\ModInfoData.cs" />
-    <Compile Include="Events\CommonEvents.cs" />
-    <Compile Include="Events\GameEvents.cs" />
-    <Compile Include="Events\TWMEvents.cs" />
-    <Compile Include="Events\UnlockEvents.cs" />
+    <Compile Include="Events\Lifecycle\CommonEvents.cs" />
+    <Compile Include="Events\Gameplay\GameEvents.cs" />
+    <Compile Include="Events\Environment\TWMEvents.cs" />
+    <Compile Include="Events\Content\UnlockEvents.cs" />
     <Compile Include="Interfaces\IMod.cs" />
     <Compile Include="Interfaces\IModInfoProvider.cs" />
     <Compile Include="Interfaces\IScheduler.cs" />

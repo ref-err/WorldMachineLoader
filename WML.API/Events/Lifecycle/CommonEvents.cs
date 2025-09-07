@@ -1,4 +1,4 @@
-﻿namespace WorldMachineLoader.API.Events
+﻿namespace WorldMachineLoader.API.Events.Lifecycle
 {
     /// <summary>Event that is triggered when game starts to initialize.</summary>
     public class Game1InitializeEvent { }
