@@ -124,7 +124,7 @@ namespace WorldMachineLoader.ModLoader
 
                 if (!ModSettings.IsEnabled(mod.ID))
                 {
-                    Logger.Log($"Skipping mod \"{mod.Name}\" because it is disabled in config file.");
+                    Logger.Log($"Skipping mod \"{mod.Name}/{mod.ID}\" because it is disabled in config file.");
                     Globals.disabledMods.Add(new ModItem(mod, modPath, false));
                     return false;
                 }
@@ -135,21 +135,22 @@ namespace WorldMachineLoader.ModLoader
                 }
                 var assembly = Assembly.LoadFrom(mod.AssemblyFilePath);
 
+                Logger.Log($"[{mod.ID}] Loading assembly: {mod.AssemblyFilePath}");
+                Logger.Log($"[{mod.ID}] Assembly.FullName: {assembly.FullName}");
+
                 if (!loadedAssemblies.Add(assembly.FullName))
                 {
-                    Logger.Log($"Mod \"{mod.Name}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error);
+                    Logger.Log($"Mod \"{mod.Name}/{mod.ID}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error);
                     Logger.Log("If you are a developer, please avoid using same Assembly.FullName's. If you aren't, report this error to mod's developer.", Logger.LogLevel.Error);
                     return false;
                 }
 
-                Logger.Log($"[{mod.ID}] Loading assembly: {mod.AssemblyFilePath}");
-                Logger.Log($"[{mod.ID}] Assembly.FullName: {assembly.FullName}");
 
                 foreach (var type in assembly.GetTypes())
                 {
                     if (typeof(IMod).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     {
-                        Logger.Log($"Loading mod \"{mod.Name}\"...");
+                        Logger.Log($"Loading mod \"{mod.Name}/{mod.ID}\"...");
 
                         var dataDir = Path.Combine(modPath, "data");
 
@@ -162,13 +163,15 @@ namespace WorldMachineLoader.ModLoader
                         );
 
                         var modInstance = (IMod)Activator.CreateInstance(type);
+
                         try
                         {
                             modInstance.OnLoad(context);
                         }
                         catch (Exception ex)
                         {
-                            Logger.Log($"Exception while calling {mod.ID} OnLoad: {ex}", Logger.LogLevel.Error);
+                            Logger.Log($"Exception while calling \"{mod.Name}/{mod.ID}\" OnLoad: {ex}", Logger.LogLevel.Error);
+                            Logger.Log($"Not loading.", Logger.LogLevel.Error);
                             return false;
                         }
 
@@ -179,27 +182,23 @@ namespace WorldMachineLoader.ModLoader
 
                         if (mod.Experimental)
                         {
-                            Logger.Log($"[WML WARN] \"{mod.Name}\" is marked as experimental. Be careful!", Logger.LogLevel.Warn);
+                            Logger.Log($"\"{mod.Name}/{mod.ID}\" is marked as experimental. Be careful!", Logger.LogLevel.Warn);
                         }
                         return true;
                     }
-                    else
-                    {
-                        Logger.Log($"[WML WARN] Couldn't load mod \"{mod.Name}\"", Logger.LogLevel.Warn);
-                        Logger.Log($"[WML WARN] Are you sure that this mod is supported by this version of loader?", Logger.LogLevel.Warn);
-                        return false;
-                    }
                 }
+                Logger.Log($"Couldn't load mod \"{mod.Name}/{mod.ID}\": no class implementing IMod was found in the assembly.", Logger.LogLevel.Warn);
+                return false;
             }
             catch (JsonSerializationException ex)
             {
-                Logger.Log($"[WML ERROR] Couldn't parse mod \"{modDirName}\" metadata!", Logger.LogLevel.Error);
-                Logger.Log($"[WML ERROR] Exception: {ex.Message}", Logger.LogLevel.Error);
+                Logger.Log($"Couldn't parse mod \"{modDirName}\" metadata!", Logger.LogLevel.Error);
+                Logger.Log($"Exception: {ex.Message}", Logger.LogLevel.Error);
             }
             catch (Exception ex)
             {
-                Logger.Log($"[WML ERROR] Couldn't load mod \"{modDirName}\"!", Logger.LogLevel.Error);
-                Logger.Log($"[WML ERROR] Exception: {ex}", Logger.LogLevel.Error);
+                Logger.Log($"Couldn't load mod \"{modDirName}\"!", Logger.LogLevel.Error);
+                Logger.Log($"Exception: {ex}", Logger.LogLevel.Error);
             }
 
             return false;
