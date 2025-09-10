@@ -1,41 +1,43 @@
-﻿namespace WorldMachineLoader.API.Events.Environment
+﻿using OneShotMG.src.TWM;
+
+namespace WorldMachineLoader.API.Events.Environment
 {
     /// <summary>Event that is triggered when a game window is opened.</summary>
     public class TWMWindowAddedEvent
     {
         /// <summary>An instance of a window.</summary>
-        public object WindowInstance { get; }
+        public TWMWindow WindowInstance { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TWMWindowAddedEvent"/> class.
         /// </summary>
         /// <param name="windowInstance">An instance of a window.</param>
-        public TWMWindowAddedEvent(object windowInstance) { WindowInstance = windowInstance; }
+        public TWMWindowAddedEvent(TWMWindow windowInstance) { WindowInstance = windowInstance; }
     }
 
     /// <summary>Event that is triggered when a game window is closed.</summary>
     public class TWMWindowRemovedEvent
     {
         /// <summary>An instance of a window.</summary>
-        public object WindowInstance { get; }
-
+        public TWMWindow WindowInstance { get; }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="TWMWindowRemovedEvent"/> class.
         /// </summary>
         /// <param name="windowInstance">An instance of a window.</param>
-        public TWMWindowRemovedEvent(object windowInstance) { WindowInstance = windowInstance; }
+        public TWMWindowRemovedEvent(TWMWindow windowInstance) { WindowInstance = windowInstance; }
     }
 
     /// <summary>Event that is triggered when the desktop finishes loading.</summary>
     public class TWMDesktopLoadedEvent
     {
         /// <summary>An instance of the desktop.</summary>
-        public object DesktopInstance { get; }
+        public TWMDesktopManager DesktopInstance { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TWMDesktopLoadedEvent"/> class.
         /// </summary>
         /// <param name="desktopInstance">An instance of the desktop.</param>
-        public TWMDesktopLoadedEvent(object desktopInstance) { DesktopInstance = desktopInstance; }
+        public TWMDesktopLoadedEvent(TWMDesktopManager desktopInstance) { DesktopInstance = desktopInstance; }
     }
 }
