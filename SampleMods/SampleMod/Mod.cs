@@ -42,13 +42,13 @@ namespace SampleMod
 
         private void OnWindowAdded(TWMWindowAddedEvent e)
         {
-            TWMWindow window = (TWMWindow)e.WindowInstance;
+            TWMWindow window = e.WindowInstance;
             context.Logger.Log(window.WindowTitle);
         }
 
         private void OnWindowRemoved(TWMWindowRemovedEvent e)
         {
-            TWMWindow window = (TWMWindow)e.WindowInstance;
+            TWMWindow window = e.WindowInstance;
             context.Logger.Log(window.WindowTitle);
         }
 
