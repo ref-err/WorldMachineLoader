@@ -65,6 +65,9 @@
     <Compile Include="Interfaces\IScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
+    <Compile Include="UI\Controls\Control.cs" />
+    <Compile Include="UI\Controls\Label.cs" />
+    <Compile Include="UI\ModWindow.cs" />
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\ModFileSystem.cs" />
