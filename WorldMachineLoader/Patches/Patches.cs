@@ -10,6 +10,8 @@ using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
 using WorldMachineLoader.ModLoader;
 using WorldMachineLoader.API.Utils;
+using WorldMachineLoader.API.Core;
+using WorldMachineLoader.API.Events.Lifecycle;
 
 namespace WorldMachineLoader.Patches
 {
@@ -116,9 +118,10 @@ namespace WorldMachineLoader.Patches
     [HarmonyPatch(MethodType.Constructor, new Type[] { typeof(Game) })]
     class GraphicsManagerCtorPatch
     {
-        static void Prefix(Game mGame)
+        static void Postfix(Game mGame)
         {
             Globals.monoGame = mGame;
+            EventBus.Invoke<GraphicsDeviceInit>(new GraphicsDeviceInit(mGame.GraphicsDevice));
         }
     }
 
