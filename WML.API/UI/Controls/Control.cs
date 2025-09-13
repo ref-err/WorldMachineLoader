@@ -13,7 +13,7 @@ namespace WorldMachineLoader.API.UI.Controls
             Position = position;
         }
 
-        public abstract void Draw(TWMTheme theme, Vec2 pos, byte alpha);
+        public abstract void Draw(TWMTheme theme, Vec2 screenPos, byte alpha);
 
         public abstract void Update();
     }
