@@ -6,7 +6,7 @@ namespace WorldMachineLoader.API.UI.Controls
     public abstract class Control
     {
         public Vec2 Position { get; set; }
-        public Vec2 Size { get; protected set; }
+        public Vec2 Size { get; set; }
 
         protected Control(Vec2 position)
         {
@@ -15,6 +15,6 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public abstract void Draw(TWMTheme theme, Vec2 screenPos, byte alpha);
 
-        public abstract void Update();
+        public abstract void Update(Vec2 parentPos, bool canInteract);
     }
 }

@@ -29,6 +29,6 @@ namespace WorldMachineLoader.API.UI.Controls
             }
         }
 
-        public override void Update() { }
+        public override void Update(Vec2 parentPos, bool canInteract) { }
     }
 }

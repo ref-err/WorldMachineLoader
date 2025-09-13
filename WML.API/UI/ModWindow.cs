@@ -43,7 +43,11 @@ namespace WorldMachineLoader.API.UI
         public sealed override bool Update(bool mouseInputWasConsumed)
         {
             foreach (var control in _controls)
-                control.Update();
+                if (!IsModalWindowOpen())
+                {
+                    bool canInteract = !mouseInputWasConsumed && !IsMinimized;
+                    control.Update(Pos, canInteract);
+                }
             OnUpdate();
             return base.Update(mouseInputWasConsumed);
         }

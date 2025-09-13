@@ -36,7 +36,7 @@ namespace WorldMachineLoader.API.UI.Controls
             Game1.gMan.MainBlit(_texture, (Position + screenPos) * 2,  Color, 0, GraphicsManager.BlendMode.Normal, 1, xCentered: false);
         }
 
-        public override void Update()
+        public override void Update(Vec2 pos, bool canInteract)
         {
             if (_dirty || _texture == null || !_texture.isValid)
             {
