@@ -31,13 +31,10 @@ namespace WorldMachineLoader.API.Events.Environment
     /// <summary>Event that is triggered when the desktop finishes loading.</summary>
     public class TWMDesktopLoadedEvent
     {
-        /// <summary>An instance of the desktop.</summary>
-        public TWMDesktopManager DesktopInstance { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TWMDesktopLoadedEvent"/> class.
         /// </summary>
-        /// <param name="desktopInstance">An instance of the desktop.</param>
-        public TWMDesktopLoadedEvent(TWMDesktopManager desktopInstance) { DesktopInstance = desktopInstance; }
+        public TWMDesktopLoadedEvent() { }
     }
 }

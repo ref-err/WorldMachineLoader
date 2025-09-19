@@ -37,10 +37,10 @@ namespace WorldMachineLoader.Patches
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch("LoadDesktop")]
-        static void LoadDesktopEvent(TWMDesktopManager desktop)
+        [HarmonyPatch("InitDesktop")]
+        static void LoadDesktopEvent()
         {
-            EventBus.Invoke<TWMDesktopLoadedEvent>(new TWMDesktopLoadedEvent(desktop));
+            EventBus.Invoke<TWMDesktopLoadedEvent>(new TWMDesktopLoadedEvent());
         }
     }
 
