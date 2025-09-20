@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("World Machine Loader")]
-[assembly: AssemblyDescription("Modloader for OneShot: World Machine Edition PC")]
+[assembly: AssemblyTitle("WorldMachineLoader")]
+[assembly: AssemblyDescription("Modloader for OneShot: World Machine Edition.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("referr")]
 [assembly: AssemblyProduct("WorldMachineLoader")]
@@ -28,5 +28,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyVersion("0.2.1.0")]
+[assembly: AssemblyFileVersion("0.2.1.0")]

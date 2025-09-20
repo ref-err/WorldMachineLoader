@@ -43,8 +43,8 @@ namespace WorldMachineLoader
             Console.SetError(writer);
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Title = "World Machine Loader";
-            Console.WriteLine("The World Machine Loader");
+            Console.Title = "WorldMachineLoader";
+            Console.WriteLine($"WorldMachineLoader {Constants.Version}");
 
             if (IsRunningAsAdmin() && !ModSettings.Instance.IgnoreAdminCheck)
             {

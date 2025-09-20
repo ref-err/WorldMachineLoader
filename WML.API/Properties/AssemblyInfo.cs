@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WML.API")]
-[assembly: AssemblyDescription("Modding API for WorldMachineLoader")]
+[assembly: AssemblyDescription("Modding API for WorldMachineLoader.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ref-err")]
 [assembly: AssemblyProduct("WorldMachineLoader.API")]
-[assembly: AssemblyCopyright("Copyright © 2025")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © 2025, referr. Licensed under the MIT license.")]
+[assembly: AssemblyTrademark("https://github.com/ref-err/WorldMachineLoader")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyVersion("0.2.1.0")]
+[assembly: AssemblyFileVersion("0.2.1.0")]
 
 [assembly: InternalsVisibleTo("WorldMachineLoader")]

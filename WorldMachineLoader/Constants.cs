@@ -17,5 +17,7 @@ namespace WorldMachineLoader
 
         /// <summary>The path to loader's config file</summary>
         public static string SettingsPath { get; } = Path.Combine(ModsPath, "settings.json");
+
+        public static string Version { get; } = "v0.2.1-alpha";
     }
 }
