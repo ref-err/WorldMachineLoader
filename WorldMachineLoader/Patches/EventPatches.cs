@@ -17,6 +17,13 @@ namespace WorldMachineLoader.Patches
         {
             EventBus.Invoke<Game1InitializeEvent>(new Game1InitializeEvent());
         }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("InitWindowManager")]
+        static void InitWinManEvent()
+        {
+            EventBus.Invoke<WindowManagerInitializedEvent>(new WindowManagerInitializedEvent());
+        }
     }
 
     [HarmonyPatch(typeof(WindowManager))]
