@@ -5,6 +5,14 @@ using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.API.Core
 {
+    /// <summary>
+    /// Provides a static event bus for subscribing, unsubscribing, and calling events by type.
+    /// </summary>
+    /// <remarks>
+    /// Use <see cref="Subscribe{T}"/> to register event handlers,
+    /// <see cref="Unsubscribe{T}"/> to remove them, and <see cref="Invoke{T}"/> to send out events.
+    /// All handlers of the same event type will be called when the event is invoked.
+    /// </remarks>
     public static class EventBus
     {
         private static Logger Logger = new Logger("EventBus");

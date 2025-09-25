@@ -30,8 +30,16 @@ namespace WorldMachineLoader.API.Core
         /// <summary>The mod's logger.</summary>
         public Logger Logger { get; }
 
+        /// <summary>
+        /// Task scheduler for this mod.
+        /// Allows you to run actions delayed, periodically or for a certain time.
+        /// </summary>
         public Scheduler Scheduler { get; } = new Scheduler();
 
+        /// <summary>
+        /// Mod Configuration Manager.
+        /// Provides methods to load and save configuration objects in JSON format.
+        /// </summary>
         public ConfigManager Config { get; }
 
         /// <summary>

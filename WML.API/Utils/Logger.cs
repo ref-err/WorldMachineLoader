@@ -2,17 +2,29 @@
 
 namespace WorldMachineLoader.API.Utils
 {
+    /// <summary>
+    /// Provides logging functionality with different log levels and colored console output.
+    /// </summary>
     public class Logger
     {
         private string LoggerName { get; }
-        
+
         /// <summary>
         /// Specifies the log level.
         /// </summary>
         public enum LogLevel
         {
+            /// <summary>
+            /// Informational messages.
+            /// </summary>
             Info,
+            /// <summary>
+            /// Warning messages.
+            /// </summary>
             Warn,
+            /// <summary>
+            /// Error messages.
+            /// </summary>
             Error
         }
 
