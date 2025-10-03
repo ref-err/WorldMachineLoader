@@ -41,14 +41,14 @@ namespace WorldMachineLoader.API.Utils
         /// Logs the specified message with the specified log level type.
         /// </summary>
         /// <param name="message">The message to log.</param>
-        /// <param name="level">The log level.</param>
-        public void Log(string message, LogLevel level = LogLevel.Info)
+        /// <param name="logLevel">The log level.</param>
+        public void Log(string message, LogLevel logLevel = LogLevel.Info)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string logMessage = $"{timestamp} [{level.ToString().ToUpper()}] [{LoggerName}] {message}";
+            string logMessage = $"{timestamp} [{logLevel.ToString().ToUpper()}] [{LoggerName}] {message}";
 
             ConsoleColor ogColor = Console.ForegroundColor;
-            switch (level)
+            switch (logLevel)
             {
                 case LogLevel.Info:
                     Console.ForegroundColor = ConsoleColor.White;
