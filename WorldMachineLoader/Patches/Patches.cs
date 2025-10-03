@@ -12,6 +12,9 @@ using WorldMachineLoader.ModLoader;
 using WorldMachineLoader.API.Utils;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Events.Lifecycle;
+using WorldMachineLoader.API.UI;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace WorldMachineLoader.Patches
 {
@@ -88,6 +91,8 @@ namespace WorldMachineLoader.Patches
     [HarmonyPatch(typeof(WindowManager))]
     class WindowManagerPatch
     {
+        static Logger logger = new Logger("WML/WindowManPatch");
+
         // patching RunFile to open Mod List window. idk why this window type exists,
         // because in oneshot's source this window type literally does nothing at all.
         [HarmonyPrefix]
@@ -96,7 +101,18 @@ namespace WorldMachineLoader.Patches
         {
             if (node is TWMFile file && file.program == LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS)
             {
-                __instance.AddWindow(new ModListWindow());
+                if (file.argument.Length > 0)
+                {
+                    string windowKey = file.argument[0];
+                    var window = WindowRegistry.Create(windowKey);
+
+                    if (window != null)
+                    {
+                        __instance.AddWindow(window);
+                    }
+                }
+                else
+                    __instance.AddWindow(new ModListWindow());
             }
             return true;
         }
@@ -106,9 +122,25 @@ namespace WorldMachineLoader.Patches
         [HarmonyPatch("LoadDesktop")]
         static void LoadDesktop_Postfix(TWMDesktopManager desktop, WindowManager __instance)
         {
+            __instance.FileSystem.Delete("/Windows/");
+            __instance.FileSystem.AddDir("/Windows/");
+
             TWMFile tWMFile = new TWMFile("oneshot", "Mod List", LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS);
             if (!__instance.FileSystem.FileExists("/Mod List"))
                 __instance.FileSystem.WriteFile("/", tWMFile);
+
+            foreach (var mod in ModLoader.ModLoader.mods)
+            {
+                var windows = WindowRegistry.GetByMod(mod.ID);
+                if (windows.Count > 0)
+                {
+                    foreach (var window in windows)
+                    {
+                        TWMFile modWindowFile = new TWMFile("doc", window.Value.DisplayName, LaunchableWindowType.DUMMY_FILE_FOR_TUTORIALS, new string[] { window.Key });
+                        __instance.FileSystem.WriteFile($"/Windows/", modWindowFile);
+                    }
+                }
+            }
         }
     }
 
