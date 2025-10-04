@@ -11,14 +11,12 @@ namespace WorldMachineLoader.Modding
     {
         private readonly DirectoryInfo modDir;
 
-        private readonly ModMetadata modMetadata;
+        public ModInfoData Info { get; }
 
         public IMod Instance { get; set; }
 
-        /// <summary>Loads a mod from path.</summary>
-        /// <param name="basePath">The mod's directory path.</param>
-        /// <exception cref="FileNotFoundException"/>
-        /// <exception cref="JsonSerializationException"/>
+        public ModContext ModContext { get; set; }
+
         private Mod(string basePath)
         {
             // Get the mod directory
@@ -32,11 +30,14 @@ namespace WorldMachineLoader.Modding
                 throw new FileNotFoundException($"Mod \"{modDir.Name}\" does not contain metadata file \"mod.json\".");
             }
 
-            modMetadata = JsonConvert.DeserializeObject<ModMetadata>(File.ReadAllText(modMetadataPath));
+            Info = JsonConvert.DeserializeObject<ModInfoData>(File.ReadAllText(modMetadataPath));
 
-            if (!string.IsNullOrEmpty(modMetadata.AssemblyName) && !HasAssembly)
+            if (Info == null)
+                throw new JsonSerializationException($"Mod \"{modDir.Name}\" has invalid metadata in file \"mod.json\".");
+
+            if (!string.IsNullOrEmpty(Info.AssemblyName) && !HasAssembly)
             {
-                Program.Logger.Log($"Mod \"{Name}\" has assembly name in metadata but does not have it.");
+                Program.Logger.Log($"Mod \"{Info.Name}\" has assembly name in metadata but does not have it.");
             }
         }
 
@@ -50,37 +51,15 @@ namespace WorldMachineLoader.Modding
             return new Mod(modPath);
         }
 
-        /// <summary>The mod's display name.</summary>
-        public string Name { get => modMetadata.Name; }
-
-        /// <summary>The mod's ID</summary>
-        public string ID { get => modMetadata.ID; }
-
-        /// <summary>The mod's description text.</summary>
-        public string Description { get => modMetadata.Description; }
-
-        /// <summary>The mod's author display name.</summary>
-        public string Author { get => modMetadata.Author; }
-
-        /// <summary>The mod's version string.</summary>
-        public string Version { get => modMetadata.Version; }
-
-        /// <summary>The mod's home URL address string.</summary>
-        public string URL { get => modMetadata.URL; }
-
-        /// <summary>The mod's icon</summary>
-        public string Icon { get => modMetadata.Icon; }
-
-        /// <summary>Flag to mark that the mod is in alpha, beta, etc.</summary>
-        public bool Experimental { get => modMetadata.Experimental; }
-
-        /// <summary>The mod's assembly filename to load.</summary>
-        public string AssemblyName { get => modMetadata.AssemblyName; }
-
-        /// <summary>The mod's directory path.</summary>
-        public string DirectoryPath { get => modDir.FullName; }
-
-        public ModContext ModContext { get; set; }
+        public string Name => Info?.Name;
+        public string ID => Info?.ID;
+        public string Description => Info?.Description;
+        public string Author => Info?.Author;
+        public string Version => Info?.Version;
+        public string URL => Info?.URL;
+        public string Icon => Info?.Icon;
+        public bool Experimental => Info != null && Info.Experimental;
+        public string AssemblyName => Info?.AssemblyName;
 
         /// <summary>The mod's file path to the assembly.</summary>
         public string AssemblyFilePath
@@ -131,16 +110,17 @@ namespace WorldMachineLoader.Modding
 
         public ModItem(Mod mod, string modPath, bool isEnabled)
         {
-            author = mod.Author;
-            name = mod.Name;
-            modId = mod.ID;
-            version = mod.Version;
-            url = mod.URL;
-            iconPath = string.IsNullOrEmpty(mod.Icon) ? "" : Path.Combine(modPath, mod.Icon);
+            var info = mod.Info;
+            author = info?.Author ?? "";
+            name = info?.Name;
+            modId = info?.ID;
+            version = info?.Version;
+            url = info?.URL;
+            iconPath = string.IsNullOrEmpty(info?.Icon) ? "" : Path.Combine(modPath, info?.Icon);
             this.isEnabled = isEnabled;
             title = $"{(isEnabled ? "" : "[DISABLED] ")}{author} - {name} ({version})";
-            description = mod.Description;
-            experimental = mod.Experimental;
+            description = info?.Description;
+            experimental = info != null && info.Experimental;
         }
     }
 }

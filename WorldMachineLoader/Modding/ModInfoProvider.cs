@@ -12,7 +12,7 @@ namespace WorldMachineLoader.Modding
         {
             return ModLoader.mods.Select(m =>
             {
-                return new ModInfoData(m.Name, m.ID, m.Author, m.Version);
+                return new ModInfoData(m.Name, m.ID, m.Description, m.Author, m.Version, m.URL, m.Icon, m.Experimental, m.AssemblyName);
             }).ToList();
         }
 
@@ -21,7 +21,7 @@ namespace WorldMachineLoader.Modding
             var mod = ModLoader.mods.FirstOrDefault(m => m.ID == id);
             if (mod == null) return null;
 
-            return new ModInfoData(mod.Name, mod.ID, mod.Author, mod.Version);
+            return new ModInfoData(mod.Name, mod.ID, mod.Description, mod.Author, mod.Version, mod.URL, mod.Icon, mod.Experimental, mod.AssemblyName);
         }
 
         public ModInfoData FindModByName(string name)
@@ -29,7 +29,7 @@ namespace WorldMachineLoader.Modding
             var mod = ModLoader.mods.FirstOrDefault(m => m.Name == name);
             if (mod == null) return null;
 
-            return new ModInfoData(mod.Name, mod.ID, mod.Author, mod.Version);
+            return new ModInfoData(mod.Name, mod.ID, mod.Description, mod.Author, mod.Version, mod.URL, mod.Icon, mod.Experimental, mod.AssemblyName);
         }
     }
 }
