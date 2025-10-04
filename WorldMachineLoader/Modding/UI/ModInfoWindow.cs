@@ -5,7 +5,7 @@ using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
 using System.Collections.Generic;
 using System.IO;
-using WorldMachineLoader.ModLoader;
+using WorldMachineLoader.Loader;
 using WorldMachineLoader.Utils;
 
 // i swear i'll add comments to this later

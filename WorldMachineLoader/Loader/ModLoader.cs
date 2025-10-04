@@ -11,7 +11,7 @@ using WorldMachineLoader.API.Utils;
 using WorldMachineLoader.Modding;
 using WorldMachineLoader.Utils;
 
-namespace WorldMachineLoader.ModLoader
+namespace WorldMachineLoader.Loader
 {
     /// <summary>The core mod loader class.</summary>
     internal class ModLoader

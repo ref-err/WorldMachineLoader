@@ -8,13 +8,11 @@ using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.TWM.Filesystem;
 using WorldMachineLoader.Modding;
-using WorldMachineLoader.ModLoader;
+using WorldMachineLoader.Loader;
 using WorldMachineLoader.API.Utils;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Events.Lifecycle;
 using WorldMachineLoader.API.UI;
-using System.Reflection;
-using System.Collections.Generic;
 
 namespace WorldMachineLoader.Patches
 {
@@ -38,7 +36,7 @@ namespace WorldMachineLoader.Patches
         [HarmonyPatch("ShutDown")]
         static void ShutDown_Prefix(Game1 __instance)
         {
-            foreach (var mod in ModLoader.ModLoader.mods)
+            foreach (var mod in ModLoader.mods)
             {
                 try { mod.Instance.OnShutdown(); }
                 catch (Exception ex)
@@ -53,7 +51,7 @@ namespace WorldMachineLoader.Patches
         static void UpdatePatch(GameTime gameTime)
         {
             var delta = gameTime.ElapsedGameTime;
-            foreach (var mod in ModLoader.ModLoader.mods)
+            foreach (var mod in ModLoader.mods)
             {
                 mod.ModContext.Scheduler.Update(delta);
             }
@@ -129,7 +127,7 @@ namespace WorldMachineLoader.Patches
             if (!__instance.FileSystem.FileExists("/Mod List"))
                 __instance.FileSystem.WriteFile("/", tWMFile);
 
-            foreach (var mod in ModLoader.ModLoader.mods)
+            foreach (var mod in ModLoader.mods)
             {
                 var windows = WindowRegistry.GetByMod(mod.ID);
                 if (windows.Count > 0)

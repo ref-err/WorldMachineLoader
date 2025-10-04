@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace WorldMachineLoader.ModLoader
+namespace WorldMachineLoader.Loader
 {
     /// <summary>
     /// Manages persistent settings for the mod loader.

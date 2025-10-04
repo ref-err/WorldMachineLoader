@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Security.Principal;
 using WorldMachineLoader.Utils;
-using WorldMachineLoader.ModLoader;
+using WorldMachineLoader.Loader;
 using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader
@@ -67,7 +67,7 @@ namespace WorldMachineLoader
             Directory.SetCurrentDirectory(Constants.GamePath);
 
             // Initialize the mod loader
-            ModLoader.ModLoader modLoader = new ModLoader.ModLoader(args);
+            ModLoader modLoader = new ModLoader(args);
 
             if (!modLoader.CheckGameAssembly())
                 Environment.Exit(1);
