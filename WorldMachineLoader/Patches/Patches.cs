@@ -44,6 +44,9 @@ namespace WorldMachineLoader.Patches
                     Logger.Log($"Exception while calling {mod.ID} OnShutdown: {ex}", Logger.LogLevel.Error);
                 }
             }
+
+            Game1.windowMan.FileSystem.Delete("/Windows/");
+            Game1.windowMan.FileSystem.Delete("/Mod List");
         }
 
         [HarmonyPostfix]
