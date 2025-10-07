@@ -1,18 +1,19 @@
-﻿using System;
-using System.IO;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Microsoft.Xna.Framework;
 using OneShotMG;
 using OneShotMG.src;
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.TWM.Filesystem;
-using WorldMachineLoader.Modding;
-using WorldMachineLoader.Loader;
-using WorldMachineLoader.API.Utils;
+using System;
+using System.IO;
+using System.Windows.Forms;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Events.Lifecycle;
 using WorldMachineLoader.API.UI;
+using WorldMachineLoader.API.Utils;
+using WorldMachineLoader.Loader;
+using WorldMachineLoader.Modding;
 
 namespace WorldMachineLoader.Patches
 {
@@ -177,11 +178,15 @@ namespace WorldMachineLoader.Patches
                 {
                     File.Create(Path.Combine(Constants.GamePath, "logs", "crashed"));
                     string crashFile = Path.Combine(Constants.GamePath, "logs", $"crash-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
-                    string content = "Oops! Game crashed!\n" +
+                    string content = "Oops! Loader crashed!\n" +
                                     $"Crashed at {DateTime.Now:yyyy-MM-dd HH:mm:ss}\n\n" +
                                     $"Error: {_lastErrorMessage}\n" +
                                     $"StackTrace:\n{message}";
                     File.WriteAllText(crashFile, content);
+                    Program.Logger.Log($"WorldMachineLoader has crashed! A crash log has been saved to {crashFile}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                    MessageBox.Show($"WorldMachineLoader has crashed!\nA crash log has been saved to {crashFile}.\n" +
+                                    $"Please include this file when reporting the issue.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch { }
                 finally

@@ -65,7 +65,7 @@ namespace WorldMachineLoader.API.Core
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log($"Error when calling handler: {ex}", Logger.LogLevel.Error);
+                        Logger.Log($"Error when calling handler: {ex}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     }
                 }
             }

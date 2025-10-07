@@ -28,6 +28,14 @@ namespace WorldMachineLoader.API.Utils
             Error
         }
 
+        public enum VerbosityLevel
+        {
+            Minimal,
+            Standard,
+            Detailed,
+            Diagnostic
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Logger"/> class.
         /// </summary>
@@ -42,10 +50,12 @@ namespace WorldMachineLoader.API.Utils
         /// </summary>
         /// <param name="message">The message to log.</param>
         /// <param name="logLevel">The log level.</param>
-        public void Log(string message, LogLevel logLevel = LogLevel.Info)
+        public void Log(string message, LogLevel logLevel, VerbosityLevel verbosityLevel)
         {
+            if (verbosityLevel > LoggerManager.CurrentLevel) return;
+
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string logMessage = $"{timestamp} [{logLevel.ToString().ToUpper()}] [{LoggerName}] {message}";
+            string logMessage = $"{timestamp} [{logLevel.ToString().ToUpper()}/{verbosityLevel.ToString().ToUpper()}] [{LoggerName}] {message}";
 
             ConsoleColor ogColor = Console.ForegroundColor;
             switch (logLevel)
@@ -67,5 +77,12 @@ namespace WorldMachineLoader.API.Utils
             Console.WriteLine(logMessage);
             Console.ForegroundColor = ogColor;
         }
+
+        public void Log(string message, LogLevel logLevel = LogLevel.Info) => Log(message, logLevel, VerbosityLevel.Standard);
+    }
+
+    public class LoggerManager
+    {
+        public static Logger.VerbosityLevel CurrentLevel { get; internal set; } = Logger.VerbosityLevel.Standard;
     }
 }

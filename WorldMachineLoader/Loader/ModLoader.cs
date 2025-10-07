@@ -55,23 +55,23 @@ namespace WorldMachineLoader.Loader
             }
             catch (BadImageFormatException ex)
             {
-                Logger.Log($"Could not load \"{ex.FileName}.exe\"!", Logger.LogLevel.Error);
-                Logger.Log($"Bad Image Format Exception: {ex.Message}", Logger.LogLevel.Error);
+                Logger.Log($"Could not load \"{ex.FileName}.exe\"!", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Logger.Log($"Bad Image Format Exception: {ex.Message}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
 
                 if (!Environment.Is64BitProcess)
-                    Logger.Log("It seems we are running in 32-bit mode. Consider to use 64-bit instead.", Logger.LogLevel.Error);
+                    Logger.Log("It seems we are running in 32-bit mode. Consider to use 64-bit instead.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
             }
             catch (Exception ex)
             {
                 if (!File.Exists(Path.Combine(Constants.GamePath, $"{Constants.GameAssemblyName}.exe")))
                 {
                     var msg = "Could not find the game executable file. Please check if it's running inside game folder.";
-                    Logger.Log(msg, Logger.LogLevel.Error);
+                    Logger.Log(msg, Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
-                    Logger.Log($"Exception while trying to get game assembly:\n{ex}", Logger.LogLevel.Error);
+                    Logger.Log($"Exception while trying to get game assembly:\n{ex}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                 }
             }
 
@@ -83,7 +83,7 @@ namespace WorldMachineLoader.Loader
         {
             if (Globals.isSafeModEnabled)
             {
-                Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn);
+                Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                 return;
             }
             // Create the mods directory
@@ -135,13 +135,13 @@ namespace WorldMachineLoader.Loader
                 }
                 var assembly = Assembly.LoadFrom(mod.AssemblyFilePath);
 
-                Logger.Log($"[{mod.ID}] Loading assembly: {mod.AssemblyFilePath}");
-                Logger.Log($"[{mod.ID}] Assembly.FullName: {assembly.FullName}");
+                Logger.Log($"[{mod.ID}] Loading assembly: {mod.AssemblyFilePath}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
+                Logger.Log($"[{mod.ID}] Assembly.FullName: {assembly.FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
 
                 if (!loadedAssemblies.Add(assembly.FullName))
                 {
-                    Logger.Log($"Mod \"{mod.Name}/{mod.ID}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error);
-                    Logger.Log("If you are a developer, please avoid using same Assembly.FullName's. If you aren't, report this error to mod's developer.", Logger.LogLevel.Error);
+                    Logger.Log($"Mod \"{mod.Name}/{mod.ID}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                    Logger.Log("If you are a developer, please avoid using same Assembly.FullName's. If you aren't, report this error to mod's developer.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     return false;
                 }
 
@@ -170,8 +170,8 @@ namespace WorldMachineLoader.Loader
                         }
                         catch (Exception ex)
                         {
-                            Logger.Log($"Exception while calling \"{mod.Name}/{mod.ID}\" OnLoad: {ex}", Logger.LogLevel.Error);
-                            Logger.Log($"Not loading.", Logger.LogLevel.Error);
+                            Logger.Log($"Exception while calling \"{mod.Name}/{mod.ID}\" OnLoad: {ex}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                            Logger.Log($"Not loading.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                             return false;
                         }
 
@@ -187,18 +187,18 @@ namespace WorldMachineLoader.Loader
                         return true;
                     }
                 }
-                Logger.Log($"Couldn't load mod \"{mod.Name}/{mod.ID}\": no class implementing IMod was found in the assembly.", Logger.LogLevel.Warn);
+                Logger.Log($"Couldn't load mod \"{mod.Name}/{mod.ID}\": no class implementing IMod was found in the assembly.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                 return false;
             }
             catch (JsonSerializationException ex)
             {
-                Logger.Log($"Couldn't parse mod \"{modDirName}\" metadata!", Logger.LogLevel.Error);
-                Logger.Log($"Exception: {ex.Message}", Logger.LogLevel.Error);
+                Logger.Log($"Couldn't parse mod \"{modDirName}\" metadata!", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Logger.Log($"Exception: {ex.Message}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
             }
             catch (Exception ex)
             {
-                Logger.Log($"Couldn't load mod \"{modDirName}\"!", Logger.LogLevel.Error);
-                Logger.Log($"Exception: {ex}", Logger.LogLevel.Error);
+                Logger.Log($"Couldn't load mod \"{modDirName}\"!", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Logger.Log($"Exception: {ex}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
             }
 
             return false;
@@ -221,7 +221,7 @@ namespace WorldMachineLoader.Loader
             }
 
             // Invoke OneShotMG entry point to run the game
-            Logger.Log("Starting OneShotMG...");
+            Logger.Log("Starting OneShotMG...", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
             MethodBase gameEntrypoint = gameAssembly.ManifestModule.ResolveMethod(gameAssembly.EntryPoint.MetadataToken);
             gameEntrypoint.Invoke(null, null);
         }

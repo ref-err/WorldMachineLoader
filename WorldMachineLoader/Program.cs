@@ -46,21 +46,23 @@ namespace WorldMachineLoader
             Console.Title = "WorldMachineLoader";
             Console.WriteLine($"WorldMachineLoader {Constants.Version}");
 
+            LoggerManager.CurrentLevel = ModSettings.Instance.VerbosityLevel;
+
             if (IsRunningAsAdmin() && !ModSettings.Instance.IgnoreAdminCheck)
             {
-                Logger.Log("WorldMachineLoader cannot be run with administrator privileges.", Logger.LogLevel.Error);
-                Logger.Log("Please restart the program without administrator privileges.", Logger.LogLevel.Error);
-                Logger.Log("If this is intended, set \"ignore_admin_check\" to true in mods\\settings.json.", Logger.LogLevel.Error);
-                MessageBox.Show("WorldMachineLoader cannot be run with administrator privileges." +
-                                "Please restart the program without administrator privileges." +
+                Logger.Log("WorldMachineLoader cannot be run with administrator privileges.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Logger.Log("Please restart the program without administrator privileges.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Logger.Log("If this is intended, set \"ignore_admin_check\" to true in mods\\settings.json.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                MessageBox.Show("WorldMachineLoader cannot be run with administrator privileges.\n" +
+                                "Please restart the program without administrator privileges.\n" +
                                 "If this is intended, set \"ignore_admin_check\" to true in mods\\settings.json.",
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             else if (IsRunningAsAdmin() && ModSettings.Instance.IgnoreAdminCheck)
             {
-                Logger.Log("WorldMachineLoader is running with administrator privileges, and \"ignore_admin_check\" is enabled in config.", Logger.LogLevel.Warn);
-                Logger.Log("Proceeding as requested. Be careful!", Logger.LogLevel.Warn);
+                Logger.Log("WorldMachineLoader is running with administrator privileges, and \"ignore_admin_check\" is enabled in config.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
+                Logger.Log("Proceeding as requested. Be careful!", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
             }
 
             // Set Current Working Directory to game's folder (where's this assembly located at)
@@ -91,6 +93,10 @@ namespace WorldMachineLoader
                                 $"Error: {ex.Message}\n" +
                                 $"StackTrace:\n{ex.StackTrace}";
                 File.WriteAllText(crashFile, content);
+                Logger.Log($"WorldMachineLoader has crashed! A crash log has been saved to {crashFile}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                MessageBox.Show($"WorldMachineLoader has crashed!\nA crash log has been saved to {crashFile}.\n" +
+                                $"Please include this file when reporting the issue.",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch { }
         }

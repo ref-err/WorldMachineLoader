@@ -15,7 +15,6 @@ namespace WorldMachineLoader.API.UI
 
         public static void Register<T>(ModContext modContext, string windowName) where T : ModWindow
         {
-            logger.Log("Register has been called.");
             if (modContext == null)
                 throw new ArgumentNullException(nameof(modContext));
             
@@ -28,7 +27,7 @@ namespace WorldMachineLoader.API.UI
             }
 
             _windows[key] = new WindowInfo(typeof(T), windowName);
-            logger.Log($"Registered window \"{key}\".");
+            logger.Log($"Registered window \"{key}\" for mod ID \"{modContext.ModID}\".", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
         }
 
         public static WindowInfo Get(string key)
@@ -51,7 +50,7 @@ namespace WorldMachineLoader.API.UI
         {
             if (_windows.TryGetValue(key, out var info))
             {
-                logger.Log($"Trying to create window of type {info.WindowType.GetType().FullName}");
+                logger.Log($"Trying to create window of type {info.WindowType.GetType().FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
                 return Activator.CreateInstance(info.WindowType) as ModWindow;
             }
             return null;

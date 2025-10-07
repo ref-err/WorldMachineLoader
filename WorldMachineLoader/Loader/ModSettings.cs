@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.Loader
 {
@@ -18,9 +19,12 @@ namespace WorldMachineLoader.Loader
         [JsonProperty(PropertyName = "skip_intro", Required = Required.DisallowNull)]
         public bool SkipIntro { get; set; } = false;
 
-        /// <summary>Gets or sets value indication whether loader should ignore if program has run as administrator.</summary>
+        /// <summary>Gets or sets value indicating whether loader should ignore if program has run as administrator.</summary>
         [JsonProperty(PropertyName = "ignore_admin_check", Required = Required.DisallowNull)]
         public bool IgnoreAdminCheck { get; set; } = false;
+
+        [JsonProperty(PropertyName = "verbosity", Required = Required.DisallowNull)]
+        public Logger.VerbosityLevel VerbosityLevel { get; set; } = Logger.VerbosityLevel.Standard;
 
         private static ModSettings _instance;
 
