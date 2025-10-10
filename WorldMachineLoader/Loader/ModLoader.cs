@@ -28,6 +28,8 @@ namespace WorldMachineLoader.Loader
 
         private HashSet<string> loadedAssemblies = new HashSet<string>();
 
+        private HashSet<string> loadedModIDs = new HashSet<string>();
+
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
         public ModLoader(string[] args)
@@ -150,6 +152,12 @@ namespace WorldMachineLoader.Loader
                 {
                     if (typeof(IMod).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     {
+                        if (loadedModIDs.Contains(mod.ID))
+                        {
+                            Logger.Log($"Duplicate mod ID \"{mod.ID}\" detected for mod \"{mod.Name}\". Skipping load.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
+                            return false;
+                        }
+
                         Logger.Log($"Loading mod \"{mod.Name}/{mod.ID}\"...");
 
                         var dataDir = Path.Combine(modPath, "data");
@@ -179,6 +187,7 @@ namespace WorldMachineLoader.Loader
                         Globals.mods.Add(new ModItem(mod, modPath, true));
                         mod.Instance = modInstance;
                         mod.ModContext = context;
+                        loadedModIDs.Add(mod.ID);
 
                         if (mod.Experimental)
                         {
