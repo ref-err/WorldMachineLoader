@@ -13,6 +13,8 @@ namespace WorldMachineLoader.API.UI
     {
         private readonly List<Control> _controls = new List<Control>();
 
+        private readonly List<Control> _controlsToRemove = new List<Control>();
+
         /// <summary>
         /// Initializes a new mod window with the specified parameters.
         /// </summary>
@@ -80,6 +82,12 @@ namespace WorldMachineLoader.API.UI
                     bool canInteract = !mouseInputWasConsumed && !IsMinimized;
                     control.Update(Pos, canInteract);
                 }
+            if (_controlsToRemove.Count > 0)
+            {
+                foreach (var control in _controlsToRemove)
+                    _controls.Remove(control);
+                _controlsToRemove.Clear();
+            }
             OnUpdate();
             return base.Update(mouseInputWasConsumed);
         }
@@ -101,6 +109,20 @@ namespace WorldMachineLoader.API.UI
         protected void AddControl(Control control)
         {
             _controls.Add(control);
+        }
+
+        /// <summary>
+        /// Removes a control from the window.
+        /// </summary>
+        /// <param name="control">Control to remove.</param>
+        protected void RemoveControl(Control control)
+        {
+            if (control == null) return;
+
+            if (_controls.Contains(control))
+            {
+                _controlsToRemove.Add(control);
+            }
         }
     }
 }

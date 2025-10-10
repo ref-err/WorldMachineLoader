@@ -69,6 +69,7 @@
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\Image.cs" />
     <Compile Include="UI\Controls\Label.cs" />
+    <Compile Include="UI\Controls\TempImage.cs" />
     <Compile Include="UI\ModWindow.cs" />
     <Compile Include="UI\WindowRegistry.cs" />
     <Compile Include="Utils\ConfigManager.cs" />
