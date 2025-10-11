@@ -68,6 +68,7 @@
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\Image.cs" />
+    <Compile Include="UI\Controls\InputBox.cs" />
     <Compile Include="UI\Controls\Label.cs" />
     <Compile Include="UI\Controls\TempImage.cs" />
     <Compile Include="UI\ModWindow.cs" />
