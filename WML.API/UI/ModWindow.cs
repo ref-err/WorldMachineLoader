@@ -1,8 +1,10 @@
 ﻿using OneShotMG;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
+using System;
 using System.Collections.Generic;
 using WorldMachineLoader.API.UI.Controls;
+using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.API.UI
 {
@@ -14,6 +16,8 @@ namespace WorldMachineLoader.API.UI
         private readonly List<Control> _controls = new List<Control>();
 
         private readonly List<Control> _controlsToRemove = new List<Control>();
+
+        private Logger logger = new Logger("API/ModWindow");
 
         /// <summary>
         /// Initializes a new mod window with the specified parameters.
@@ -64,9 +68,17 @@ namespace WorldMachineLoader.API.UI
             Rect boxRect = new Rect(screenPos.X, screenPos.Y, ContentsSize.X, ContentsSize.Y);
             Game1.gMan.ColorBoxBlit(boxRect, bgColor);
 
-            foreach (var control in _controls)
-                control.Draw(theme, screenPos, alpha);
-            OnDraw(theme, screenPos, alpha);
+            try
+            {
+                foreach (var control in _controls)
+                    control.Draw(theme, screenPos, alpha);
+                OnDraw(theme, screenPos, alpha);
+            }
+            catch (Exception ex)
+            {
+                logger.Log($"Exception while drawing window {WindowTitle}: {ex.Message}\nStacktrace:\n{ex.StackTrace}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Game1.windowMan.RemoveWindow(this);
+            }
         }
 
         /// <summary>
@@ -76,19 +88,28 @@ namespace WorldMachineLoader.API.UI
         /// <returns>True if the window updated successfully; otherwise, false.</returns>
         public sealed override bool Update(bool mouseInputWasConsumed)
         {
-            foreach (var control in _controls)
-                if (!IsModalWindowOpen())
-                {
-                    bool canInteract = !mouseInputWasConsumed && !IsMinimized;
-                    control.Update(Pos, canInteract);
-                }
-            if (_controlsToRemove.Count > 0)
+            try
             {
-                foreach (var control in _controlsToRemove)
-                    _controls.Remove(control);
-                _controlsToRemove.Clear();
+                foreach (var control in _controls)
+                    if (!IsModalWindowOpen())
+                    {
+                        bool canInteract = !mouseInputWasConsumed && !IsMinimized;
+                        control.Update(Pos, canInteract);
+                    }
+                if (_controlsToRemove.Count > 0)
+                {
+                    foreach (var control in _controlsToRemove)
+                        _controls.Remove(control);
+                    _controlsToRemove.Clear();
+                }
+                OnUpdate();
             }
-            OnUpdate();
+            catch (Exception ex)
+            {
+                logger.Log($"Exception while updating window {WindowTitle}: {ex.Message}\nStacktrace:\n{ex.StackTrace}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Game1.windowMan.ShowModalWindow(ModalWindow.ModalType.Error, $"An error occured while updating window \"{WindowTitle}\". Window will be closed. See console for more info.");
+                Game1.windowMan.RemoveWindow(this);
+            }
             return base.Update(mouseInputWasConsumed);
         }
 

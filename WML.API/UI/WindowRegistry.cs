@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneShotMG;
+using System;
 using System.Collections.Generic;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Utils;
@@ -48,10 +49,18 @@ namespace WorldMachineLoader.API.UI
 
         public static ModWindow Create(string key)
         {
-            if (_windows.TryGetValue(key, out var info))
+            try
             {
-                logger.Log($"Trying to create window of type {info.WindowType.GetType().FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
-                return Activator.CreateInstance(info.WindowType) as ModWindow;
+                if (_windows.TryGetValue(key, out var info))
+                {
+                    logger.Log($"Trying to create window of type {info.WindowType.GetType().FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
+                    return Activator.CreateInstance(info.WindowType) as ModWindow;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log($"Exception while trying to create a new window instance: {ex.Message}.\nStacktrace:\n{ex.StackTrace}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Game1.windowMan.ShowModalWindow(OneShotMG.src.TWM.ModalWindow.ModalType.Error, "An error occured while trying to create a new window instance. See console for more info.");
             }
             return null;
         }
