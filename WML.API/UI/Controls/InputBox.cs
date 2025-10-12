@@ -4,6 +4,8 @@ using OneShotMG.src.Util;
 using OneShotMG.src.EngineSpecificCode;
 using Microsoft.Xna.Framework.Input;
 using System.Text;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -25,16 +27,18 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public int Limit { get; set; } = 30;
 
-        public bool IsFocused { get; set; } = true;
+        public bool IsFocused { get; set; } = false;
 
         private KeyboardState prevState;
         private StringBuilder _text = new StringBuilder();
+        private Rect bounds;
 
         public InputBox(Vec2 position, string placeholder = "Enter text...", int width = 100, int limit = 30) : base(position)
         {
             Placeholder = placeholder;
             Width = width;
             Limit = limit;
+            bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
         }
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
@@ -51,7 +55,9 @@ namespace WorldMachineLoader.API.UI.Controls
             GameColor placeholderColor = fgColor;
             placeholderColor.a = 127;
 
-            if (string.IsNullOrEmpty(Text))
+            if (string.IsNullOrEmpty(Text) && IsFocused)
+                Game1.gMan.TextBlit(GraphicsManager.FontType.OS, new Vec2(Position.X + screenPos.X + 4, Position.Y + screenPos.Y), "_", fgColor);
+            else if (string.IsNullOrEmpty(Text))
                 Game1.gMan.TextBlit(GraphicsManager.FontType.OS, new Vec2(Position.X + screenPos.X + 4, Position.Y + screenPos.Y), Placeholder, placeholderColor);
             else
             {
@@ -66,7 +72,15 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public override void Update(Vec2 parentPos, bool canInteract)
         {
-            IsFocused = canInteract;
+            if (canInteract)
+            {
+                Vec2 v = Game1.mouseCursorMan.MousePos - parentPos;
+                bool hovering = bounds.IsVec2InRect(v);
+                if (hovering && Game1.mouseCursorMan.MouseClicked)
+                {
+                    IsFocused = true;
+                }
+            }
             UpdateInput();
         }
 
@@ -94,13 +108,13 @@ namespace WorldMachineLoader.API.UI.Controls
                     {
                         _text.Append(' ');
                     }
-                    else if (key == Keys.Enter || key == Keys.Escape || key == Keys.Tab)
+                    else if (key == Keys.Enter || key == Keys.Escape)
                     {
-                        
+                        IsFocused = false;
                     }
                     else
                     {
-                        char? c = KeyToChar(key, keyState.IsKeyDown(Keys.LeftShift) || keyState.IsKeyDown(Keys.RightShift));
+                        char? c = KeyToChar(key, keyState.IsKeyDown(Keys.LeftShift) || keyState.IsKeyDown(Keys.RightShift), keyState.CapsLock);
                         if (c.HasValue && _text.Length < Limit)
                             _text.Append(c.Value);
                     }
@@ -110,12 +124,15 @@ namespace WorldMachineLoader.API.UI.Controls
             prevState = keyState;
         }
 
-        private char? KeyToChar(Keys key, bool shift)
+        private char? KeyToChar(Keys key, bool shift, bool capsLock)
         {
             if (key >= Keys.A && key <= Keys.Z)
             {
                 char c = (char)('a' + (key - Keys.A));
-                return shift ? char.ToUpper(c) : c;
+                if (capsLock)
+                    return shift ? c : char.ToUpper(c);
+                else
+                    return shift ? char.ToUpper(c) : c;
             }
             else if (key >= Keys.D0 && key <= Keys.D9)
             {
