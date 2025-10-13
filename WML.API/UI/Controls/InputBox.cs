@@ -4,8 +4,6 @@ using OneShotMG.src.Util;
 using OneShotMG.src.EngineSpecificCode;
 using Microsoft.Xna.Framework.Input;
 using System.Text;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -21,7 +19,7 @@ namespace WorldMachineLoader.API.UI.Controls
             }
         }
 
-        public string Placeholder { get; set; }
+        public string Placeholder { get; set; } = "Enter text...";
 
         public int Width { get; set; } = 100;
 
@@ -33,12 +31,24 @@ namespace WorldMachineLoader.API.UI.Controls
         private StringBuilder _text = new StringBuilder();
         private Rect bounds;
 
-        public InputBox(Vec2 position, string placeholder = "Enter text...", int width = 100, int limit = 30) : base(position)
+        public InputBox(Vec2 position) : base(position)
+        {
+            bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
+        }
+
+        public InputBox(Vec2 position, int limit) : this(position)
+        {
+            Limit = limit;
+        }
+
+        public InputBox(Vec2 position, int limit, int width) : this(position, limit)
+        {
+            Width = width;
+        }
+
+        public InputBox(Vec2 position, int limit, int width, string placeholder) : this(position, limit, width)
         {
             Placeholder = placeholder;
-            Width = width;
-            Limit = limit;
-            bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
         }
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
@@ -76,10 +86,13 @@ namespace WorldMachineLoader.API.UI.Controls
             {
                 Vec2 v = Game1.mouseCursorMan.MousePos - parentPos;
                 bool hovering = bounds.IsVec2InRect(v);
+                if (hovering && IsFocused)
+                    Game1.mouseCursorMan.SetState(OneShotMG.src.MouseCursorManager.State.Normal);
+                else if (hovering)
+                    Game1.mouseCursorMan.SetState(OneShotMG.src.MouseCursorManager.State.Clickable);
+
                 if (hovering && Game1.mouseCursorMan.MouseClicked)
-                {
                     IsFocused = true;
-                }
             }
             UpdateInput();
         }
