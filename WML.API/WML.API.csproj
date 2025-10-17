@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="UI\Controls\Button.cs" />
+    <Compile Include="UI\Controls\CheckBox.cs" />
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\Image.cs" />
     <Compile Include="UI\Controls\InputBox.cs" />

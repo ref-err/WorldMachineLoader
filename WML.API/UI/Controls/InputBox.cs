@@ -57,7 +57,7 @@ namespace WorldMachineLoader.API.UI.Controls
             GameColor fgColor = theme.Primary();
 
             Rect outerRect = new Rect(Position.X + screenPos.X, Position.Y + screenPos.Y, Width + 2, 18);
-            Rect innerRect = new Rect(Position.X + screenPos.X + 2, Position.Y + screenPos.Y + 2, Width - 2, 14);
+            Rect innerRect = new Rect(Position.X + screenPos.X + 1, Position.Y + screenPos.Y + 1, Width, 16);
 
             Game1.gMan.ColorBoxBlit(outerRect, fgColor);
             Game1.gMan.ColorBoxBlit(innerRect, bgColor);
