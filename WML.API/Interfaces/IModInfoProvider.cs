@@ -6,7 +6,7 @@ namespace WorldMachineLoader.API.Interfaces
     public interface IModInfoProvider
     {
         IReadOnlyList<ModInfoData> GetLoadedMods();
-        ModInfoData FindModByName(string name);
         ModInfoData FindModByID(string id);
+        List<ModInfoData> FindModsByName(string name);
     }
 }

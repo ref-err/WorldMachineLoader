@@ -24,12 +24,21 @@ namespace WorldMachineLoader.Modding
             return new ModInfoData(mod.Name, mod.ID, mod.Description, mod.Author, mod.Version, mod.URL, mod.Icon, mod.Experimental, mod.AssemblyName);
         }
 
-        public ModInfoData FindModByName(string name)
+        public List<ModInfoData> FindModsByName(string name)
         {
-            var mod = ModLoader.mods.FirstOrDefault(m => m.Name == name);
-            if (mod == null) return null;
+            var mods = ModLoader.mods.Where(m => m.Name == name).ToList();
+            if (mods.Any()) return null;
 
-            return new ModInfoData(mod.Name, mod.ID, mod.Description, mod.Author, mod.Version, mod.URL, mod.Icon, mod.Experimental, mod.AssemblyName);
+            return mods.Select(mod => new ModInfoData(
+                mod.Name,
+                mod.ID,
+                mod.Description, 
+                mod.Author,
+                mod.Version,
+                mod.URL,
+                mod.Icon,
+                mod.Experimental,
+                mod.AssemblyName)).ToList();
         }
     }
 }
