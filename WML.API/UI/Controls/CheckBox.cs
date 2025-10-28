@@ -9,7 +9,7 @@ namespace WorldMachineLoader.API.UI.Controls
     {
         public bool IsChecked { get; set; } = false;
 
-        private string Text { get; set; }
+        public string Text { get; set; }
 
         private Rect bounds;
 

@@ -31,19 +31,15 @@ namespace WorldMachineLoader.API.UI.Controls
         private StringBuilder _text = new StringBuilder();
         private Rect bounds;
 
-        public InputBox(Vec2 position) : base(position)
+        public InputBox(Vec2 position, int width) : base(position)
         {
+            Width = width;
             bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
         }
 
-        public InputBox(Vec2 position, int limit) : this(position)
+        public InputBox(Vec2 position, int width, int limit) : this(position, width)
         {
             Limit = limit;
-        }
-
-        public InputBox(Vec2 position, int limit, int width) : this(position, limit)
-        {
-            Width = width;
         }
 
         public InputBox(Vec2 position, int limit, int width, string placeholder) : this(position, limit, width)
