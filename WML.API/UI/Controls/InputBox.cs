@@ -7,8 +7,14 @@ using System.Text;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
+    /// <summary>
+    /// Single-line text input control.
+    /// </summary>
     public class InputBox : Control
     {
+        /// <summary>
+        /// The current text value of the input box.
+        /// </summary>
         public string Text
         {
             get => _text.ToString();
@@ -19,29 +25,59 @@ namespace WorldMachineLoader.API.UI.Controls
             }
         }
 
+        /// <summary>
+        /// Placeholder text shown when the value is empty and not focused.
+        /// </summary>
         public string Placeholder { get; set; } = "Enter text...";
 
+        /// <summary>
+        /// Width in pixels of the input box.
+        /// </summary>
         public int Width { get; set; } = 100;
 
+        /// <summary>
+        /// Maximum number of characters allowed in the input.
+        /// </summary>
         public int Limit { get; set; } = 30;
 
+        /// <summary>
+        /// Whether the input box currently has keyboard focus.
+        /// </summary>
         public bool IsFocused { get; set; } = false;
 
         private KeyboardState prevState;
         private StringBuilder _text = new StringBuilder();
         private Rect bounds;
 
+        /// <summary>
+        /// Create an InputBox at position with the specified width.
+        /// </summary>
+        /// <param name="position">Position of the control in the window.</param>
+        /// <param name="width">Width in pixels for the input box.</param>
         public InputBox(Vec2 position, int width) : base(position)
         {
             Width = width;
             bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
         }
 
+        /// <summary>
+        /// Create an InputBox at position with the specified width and character limit.
+        /// </summary>
+        /// <param name="position">Position of the control in the window.</param>
+        /// <param name="width">Width in pixels for the input box.</param>
+        /// <param name="limit">Maximum characters allowed.</param>
         public InputBox(Vec2 position, int width, int limit) : this(position, width)
         {
             Limit = limit;
         }
 
+        /// <summary>
+        /// Create an InputBox at position with the specified width, character limit and placeholder text.
+        /// </summary>
+        /// <param name="position">Position of the control in the window.</param>
+        /// <param name="width">Width in pixels for the input box.</param>
+        /// <param name="limit">Maximum characters allowed.</param>
+        /// <param name="placeholder">Placeholder string to show when empty.</param>
         public InputBox(Vec2 position, int limit, int width, string placeholder) : this(position, limit, width)
         {
             Placeholder = placeholder;

@@ -6,14 +6,29 @@ using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.API.UI
 {
+    /// <summary>
+    /// Registry for mod-provided windows.
+    /// Maintains a mapping of registered windows keyed by "modId/WindowTypeName".
+    /// Provides registration, lookup, and factory creation for ModWindow types.
+    /// </summary>
     public static class WindowRegistry
     {
         private static readonly Logger logger = new Logger("API/WindowRegistry");
 
         private static readonly Dictionary<string, WindowInfo> _windows = new Dictionary<string, WindowInfo>();
 
+        /// <summary>
+        /// Read-only view of all registered windows.
+        /// </summary>
         public static IReadOnlyDictionary<string, WindowInfo> All => _windows;
 
+        /// <summary>
+        /// Register a window type for a mod.
+        /// Throws ArgumentNullException if <paramref name="modContext"/> is null.
+        /// </summary>
+        /// <typeparam name="T">Type of the window to register. Must derive from ModWindow.</typeparam>
+        /// <param name="modContext">Context of the registering mod (used to build the key).</param>
+        /// <param name="windowName">Display name for the window.</param>
         public static void Register<T>(ModContext modContext, string windowName) where T : ModWindow
         {
             if (modContext == null)
@@ -31,11 +46,21 @@ namespace WorldMachineLoader.API.UI
             logger.Log($"Registered window \"{key}\" for mod ID \"{modContext.ModID}\".", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
         }
 
+        /// <summary>
+        /// Get WindowInfo by its registry key. Returns null if not found.
+        /// </summary>
+        /// <param name="key">Registry key in the form "modId/WindowTypeName".</param>
+        /// <returns>Info instance or null if not registered.</returns>
         public static WindowInfo Get(string key)
         {
             return _windows.TryGetValue(key, out var window) ? window : null;
         }
 
+        /// <summary>
+        /// Returns a dictionary of all registered windows that belong to the given mod ID.
+        /// </summary>
+        /// <param name="modId">Mod ID to filter by.</param>
+        /// <returns>Dictionary of key => WindowInfo for the given mod id.</returns>
         public static IReadOnlyDictionary<string, WindowInfo> GetByMod(string modId)
         {
             var result = new Dictionary<string, WindowInfo>();
@@ -47,6 +72,12 @@ namespace WorldMachineLoader.API.UI
             return result;
         }
 
+        /// <summary>
+        /// Attempts to create a new instance of the registered ModWindow type for the given key.
+        /// On exception, logs an error and shows an error message in game.
+        /// </summary>
+        /// <param name="key">Registry key in the form "modId/WindowTypeName".</param>
+        /// <returns>New ModWindow instance or null if creation failed or key not found.</returns>
         public static ModWindow Create(string key)
         {
             try
@@ -66,12 +97,26 @@ namespace WorldMachineLoader.API.UI
         }
     }
 
+    /// <summary>
+    /// Class that holds information about a registered window type.
+    /// </summary>
     public class WindowInfo
     {
+        /// <summary>
+        /// The window Type (derived from ModWindow).
+        /// </summary>
         public Type WindowType { get; }
 
+        /// <summary>
+        /// Display name for the window.
+        /// </summary>
         public string DisplayName { get; }
 
+        /// <summary>
+        /// Construct a WindowInfo describing a window Type and its display name.
+        /// </summary>
+        /// <param name="type">The Type of the window.</param>
+        /// <param name="displayName">Display name for this window.</param>
         public WindowInfo(Type type, string displayName)
         {
             DisplayName = displayName;

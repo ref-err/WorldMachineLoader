@@ -5,14 +5,28 @@ using OneShotMG.src.EngineSpecificCode;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
+    /// <summary>
+    /// A simple checkbox control with a label.
+    /// </summary>
     public class CheckBox : Control
     {
+        /// <summary>
+        /// Gets or sets whether the checkbox is currently checked.
+        /// </summary>
         public bool IsChecked { get; set; } = false;
 
+        /// <summary>
+        /// The label text displayed next to the checkbox.
+        /// </summary>
         public string Text { get; set; }
 
         private Rect bounds;
 
+        /// <summary>
+        /// Creates a new CheckBox with specified label text and position.
+        /// </summary>
+        /// <param name="text">Label to display next to the checkbox.</param>
+        /// <param name="position">Position of the control in the window.</param>
         public CheckBox(string text, Vec2 position) : base(position)
         {
             Text = text;
