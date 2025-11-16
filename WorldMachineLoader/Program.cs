@@ -5,6 +5,7 @@ using System.Security.Principal;
 using WorldMachineLoader.Utils;
 using WorldMachineLoader.Loader;
 using WorldMachineLoader.API.Utils;
+using System.Net;
 
 namespace WorldMachineLoader
 {
@@ -47,6 +48,26 @@ namespace WorldMachineLoader
             Console.WriteLine($"WorldMachineLoader {Constants.Version}");
 
             LoggerManager.CurrentLevel = ModSettings.Instance.VerbosityLevel;
+
+            if (!ModSettings.Instance.DisableUpdateCheck)
+            {
+                Logger.Log("Checking for updates... (You can disable this in \"settings.json\")", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
+                if (CheckForUpdate(out string remote, out string updateErr))
+                {
+                    Logger.Log($"Update available ({remote})! You can download the latest update at GitHub Releases page.", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
+                }
+                else
+                {
+                    if (remote != null)
+                        Logger.Log("You have the latest version.", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
+                    else
+                        Logger.Log($"Error checking for updates:\n{updateErr}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                }
+            }
+            else
+            {
+                Logger.Log("Update check disabled.", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
+            }
 
             if (IsRunningAsAdmin() && !ModSettings.Instance.IgnoreAdminCheck)
             {
@@ -107,6 +128,50 @@ namespace WorldMachineLoader
             {
                 WindowsPrincipal principal = new WindowsPrincipal(id);
                 return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+        }
+
+        static bool CheckForUpdate(out string remoteVersion, out string error)
+        {
+            remoteVersion = null;
+            error = null;
+            try
+            {
+                using (var wc = new WebClient())
+                {
+                    wc.Headers.Add("User-Agent", "WML-UpdateChecker");
+
+                    var request = WebRequest.Create("https://ref-err.ru/wml-latest");
+                    request.Timeout = 3000;
+
+                    using (var response = request.GetResponse())
+                    using (var stream = response.GetResponseStream())
+                    using (var reader = new StreamReader(stream))
+                    {
+                        string text = reader.ReadToEnd();
+
+                        if (string.IsNullOrWhiteSpace(text))
+                        {
+                            error = "Server response is empty.";
+                            return false;
+                        }
+
+                        remoteVersion = text.Trim();
+
+                        int comp = VersionUtils.Compare(Constants.Version, remoteVersion);
+
+                        if (comp == -1)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
             }
         }
     }

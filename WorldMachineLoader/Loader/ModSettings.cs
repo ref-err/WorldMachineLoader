@@ -26,6 +26,9 @@ namespace WorldMachineLoader.Loader
         [JsonProperty(PropertyName = "verbosity", Required = Required.DisallowNull)]
         public Logger.VerbosityLevel VerbosityLevel { get; set; } = Logger.VerbosityLevel.Standard;
 
+        [JsonProperty(PropertyName = "disable_update_check", Required = Required.DisallowNull)]
+        public bool DisableUpdateCheck { get; set; } = false;
+
         private static ModSettings _instance;
 
         /// <summary>
