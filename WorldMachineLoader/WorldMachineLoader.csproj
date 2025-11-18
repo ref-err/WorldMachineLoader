@@ -37,20 +37,20 @@
     <Compile Include="Modding\ModInfoProvider.cs" />
     <Compile Include="Modding\UI\ModInfoWindow.cs" />
     <Compile Include="Modding\UI\ModListWindow.cs" />
-    <Compile Include="ModLoader\ModSettings.cs" />
+    <Compile Include="Loader\ModSettings.cs" />
     <Compile Include="Patches\EventPatches.cs" />
     <Compile Include="Patches\GameEventsPatches.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="ModLoader\ModLoader.cs" />
+    <Compile Include="Loader\ModLoader.cs" />
     <Compile Include="Modding\Mod.cs" />
-    <Compile Include="Modding\ModMetadata.cs" />
     <Compile Include="Patches\Patches.cs" />
     <Compile Include="Utils\DualWriter.cs" />
     <Compile Include="Utils\GameUtils.cs" />
     <Compile Include="Utils\PatchManager.cs" />
     <Compile Include="Utils\TextUtils.cs" />
+    <Compile Include="Utils\VersionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony" HintPath="..\Build\0Harmony.dll" Private="True" />
