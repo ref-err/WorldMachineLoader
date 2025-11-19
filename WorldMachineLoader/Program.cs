@@ -46,6 +46,7 @@ namespace WorldMachineLoader
             Console.ForegroundColor = ConsoleColor.White;
             Console.Title = "WorldMachineLoader";
             Console.WriteLine($"WorldMachineLoader {Constants.Version}");
+            if (!Directory.Exists(Constants.ModsPath)) Directory.CreateDirectory(Constants.ModsPath);
 
             LoggerManager.CurrentLevel = ModSettings.Instance.VerbosityLevel;
 

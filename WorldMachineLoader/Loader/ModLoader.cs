@@ -88,9 +88,6 @@ namespace WorldMachineLoader.Loader
                 Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                 return;
             }
-            // Create the mods directory
-            if (!modsDirectory.Exists)
-                modsDirectory.Create();
 
             // List all mods subdirectories
             string[] modsSubdirs = Directory.GetDirectories(modsDirectory.FullName);
