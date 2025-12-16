@@ -8,6 +8,14 @@ using WorldMachineLoader.API.Utils;
 
 namespace WorldMachineLoader.API.UI
 {
+    public enum WindowButtons
+    {
+        Close,
+        Minimize,
+        Maximize,
+        None
+    }
+
     /// <summary>
     /// Abstract mod window providing a base implementation for custom windows with control and theme support.
     /// </summary>
@@ -31,13 +39,23 @@ namespace WorldMachineLoader.API.UI
         protected ModWindow(string title, string icon, int width, int height,
                             bool addCloseButton = true, bool addMinimizeButton = true)
         {
-            WindowTitle = title;
-            WindowIcon = icon;
-            ContentsSize = new Vec2(width, height);
+            Init(title, icon, width, height);
 
             if (addCloseButton)
                 AddButton(TWMWindowButtonType.Close);
             if (addMinimizeButton)
+                AddButton(TWMWindowButtonType.Minimize);
+        }
+
+        protected ModWindow(string title, string icon, int width, int height, WindowButtons buttons = WindowButtons.None)
+        {
+            Init(title, icon, width, height);
+
+            if ((buttons & WindowButtons.Close) == WindowButtons.Close)
+                AddButton(TWMWindowButtonType.Close);
+            if ((buttons & WindowButtons.Maximize) == WindowButtons.Maximize)
+                AddButton(TWMWindowButtonType.Maximize);
+            if ((buttons & WindowButtons.Minimize) == WindowButtons.Minimize)
                 AddButton(TWMWindowButtonType.Minimize);
         }
 
@@ -71,7 +89,8 @@ namespace WorldMachineLoader.API.UI
             try
             {
                 foreach (var control in _controls)
-                    control.Draw(theme, screenPos, alpha);
+                    if (control.IsVisible)
+                        control.Draw(theme, screenPos, alpha);
                 OnDraw(theme, screenPos, alpha);
             }
             catch (Exception ex)
@@ -91,7 +110,7 @@ namespace WorldMachineLoader.API.UI
             try
             {
                 foreach (var control in _controls)
-                    if (!IsModalWindowOpen())
+                    if (!IsModalWindowOpen() && control.IsVisible)
                     {
                         bool canInteract = !mouseInputWasConsumed && !IsMinimized;
                         control.Update(Pos, canInteract);
@@ -144,6 +163,13 @@ namespace WorldMachineLoader.API.UI
             {
                 _controlsToRemove.Add(control);
             }
+        }
+
+        private void Init(string title, string icon, int width, int height)
+        {
+            WindowTitle = title;
+            WindowIcon = icon;
+            ContentsSize = new Vec2(width, height);
         }
     }
 }

@@ -68,9 +68,11 @@
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\CheckBox.cs" />
     <Compile Include="UI\Controls\Control.cs" />
+    <Compile Include="UI\Controls\ButtonIcon.cs" />
     <Compile Include="UI\Controls\Image.cs" />
     <Compile Include="UI\Controls\InputBox.cs" />
     <Compile Include="UI\Controls\Label.cs" />
+    <Compile Include="UI\Controls\Spinner.cs" />
     <Compile Include="UI\Controls\TempImage.cs" />
     <Compile Include="UI\ModWindow.cs" />
     <Compile Include="UI\WindowRegistry.cs" />

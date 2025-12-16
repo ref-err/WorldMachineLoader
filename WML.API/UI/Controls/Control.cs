@@ -20,6 +20,11 @@ namespace WorldMachineLoader.API.UI.Controls
         public Vec2 Size { get; set; }
 
         /// <summary>
+        /// Is control visible.
+        /// </summary>
+        public bool IsVisible { get; set; } = true;
+
+        /// <summary>
         /// Initializes a new instance of class <see cref="Control"/> with the given position.
         /// </summary>
         /// <param name="position">Control position.</param>
