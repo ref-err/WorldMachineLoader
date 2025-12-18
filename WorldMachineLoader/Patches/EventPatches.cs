@@ -13,9 +13,9 @@ namespace WorldMachineLoader.Patches
     {
         [HarmonyPrefix]
         [HarmonyPatch("Initialize")]
-        static void InitEvent()
+        static void InitEvent(Game1 __instance)
         {
-            EventBus.Invoke<Game1InitializeEvent>(new Game1InitializeEvent());
+            EventBus.Invoke<Game1InitializeEvent>(new Game1InitializeEvent(__instance));
         }
 
         [HarmonyPostfix]
