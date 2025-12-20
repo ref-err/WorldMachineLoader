@@ -6,6 +6,12 @@ namespace WorldMachineLoader.API.UI.Controls
 {
     public class ButtonIcon : Control
     {
+        public string Icon
+        {
+            get => _iconButton.Icon;
+            set => _iconButton.Icon = value;
+        }
+
         private IconButton _iconButton;
 
         public ButtonIcon(string iconPath, Vec2 size, Vec2 position, Action action) : base(position)
