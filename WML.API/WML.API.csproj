@@ -67,6 +67,7 @@
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="UI\Controls\Button.cs" />
     <Compile Include="UI\Controls\CheckBox.cs" />
+    <Compile Include="UI\Controls\Chooser.cs" />
     <Compile Include="UI\Controls\Control.cs" />
     <Compile Include="UI\Controls\ButtonIcon.cs" />
     <Compile Include="UI\Controls\Image.cs" />

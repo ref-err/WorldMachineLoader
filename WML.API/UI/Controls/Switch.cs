@@ -1,6 +1,5 @@
 ﻿using OneShotMG;
 using OneShotMG.src.TWM;
-using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -15,7 +14,6 @@ namespace WorldMachineLoader.API.UI.Controls
             _button = new Button(" ", position, () =>
             {
                 Value = !Value;
-                Console.WriteLine(Value.ToString());
             }, 16, 16);
         }
 
