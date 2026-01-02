@@ -68,11 +68,11 @@ namespace WorldMachineLoader.Modding
                     ShowModalWindow(ModalWindow.ModalType.Error, "cant_shutdown_while_oneshot_running");
                     return;
                 }
-                ShowModalWindow(ModalWindow.ModalType.YesNo, "Do you really want to restart?", delegate (ModalWindow.ModalResponse res)
+                ShowModalWindow(ModalWindow.ModalType.YesNo, "Do you really want to restart?", async delegate (ModalWindow.ModalResponse res)
                 {
                     if (res == ModalWindow.ModalResponse.Yes)
                     {
-                        GameUtils.RestartGame();
+                        await GameUtils.RestartGameAsync();
                     }
                 });
             });
@@ -233,11 +233,11 @@ namespace WorldMachineLoader.Modding
                      : "It seems that you have disabled a mod. Do you want to restart the game to unload this mod?";
 
                 ShowModalWindow(ModalWindow.ModalType.YesNo, msg,
-                    delegate (ModalWindow.ModalResponse res)
+                    async delegate (ModalWindow.ModalResponse res)
                     {
                         if (res == ModalWindow.ModalResponse.Yes)
                         {
-                            GameUtils.RestartGame();
+                            await GameUtils.RestartGameAsync();
                         }
                     });
             }
