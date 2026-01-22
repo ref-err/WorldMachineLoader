@@ -78,7 +78,7 @@ namespace WorldMachineLoader.API.UI.Controls
         /// <param name="width">Width in pixels for the input box.</param>
         /// <param name="limit">Maximum characters allowed.</param>
         /// <param name="placeholder">Placeholder string to show when empty.</param>
-        public InputBox(Vec2 position, int limit, int width, string placeholder) : this(position, limit, width)
+        public InputBox(Vec2 position, int width, int limit, string placeholder) : this(position, width, limit)
         {
             Placeholder = placeholder;
         }
@@ -104,6 +104,7 @@ namespace WorldMachineLoader.API.UI.Controls
             else
             {
                 string textToDisplay;
+
                 if (IsFocused)
                     textToDisplay = _text.Length >= Limit ? Text : Text + "_";
                 else
