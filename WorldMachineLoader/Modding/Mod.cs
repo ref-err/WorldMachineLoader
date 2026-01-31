@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OneShotMG.src.EngineSpecificCode;
 using System.IO;
+using System.Reflection;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Interfaces;
 
@@ -80,6 +81,9 @@ namespace WorldMachineLoader.Modding
                 return File.Exists(AssemblyFilePath);
             }
         }
+
+        /// <summary>Mod's assembly instance.</summary>
+        public Assembly Assembly;
     }
 
     public class ModItem

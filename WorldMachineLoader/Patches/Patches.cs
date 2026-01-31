@@ -37,7 +37,7 @@ namespace WorldMachineLoader.Patches
         [HarmonyPatch("ShutDown")]
         static void ShutDown_Prefix(Game1 __instance)
         {
-            foreach (var mod in ModLoader.mods)
+            foreach (var mod in ModLoader.loadedMods)
             {
                 try { mod.Instance.OnShutdown(); }
                 catch (Exception ex)
@@ -55,7 +55,7 @@ namespace WorldMachineLoader.Patches
         static void UpdatePatch(GameTime gameTime)
         {
             var delta = gameTime.ElapsedGameTime;
-            foreach (var mod in ModLoader.mods)
+            foreach (var mod in ModLoader.loadedMods)
             {
                 mod.ModContext.Scheduler.Update(delta);
             }
@@ -131,7 +131,7 @@ namespace WorldMachineLoader.Patches
             if (!__instance.FileSystem.FileExists("/Mod List"))
                 __instance.FileSystem.WriteFile("/", tWMFile);
 
-            foreach (var mod in ModLoader.mods)
+            foreach (var mod in ModLoader.loadedMods)
             {
                 var windows = WindowRegistry.GetByMod(mod.ID);
                 if (windows.Count > 0)

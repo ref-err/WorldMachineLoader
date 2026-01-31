@@ -10,7 +10,7 @@ namespace WorldMachineLoader.Modding
     {
         public IReadOnlyList<ModInfoData> GetLoadedMods()
         {
-            return ModLoader.mods.Select(m =>
+            return ModLoader.loadedMods.Select(m =>
             {
                 return new ModInfoData(m.Name, m.ID, m.Description, m.Author, m.Version, m.URL, m.Icon, m.Experimental, m.AssemblyName);
             }).ToList();
@@ -18,7 +18,7 @@ namespace WorldMachineLoader.Modding
 
         public ModInfoData FindModByID(string id)
         {
-            var mod = ModLoader.mods.FirstOrDefault(m => m.ID == id);
+            var mod = ModLoader.loadedMods.FirstOrDefault(m => m.ID == id);
             if (mod == null) return null;
 
             return new ModInfoData(mod.Name, mod.ID, mod.Description, mod.Author, mod.Version, mod.URL, mod.Icon, mod.Experimental, mod.AssemblyName);
@@ -26,7 +26,7 @@ namespace WorldMachineLoader.Modding
 
         public List<ModInfoData> FindModsByName(string name)
         {
-            var mods = ModLoader.mods.Where(m => m.Name == name).ToList();
+            var mods = ModLoader.loadedMods.Where(m => m.Name == name).ToList();
             if (mods.Any()) return null;
 
             return mods.Select(mod => new ModInfoData(

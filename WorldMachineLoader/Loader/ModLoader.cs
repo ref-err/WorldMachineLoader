@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using WorldMachineLoader.API.Core;
@@ -18,28 +19,18 @@ namespace WorldMachineLoader.Loader
     {
         public Logger Logger = new Logger("WML/ModLoader");
 
-        private readonly Harmony harmony;
+        private readonly Harmony harmony = new Harmony("io.github.referr.oswmeloader");
 
         private Assembly gameAssembly;
 
-        private readonly DirectoryInfo modsDirectory;
+        private readonly DirectoryInfo modsDirectory = new DirectoryInfo(Constants.ModsPath);
 
-        public static readonly List<Mod> mods = new List<Mod>();
-
-        private HashSet<string> loadedAssemblies = new HashSet<string>();
-
-        private HashSet<string> loadedModIDs = new HashSet<string>();
+        public static readonly HashSet<Mod> loadedMods = new HashSet<Mod>();
 
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
         public ModLoader(string[] args)
         {
-            // Create Harmony instance
-            harmony = new Harmony("io.github.referr.oswmeloader");
-            
-            // Get the mods directory
-            modsDirectory = new DirectoryInfo(Constants.ModsPath);
-
             APIServices.ModInfoProvider = new ModInfoProvider();
         }
 
@@ -49,8 +40,6 @@ namespace WorldMachineLoader.Loader
         {
             try
             {
-                _ = Type.GetType($"OneShotMG.Game1, {Constants.GameAssemblyName}", true);
-
                 gameAssembly = Assembly.LoadFrom($"{Constants.GameAssemblyName}.exe");
 
                 return true;
@@ -128,43 +117,40 @@ namespace WorldMachineLoader.Loader
                     return false;
                 }
 
-                if (!mod.HasAssembly)
+                if (loadedMods.Any(m => mod.ID == m.ID))
                 {
+                    Logger.Log($"Duplicate mod ID \"{mod.ID}\" detected for mod \"{mod.Name}\". Skipping load.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                     return false;
                 }
+
+                if (!mod.HasAssembly) return false;
+
                 var assembly = Assembly.LoadFrom(mod.AssemblyFilePath);
 
                 Logger.Log($"[{mod.ID}] Loading assembly: {mod.AssemblyFilePath}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
                 Logger.Log($"[{mod.ID}] Assembly.FullName: {assembly.FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
 
-                if (!loadedAssemblies.Add(assembly.FullName))
+                mod.Assembly = assembly;
+
+                if (loadedMods.Any(m => m.Assembly.FullName == assembly.FullName))
                 {
                     Logger.Log($"Mod \"{mod.Name}/{mod.ID}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     Logger.Log("If you are a developer, please avoid using same Assembly.FullName's. If you aren't, report this error to mod's developer.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     return false;
                 }
 
-
                 foreach (var type in assembly.GetTypes())
                 {
                     if (typeof(IMod).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                     {
-                        if (loadedModIDs.Contains(mod.ID))
-                        {
-                            Logger.Log($"Duplicate mod ID \"{mod.ID}\" detected for mod \"{mod.Name}\". Skipping load.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
-                            return false;
-                        }
-
                         Logger.Log($"Loading mod \"{mod.Name}/{mod.ID}\"...");
-
-                        var dataDir = Path.Combine(modPath, "data");
 
                         ModContext context = new ModContext(
                             mod.Name,
                             mod.ID,
                             mod.Author,
                             mod.Version,
-                            dataDir
+                            Path.Combine(modPath, "data")
                         );
 
                         var modInstance = (IMod)Activator.CreateInstance(type);
@@ -180,16 +166,16 @@ namespace WorldMachineLoader.Loader
                             return false;
                         }
 
-                        mods.Add(mod);
                         Globals.mods.Add(new ModItem(mod, modPath, true));
                         mod.Instance = modInstance;
                         mod.ModContext = context;
-                        loadedModIDs.Add(mod.ID);
+                        loadedMods.Add(mod);
 
                         if (mod.Experimental)
                         {
                             Logger.Log($"\"{mod.Name}/{mod.ID}\" is marked as experimental. Be careful!", Logger.LogLevel.Warn);
                         }
+
                         return true;
                     }
                 }
@@ -220,10 +206,9 @@ namespace WorldMachineLoader.Loader
             PatchManager patchManager = new PatchManager();
 
             // Load mod's assemblies to patch the game
-            foreach (Mod mod in mods)
+            foreach (Mod mod in loadedMods)
             {
-                var asm = Assembly.LoadFrom(mod.AssemblyFilePath);
-                patchManager.ApplyAllPatches(asm, mod.ID);
+                patchManager.ApplyAllPatches(mod.Assembly, mod.ID);
             }
 
             // Invoke OneShotMG entry point to run the game
