@@ -25,7 +25,7 @@ namespace WorldMachineLoader.Loader
 
         private readonly DirectoryInfo modsDirectory = new DirectoryInfo(Constants.ModsPath);
 
-        public static readonly HashSet<Mod> loadedMods = new HashSet<Mod>();
+        public static readonly HashSet<Mod> LoadedMods = new HashSet<Mod>();
 
         /// <summary>Creates mod loader instance.</summary>
         /// <param name="args">The list of provided command line arguments.</param>
@@ -110,14 +110,14 @@ namespace WorldMachineLoader.Loader
                     iconName = "";
                 }
 
-                if (!ModSettings.IsEnabled(mod.ID))
+                if (!Settings.IsEnabled(mod.ID))
                 {
                     Logger.Log($"Skipping mod \"{mod.Name}/{mod.ID}\" because it is disabled in config file.");
                     Globals.disabledMods.Add(new ModItem(mod, modPath, false));
                     return false;
                 }
 
-                if (loadedMods.Any(m => mod.ID == m.ID))
+                if (LoadedMods.Any(m => mod.ID == m.ID))
                 {
                     Logger.Log($"Duplicate mod ID \"{mod.ID}\" detected for mod \"{mod.Name}\". Skipping load.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                     return false;
@@ -132,7 +132,7 @@ namespace WorldMachineLoader.Loader
 
                 mod.Assembly = assembly;
 
-                if (loadedMods.Any(m => m.Assembly.FullName == assembly.FullName))
+                if (LoadedMods.Any(m => m.Assembly.FullName == assembly.FullName))
                 {
                     Logger.Log($"Mod \"{mod.Name}/{mod.ID}\" has duplicate Assembly.FullName: {assembly.FullName}. Skipping...", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     Logger.Log("If you are a developer, please avoid using same Assembly.FullName's. If you aren't, report this error to mod's developer.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
@@ -169,7 +169,7 @@ namespace WorldMachineLoader.Loader
                         Globals.mods.Add(new ModItem(mod, modPath, true));
                         mod.Instance = modInstance;
                         mod.ModContext = context;
-                        loadedMods.Add(mod);
+                        LoadedMods.Add(mod);
 
                         if (mod.Experimental)
                         {
@@ -205,10 +205,13 @@ namespace WorldMachineLoader.Loader
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             PatchManager patchManager = new PatchManager();
 
-            // Load mod's assemblies to patch the game
-            foreach (Mod mod in loadedMods)
+            if (LoadedMods.Any())
             {
-                patchManager.ApplyAllPatches(mod.Assembly, mod.ID);
+                Logger.Log($"Trying to apply patches from mods...", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
+                foreach (Mod mod in LoadedMods)
+                {
+                    patchManager.ApplyAllPatches(mod.Assembly, mod.ID);
+                }
             }
 
             // Invoke OneShotMG entry point to run the game

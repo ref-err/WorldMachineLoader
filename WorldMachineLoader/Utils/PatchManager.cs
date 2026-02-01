@@ -3,7 +3,6 @@ using System;
 using System.Reflection;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Utils;
-using WorldMachineLoader.Modding;
 
 namespace WorldMachineLoader.Utils
 {
@@ -23,7 +22,6 @@ namespace WorldMachineLoader.Utils
                     {
                         try
                         {
-                            Logger.Log($"Applying patches from mod with ID \"/{modId}\"...", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
                             var original = AccessTools.Method(attr.TargetType, attr.MethodName, attr.ArgumentTypes);
 
                             Logger.Log($"Patching {original.Name} with {method.Name} as {attr.PatchType} from {assembly.FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);

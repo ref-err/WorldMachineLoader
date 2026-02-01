@@ -9,7 +9,7 @@ namespace WorldMachineLoader.Loader
     /// Manages persistent settings for the mod loader.
     /// Uses JSON file to load and save settings on disk.
     /// </summary>
-    internal class ModSettings
+    internal class Settings
     {
         /// <summary>Gets or sets the currently disabled mod IDs.</summary>
         [JsonProperty(PropertyName = "disabled", Required = Required.DisallowNull)]
@@ -29,14 +29,14 @@ namespace WorldMachineLoader.Loader
         [JsonProperty(PropertyName = "disable_update_check", Required = Required.DisallowNull)]
         public bool DisableUpdateCheck { get; set; } = false;
 
-        private static ModSettings _instance;
+        private static Settings _instance;
 
         /// <summary>
         /// Gets the instance of <see cref="ModSettings"/>.
         /// If there's no settings file or instance has not yet loaded,
         /// automatically calls <see cref="Load"/>
         /// </summary>
-        public static ModSettings Instance
+        public static Settings Instance
         {
             get
             {
@@ -55,13 +55,13 @@ namespace WorldMachineLoader.Loader
         {
             if (!File.Exists(Constants.SettingsPath))
             {
-                _instance = new ModSettings();
+                _instance = new Settings();
                 Save();
                 return;
             }
 
             string json = File.ReadAllText(Constants.SettingsPath);
-            _instance = JsonConvert.DeserializeObject<ModSettings>(json) ?? new ModSettings();
+            _instance = JsonConvert.DeserializeObject<Settings>(json) ?? new Settings();
         }
 
         /// <summary>

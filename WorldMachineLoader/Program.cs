@@ -48,9 +48,9 @@ namespace WorldMachineLoader
             Console.WriteLine($"WorldMachineLoader {Constants.Version}");
             if (!Directory.Exists(Constants.ModsPath)) Directory.CreateDirectory(Constants.ModsPath);
 
-            LoggerManager.CurrentLevel = ModSettings.Instance.VerbosityLevel;
+            LoggerManager.CurrentLevel = Settings.Instance.VerbosityLevel;
 
-            if (!ModSettings.Instance.DisableUpdateCheck)
+            if (!Settings.Instance.DisableUpdateCheck)
             {
                 Logger.Log("Checking for updates... (You can disable this in \"settings.json\")", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
                 if (CheckForUpdate(out string remote, out string updateErr))
@@ -70,7 +70,7 @@ namespace WorldMachineLoader
                 Logger.Log("Update check disabled.", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
             }
 
-            if (IsRunningAsAdmin() && !ModSettings.Instance.IgnoreAdminCheck)
+            if (IsRunningAsAdmin() && !Settings.Instance.IgnoreAdminCheck)
             {
                 Logger.Log("WorldMachineLoader cannot be run with administrator privileges.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                 Logger.Log("Please restart the program without administrator privileges.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
@@ -81,7 +81,7 @@ namespace WorldMachineLoader
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else if (IsRunningAsAdmin() && ModSettings.Instance.IgnoreAdminCheck)
+            else if (IsRunningAsAdmin() && Settings.Instance.IgnoreAdminCheck)
             {
                 Logger.Log("WorldMachineLoader is running with administrator privileges, and \"ignore_admin_check\" is enabled in config.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                 Logger.Log("Proceeding as requested. Be careful!", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
