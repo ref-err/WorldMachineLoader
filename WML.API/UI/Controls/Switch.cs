@@ -1,11 +1,14 @@
 ﻿using OneShotMG;
 using OneShotMG.src.TWM;
+using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
     public class Switch : Control
     {
         public bool Value { get; set; } = false;
+
+        public event EventHandler ValueChanged;
 
         private Button _button;
 
@@ -14,6 +17,7 @@ namespace WorldMachineLoader.API.UI.Controls
             _button = new Button(" ", position, () =>
             {
                 Value = !Value;
+                OnValueChanged(EventArgs.Empty);
             }, 16, 16);
         }
 
@@ -33,6 +37,11 @@ namespace WorldMachineLoader.API.UI.Controls
         {
             var pos = Value ? parentPos + new Vec2(18, 0) : parentPos;
             _button.Update(pos, canInteract);
+        }
+
+        protected virtual void OnValueChanged(EventArgs e)
+        {
+            ValueChanged?.Invoke(this, e);
         }
     }
 }

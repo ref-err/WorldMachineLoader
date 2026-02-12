@@ -1,6 +1,7 @@
 using OneShotMG;
 using OneShotMG.src.TWM;
 using OneShotMG.src.EngineSpecificCode;
+using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -11,6 +12,8 @@ namespace WorldMachineLoader.API.UI.Controls
         public int MaxValue { get; set; }
 
         public int Value { get; set; }
+
+        public event EventHandler ValueChanged;
 
         private Label _label;
 
@@ -58,6 +61,7 @@ namespace WorldMachineLoader.API.UI.Controls
                 Value++;
 
             _label.Text = Value.ToString();
+            OnValueChanged(EventArgs.Empty);
         }
 
         private void Decrease()
@@ -66,6 +70,12 @@ namespace WorldMachineLoader.API.UI.Controls
                 Value--;
 
             _label.Text = Value.ToString();
+            OnValueChanged(EventArgs.Empty);
+        }
+
+        protected virtual void OnValueChanged(EventArgs e)
+        {
+            ValueChanged?.Invoke(this, e);
         }
     }
 }

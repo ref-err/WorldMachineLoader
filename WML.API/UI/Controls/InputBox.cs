@@ -4,6 +4,7 @@ using OneShotMG.src.Util;
 using OneShotMG.src.EngineSpecificCode;
 using Microsoft.Xna.Framework.Input;
 using System.Text;
+using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -45,9 +46,15 @@ namespace WorldMachineLoader.API.UI.Controls
         /// </summary>
         public bool IsFocused { get; set; } = false;
 
-        private KeyboardState prevState;
+        public event EventHandler TextChanged;
+
+        public event EventHandler FocusChanged;
+
+        public event EventHandler Finished;
+
         private StringBuilder _text = new StringBuilder();
-        private Rect bounds;
+        private KeyboardState _prevState;
+        private Rect _bounds;
 
         /// <summary>
         /// Create an InputBox at position with the specified width.
@@ -57,7 +64,7 @@ namespace WorldMachineLoader.API.UI.Controls
         public InputBox(Vec2 position, int width) : base(position)
         {
             Width = width;
-            bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
+            _bounds = new Rect(Position.X + 2, Position.Y + 26, Width, 18);
         }
 
         /// <summary>
@@ -118,14 +125,23 @@ namespace WorldMachineLoader.API.UI.Controls
             if (canInteract)
             {
                 Vec2 v = Game1.mouseCursorMan.MousePos - parentPos;
-                bool hovering = bounds.IsVec2InRect(v);
+                bool hovering = _bounds.IsVec2InRect(v);
+
                 if (hovering && IsFocused)
                     Game1.mouseCursorMan.SetState(OneShotMG.src.MouseCursorManager.State.Normal);
                 else if (hovering)
                     Game1.mouseCursorMan.SetState(OneShotMG.src.MouseCursorManager.State.Clickable);
 
-                if (hovering && Game1.mouseCursorMan.MouseClicked)
+                if (hovering && Game1.mouseCursorMan.MouseClicked && !IsFocused)
+                {
                     IsFocused = true;
+                    OnFocusChanged(EventArgs.Empty);
+                }
+                else if (!hovering && Game1.mouseCursorMan.MouseClicked && IsFocused)
+                {
+                    IsFocused = false;
+                    OnFocusChanged(EventArgs.Empty);
+                }
             }
             UpdateInput();
         }
@@ -136,38 +152,42 @@ namespace WorldMachineLoader.API.UI.Controls
 
             if (!IsFocused)
             {
-                prevState = keyState;
+                _prevState = keyState;
                 return;
             }
 
             foreach (var key in keyState.GetPressedKeys())
             {
-                bool wasDown = prevState.IsKeyDown(key);
+                bool wasDown = _prevState.IsKeyDown(key);
 
                 if (!wasDown)
                 {
                     if (key == Keys.Back && _text.Length > 0)
                     {
                         _text.Remove(_text.Length - 1, 1);
+                        OnTextChanged(EventArgs.Empty);
                     }
                     else if (key == Keys.Space && _text.Length < Limit)
                     {
                         _text.Append(' ');
+                        OnTextChanged(EventArgs.Empty);
                     }
                     else if (key == Keys.Enter || key == Keys.Escape)
                     {
                         IsFocused = false;
+                        OnFinished(EventArgs.Empty);
                     }
                     else
                     {
                         char? c = KeyToChar(key, keyState.IsKeyDown(Keys.LeftShift) || keyState.IsKeyDown(Keys.RightShift), keyState.CapsLock);
                         if (c.HasValue && _text.Length < Limit)
                             _text.Append(c.Value);
+                        OnTextChanged(EventArgs.Empty);
                     }
                 }
             }
 
-            prevState = keyState;
+            _prevState = keyState;
         }
 
         private char? KeyToChar(Keys key, bool shift, bool capsLock)
@@ -193,21 +213,35 @@ namespace WorldMachineLoader.API.UI.Controls
                 return c;
             }
 
-                switch (key)
-                {
-                    case Keys.OemComma: return shift ? '<' : ',';
-                    case Keys.OemPeriod: return shift ? '>' : '.';
-                    case Keys.OemMinus: return shift ? '_' : '-';
-                    case Keys.OemPlus: return shift ? '+' : '=';
-                    case Keys.OemQuestion: return shift ? '?' : '/';
-                    case Keys.OemSemicolon: return shift ? ':' : ';';
-                    case Keys.OemQuotes: return shift ? '"' : '\'';
-                    case Keys.OemOpenBrackets: return shift ? '{' : '[';
-                    case Keys.OemCloseBrackets: return shift ? '}' : ']';
-                    case Keys.OemBackslash: return shift ? '|' : '\\';
-                }
+            switch (key)
+            {
+                case Keys.OemComma: return shift ? '<' : ',';
+                case Keys.OemPeriod: return shift ? '>' : '.';
+                case Keys.OemMinus: return shift ? '_' : '-';
+                case Keys.OemPlus: return shift ? '+' : '=';
+                case Keys.OemQuestion: return shift ? '?' : '/';
+                case Keys.OemSemicolon: return shift ? ':' : ';';
+                case Keys.OemQuotes: return shift ? '"' : '\'';
+                case Keys.OemOpenBrackets: return shift ? '{' : '[';
+                case Keys.OemCloseBrackets: return shift ? '}' : ']';
+                case Keys.OemBackslash: return shift ? '|' : '\\';
+            }
 
             return null;
+        }
+
+        protected virtual void OnTextChanged(EventArgs e)
+        {
+            TextChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnFocusChanged(EventArgs e)
+        {
+            FocusChanged?.Invoke(this, e);
+        }
+        protected virtual void OnFinished(EventArgs e)
+        {
+            Finished?.Invoke(this, e);
         }
     }
 }

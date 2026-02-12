@@ -12,11 +12,13 @@ namespace WorldMachineLoader.API.UI.Controls
             set => _iconButton.Icon = value;
         }
 
+        public event EventHandler Pressed;
+
         private IconButton _iconButton;
 
         public ButtonIcon(string iconPath, Vec2 size, Vec2 position, Action action) : base(position)
         {
-            _iconButton = new IconButton(iconPath, size, position, delegate { action(); }, OneShotMG.src.EngineSpecificCode.TextureCache.CacheType.TheWorldMachine);
+            _iconButton = new IconButton(iconPath, size, position, delegate { OnPressed(EventArgs.Empty); action(); }, OneShotMG.src.EngineSpecificCode.TextureCache.CacheType.TheWorldMachine);
         }
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
@@ -27,6 +29,11 @@ namespace WorldMachineLoader.API.UI.Controls
         public override void Update(Vec2 parentPos, bool canInteract)
         {
             _iconButton.Update(new Vec2(parentPos.X + 2, parentPos.Y + 26), canInteract);
+        }
+
+        protected virtual void OnPressed(EventArgs e)
+        {
+            Pressed?.Invoke(this, e);
         }
     }
 }

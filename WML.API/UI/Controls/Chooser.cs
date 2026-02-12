@@ -7,6 +7,19 @@ namespace WorldMachineLoader.API.UI.Controls
     public class Chooser : Control
     {
         public string[] Items { get; set; }
+        
+        public string CurrentItem
+        {
+            get => Items[_index];
+        }
+
+        public int CurrentItemIndex
+        {
+            get => _index;
+            set => _index = value;
+        }
+
+        public event EventHandler ItemChanged;
 
         private ButtonIcon _backButton;
         private ButtonIcon _forwardButton;
@@ -60,6 +73,7 @@ namespace WorldMachineLoader.API.UI.Controls
             }
 
             _currentItemLabel.Text = Items[_index];
+            OnItemChanged(EventArgs.Empty);
         }
 
         private void Forward()
@@ -74,6 +88,12 @@ namespace WorldMachineLoader.API.UI.Controls
             }
 
             _currentItemLabel.Text = Items[_index];
+            OnItemChanged(EventArgs.Empty);
+        }
+
+        protected virtual void OnItemChanged(EventArgs e)
+        {
+            ItemChanged?.Invoke(this, e);
         }
     }
 }

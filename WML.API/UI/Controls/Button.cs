@@ -1,6 +1,6 @@
-﻿using OneShotMG;
+﻿using System;
+using OneShotMG;
 using OneShotMG.src.TWM;
-using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -9,7 +9,9 @@ namespace WorldMachineLoader.API.UI.Controls
     /// </summary>
     public class Button : Control
     {
-        private TextButton button;
+        public event EventHandler Pressed;
+
+        private TextButton _button;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Button"/> class with the specified text, position, action, and dimensions.
@@ -21,7 +23,7 @@ namespace WorldMachineLoader.API.UI.Controls
         /// <param name="height">Button height (default 16).</param>
         public Button(string text, Vec2 position, Action buttonAction, int width = 56, int height = 16) : base(position)
         {
-            button = new TextButton(text, position, delegate { buttonAction(); }, width, height);
+            _button = new TextButton(text, position, delegate { OnPressed(EventArgs.Empty); buttonAction(); }, width, height);
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace WorldMachineLoader.API.UI.Controls
         /// <param name="alpha">Transparency value (0-255).</param>
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
-            button.Draw(screenPos, theme, alpha);
+            _button.Draw(screenPos, theme, alpha);
         }
 
         /// <summary>
@@ -42,7 +44,12 @@ namespace WorldMachineLoader.API.UI.Controls
         /// <param name="canInteract">Flag indicating whether the button can be interacted with.</param>
         public override void Update(Vec2 parentPos, bool canInteract)
         {
-            button.Update(new Vec2(parentPos.X + 2, parentPos.Y + 26), canInteract);
+            _button.Update(new Vec2(parentPos.X + 2, parentPos.Y + 26), canInteract);
+        }
+
+        protected virtual void OnPressed(EventArgs e)
+        {
+            Pressed?.Invoke(this, e);
         }
     }
 }

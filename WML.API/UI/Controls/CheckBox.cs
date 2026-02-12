@@ -2,6 +2,7 @@
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
 using OneShotMG.src.EngineSpecificCode;
+using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -19,6 +20,8 @@ namespace WorldMachineLoader.API.UI.Controls
         /// The label text displayed next to the checkbox.
         /// </summary>
         public string Text { get; set; }
+
+        public event EventHandler StateChanged;
 
         private Rect bounds;
 
@@ -59,8 +62,16 @@ namespace WorldMachineLoader.API.UI.Controls
                     Game1.mouseCursorMan.SetState(OneShotMG.src.MouseCursorManager.State.Clickable);
 
                 if (hovering && Game1.mouseCursorMan.MouseClicked)
+                {
                     IsChecked = !IsChecked;
+                    OnStateChanged(EventArgs.Empty);
+                }
             }
+        }
+
+        protected virtual void OnStateChanged(EventArgs e)
+        {
+            StateChanged?.Invoke(this, e);
         }
     }
 }
