@@ -32,7 +32,7 @@ namespace WorldMachineLoader.Loader
         private static Settings _instance;
 
         /// <summary>
-        /// Gets the instance of <see cref="ModSettings"/>.
+        /// Gets the instance of <see cref="Settings"/>.
         /// If there's no settings file or instance has not yet loaded,
         /// automatically calls <see cref="Load"/>
         /// </summary>
@@ -48,7 +48,7 @@ namespace WorldMachineLoader.Loader
 
         /// <summary>
         /// Loads the settings from the JSON file specified by <see cref="Constants.SettingsPath"/>.
-        /// If the file does not exist, it creates a new <see cref="ModSettings"/> instance
+        /// If the file does not exist, it creates a new <see cref="Settings"/> instance
         /// with default values and saves immediately to disk.
         /// </summary>
         public static void Load()

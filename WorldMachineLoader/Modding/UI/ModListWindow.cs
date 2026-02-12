@@ -17,9 +17,9 @@ namespace WorldMachineLoader.Modding
     {
         private List<ModItem> totalMods = new List<ModItem>();
 
-        private List<ModItem> mods;
+        private HashSet<ModItem> mods;
 
-        private List<ModItem> disabledMods;
+        private HashSet<ModItem> disabledMods;
 
         private List<TextButton> infoButtons = new List<TextButton>();
 
@@ -40,8 +40,8 @@ namespace WorldMachineLoader.Modding
 
         public ModListWindow()
         {
-            mods = Globals.mods;
-            disabledMods = Globals.disabledMods;
+            mods = Globals.Mods;
+            disabledMods = Globals.DisabledMods;
 
             foreach (var mod in mods)
             {
@@ -204,8 +204,7 @@ namespace WorldMachineLoader.Modding
                 DrawPageCountTexture();
                 lastPage = currentPage;
             }
-            pageCountTexture.KeepAlive();
-            
+
             pageCountTexture.KeepAlive();
 
             if (!IsModalWindowOpen())
@@ -224,11 +223,11 @@ namespace WorldMachineLoader.Modding
                     btn.Update(new Vec2(Pos.X + 2, Pos.Y + 26), canInteract);
             }
             
-            if (Globals.restartPending)
+            if (Globals.RestartPending)
             {
-                Globals.restartPending = false;
+                Globals.RestartPending = false;
 
-                var msg = Globals.restartWillEnable
+                var msg = Globals.RestartWillEnable
                     ? "It seems that you have enabled a mod. Do you want to restart the game to load this mod?"
                      : "It seems that you have disabled a mod. Do you want to restart the game to unload this mod?";
 

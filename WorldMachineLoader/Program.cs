@@ -30,7 +30,7 @@ namespace WorldMachineLoader
                     "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning
                 );
 
-                if (result == DialogResult.Yes) Globals.isSafeModEnabled = true;
+                if (result == DialogResult.Yes) Globals.IsSafeModEnabled = true;
                 File.Delete(Path.Combine(logsDir, "crashed"));
             }
 

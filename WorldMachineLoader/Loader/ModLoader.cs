@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using WorldMachineLoader.API.Core;
 using WorldMachineLoader.API.Interfaces;
 using WorldMachineLoader.API.Utils;
@@ -72,7 +72,7 @@ namespace WorldMachineLoader.Loader
         /// <summary>Checks all mods in the directory to parse them for further loading it.</summary>
         public void CheckMods()
         {
-            if (Globals.isSafeModEnabled)
+            if (Globals.IsSafeModEnabled)
             {
                 Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                 return;
@@ -113,7 +113,7 @@ namespace WorldMachineLoader.Loader
                 if (!Settings.IsEnabled(mod.ID))
                 {
                     Logger.Log($"Skipping mod \"{mod.Name}/{mod.ID}\" because it is disabled in config file.");
-                    Globals.disabledMods.Add(new ModItem(mod, modPath, false));
+                    Globals.DisabledMods.Add(new ModItem(mod, modPath, false));
                     return false;
                 }
 
@@ -166,7 +166,7 @@ namespace WorldMachineLoader.Loader
                             return false;
                         }
 
-                        Globals.mods.Add(new ModItem(mod, modPath, true));
+                        Globals.Mods.Add(new ModItem(mod, modPath, true));
                         mod.Instance = modInstance;
                         mod.ModContext = context;
                         LoadedMods.Add(mod);

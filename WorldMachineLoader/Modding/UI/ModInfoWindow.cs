@@ -237,8 +237,8 @@ namespace WorldMachineLoader.Modding.UI
         {
             if (mod.isEnabled == previousState || Game1.windowMan.IsOneshotWindowOpen()) return;
 
-            Globals.restartPending = true;
-            Globals.restartWillEnable = mod.isEnabled;
+            Globals.RestartPending = true;
+            Globals.RestartWillEnable = mod.isEnabled;
         }
 
         private void DrawModIconTexture()
