@@ -37,7 +37,7 @@
     <Compile Include="Modding\ModInfoProvider.cs" />
     <Compile Include="Modding\UI\ModInfoWindow.cs" />
     <Compile Include="Modding\UI\ModListWindow.cs" />
-    <Compile Include="Loader\ModSettings.cs" />
+    <Compile Include="Loader\Settings.cs" />
     <Compile Include="Patches\EventPatches.cs" />
     <Compile Include="Patches\GameEventsPatches.cs" />
     <Compile Include="Program.cs" />
