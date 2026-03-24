@@ -18,7 +18,7 @@ namespace WorldMachineLoader
         public static bool RestartWillEnable;
 
         /// <summary>Determines if safe mod is enabled.</summary>
-        public static bool IsSafeModEnabled = false;
+        public static bool IsSafeModeEnabled = false;
 
         /// <summary>Game instance that we get from OneShotMG by patching.</summary>
         public static Game monoGame;

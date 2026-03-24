@@ -72,9 +72,9 @@ namespace WorldMachineLoader.Loader
         /// <summary>Checks all mods in the directory to parse them for further loading it.</summary>
         public void CheckMods()
         {
-            if (Globals.IsSafeModEnabled)
+            if (Globals.IsSafeModeEnabled)
             {
-                Logger.Log("Safe mod is enabled, not loading any mods.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
+                Logger.Log("Safe mode is enabled, not loading any mods.", Logger.LogLevel.Warn, Logger.VerbosityLevel.Minimal);
                 return;
             }
 
@@ -166,9 +166,9 @@ namespace WorldMachineLoader.Loader
                             return false;
                         }
 
-                        Globals.Mods.Add(new ModItem(mod, modPath, true));
                         mod.Instance = modInstance;
                         mod.ModContext = context;
+                        Globals.Mods.Add(new ModItem(mod, modPath, true));
                         LoadedMods.Add(mod);
 
                         if (mod.Experimental)
