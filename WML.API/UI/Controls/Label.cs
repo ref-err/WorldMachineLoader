@@ -5,6 +5,12 @@ using OneShotMG.src.Util;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
+    public enum FontType
+    {
+        OS,
+        Terminus
+    }
+
     /// <summary>
     /// Represents a control for displaying text on the screen.
     /// </summary>
@@ -14,6 +20,11 @@ namespace WorldMachineLoader.API.UI.Controls
         /// Gets or sets the displayed label text.
         /// </summary>
         public string Text { get; set; }
+
+        /// <summary>
+        /// Font that will be used for rendering text.
+        /// </summary>
+        public FontType Font { get; set; } = FontType.OS;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Label"/> class with the given text and position.
@@ -36,7 +47,15 @@ namespace WorldMachineLoader.API.UI.Controls
         {
             GameColor color = theme.Primary(alpha);
 
-            Game1.gMan.TextBlit(GraphicsManager.FontType.OS, Position + screenPos, Text, color);
+            switch (Font)
+            {
+                case FontType.OS:
+                    Game1.gMan.TextBlit(GraphicsManager.FontType.OS, Position + screenPos, Text, color);
+                    break;
+                case FontType.Terminus:
+                    Game1.gMan.TextBlit(GraphicsManager.FontType.Game, (Position + screenPos) * 2, Text, color, scale: 1);
+                    break;
+            }
         }
 
         /// <summary>
