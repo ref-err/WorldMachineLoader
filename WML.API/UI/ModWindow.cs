@@ -22,7 +22,7 @@ namespace WorldMachineLoader.API.UI
     public abstract class ModWindow : TWMWindow
     {
         private readonly List<Control> _controls = new List<Control>();
-
+        private readonly List<Control> _topLevelControls = new List<Control>();
         private readonly List<Control> _controlsToRemove = new List<Control>();
 
         private Logger logger = new Logger("API/ModWindow");
@@ -34,19 +34,7 @@ namespace WorldMachineLoader.API.UI
         /// <param name="icon">Window icon.</param>
         /// <param name="width">Content width.</param>
         /// <param name="height">Content height.</param>
-        /// <param name="addCloseButton">Whether to add a close button.</param>
-        /// <param name="addMinimizeButton">Whether to add a minimize button.</param>
-        protected ModWindow(string title, string icon, int width, int height,
-                            bool addCloseButton = true, bool addMinimizeButton = true)
-        {
-            Init(title, icon, width, height);
-
-            if (addCloseButton)
-                AddButton(TWMWindowButtonType.Close);
-            if (addMinimizeButton)
-                AddButton(TWMWindowButtonType.Minimize);
-        }
-
+        /// <param name="buttons">Window buttons to add.</param>
         protected ModWindow(string title, string icon, int width, int height, WindowButtons buttons = WindowButtons.None)
         {
             Init(title, icon, width, height);
@@ -81,7 +69,6 @@ namespace WorldMachineLoader.API.UI
         public sealed override void DrawContents(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
             GameColor bgColor = theme.Background(alpha);
-            GameColor fgColor = theme.Primary(alpha);
 
             Rect boxRect = new Rect(screenPos.X, screenPos.Y, ContentsSize.X, ContentsSize.Y);
             Game1.gMan.ColorBoxBlit(boxRect, bgColor);
@@ -91,7 +78,12 @@ namespace WorldMachineLoader.API.UI
                 foreach (var control in _controls)
                     if (control.IsVisible)
                         control.Draw(theme, screenPos, alpha);
+
                 OnDraw(theme, screenPos, alpha);
+
+                foreach (var control in _topLevelControls)
+                    if (control.IsVisible)
+                        control.Draw(theme, screenPos, alpha);
             }
             catch (Exception ex)
             {
@@ -148,7 +140,10 @@ namespace WorldMachineLoader.API.UI
         /// <param name="control">Control to add.</param>
         protected void AddControl(Control control)
         {
-            _controls.Add(control);
+            if (control.TopLevel)
+                _topLevelControls.Add(control);
+            else
+                _controls.Add(control);
         }
 
         /// <summary>

@@ -25,6 +25,11 @@ namespace WorldMachineLoader.API.UI.Controls
         public bool IsVisible { get; set; } = true;
 
         /// <summary>
+        /// Determines if this control will be rendered after <see cref="ModWindow.OnDraw(TWMTheme, Vec2, byte)"/> has been called.
+        /// </summary>
+        public bool TopLevel { get; set; } = false;
+
+        /// <summary>
         /// Initializes a new instance of class <see cref="Control"/> with the given position.
         /// </summary>
         /// <param name="position">Control position.</param>
