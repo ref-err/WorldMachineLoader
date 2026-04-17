@@ -1,4 +1,6 @@
-﻿using OneShotMG;
+﻿using Newtonsoft.Json.Linq;
+using OneShotMG;
+using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using System;
 
@@ -17,6 +19,11 @@ namespace WorldMachineLoader.API.UI.Controls
         {
             get => _index;
             set => _index = value;
+        }
+        public FontType Font
+        {
+            get => _currentItemLabel.Font;
+            set => _currentItemLabel.Font = value;
         }
 
         public event EventHandler ItemChanged;
@@ -40,7 +47,15 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
-            _itemTextSize = Game1.gMan.TextSize(OneShotMG.src.EngineSpecificCode.GraphicsManager.FontType.OS, Items[_index]);
+            switch (Font)
+            {
+                case FontType.OS:
+                    _itemTextSize = Game1.gMan.TextSize(GraphicsManager.FontType.OS, Items[_index]);
+                    break;
+                case FontType.Terminus:
+                    _itemTextSize = Game1.gMan.TextSize(GraphicsManager.FontType.Game, Items[_index]) / 2;
+                    break;
+            }
 
             _backButton.Draw(theme, screenPos, alpha);
             _forwardButton.Draw(theme, screenPos + new Vec2(_itemTextSize.X - 6, 0), alpha);

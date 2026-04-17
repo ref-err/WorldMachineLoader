@@ -2,6 +2,7 @@
 using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
+using System;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -16,15 +17,27 @@ namespace WorldMachineLoader.API.UI.Controls
     /// </summary>
     public class Label : Control
     {
+        private string _text;
+
         /// <summary>
         /// Gets or sets the displayed label text.
         /// </summary>
-        public string Text { get; set; }
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                _text = value;
+                TextChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         /// Font that will be used for rendering text.
         /// </summary>
         public FontType Font { get; set; } = FontType.OS;
+
+        public event EventHandler TextChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Label"/> class with the given text and position.
@@ -53,7 +66,7 @@ namespace WorldMachineLoader.API.UI.Controls
                     Game1.gMan.TextBlit(GraphicsManager.FontType.OS, Position + screenPos, Text, color);
                     break;
                 case FontType.Terminus:
-                    Game1.gMan.TextBlit(GraphicsManager.FontType.Game, (Position + screenPos) * 2, Text, color, scale: 1);
+                    Game1.gMan.TextBlit(GraphicsManager.FontType.Game, (Position + screenPos + new Vec2(0, 4)) * 2, Text, color, scale: 1);
                     break;
             }
         }

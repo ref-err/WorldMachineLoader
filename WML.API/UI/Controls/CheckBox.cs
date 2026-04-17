@@ -1,8 +1,9 @@
 ﻿using OneShotMG;
+using OneShotMG.src.EngineSpecificCode;
 using OneShotMG.src.TWM;
 using OneShotMG.src.Util;
-using OneShotMG.src.EngineSpecificCode;
 using System;
+using System.Reflection.Emit;
 
 namespace WorldMachineLoader.API.UI.Controls
 {
@@ -21,9 +22,17 @@ namespace WorldMachineLoader.API.UI.Controls
         /// </summary>
         public string Text { get; set; }
 
+        public FontType Font
+        {
+            get => _label.Font;
+            set => _label.Font = value;
+        }
+
         public event EventHandler StateChanged;
 
-        private Rect bounds;
+        private Rect _bounds;
+
+        private Label _label;
 
         /// <summary>
         /// Creates a new CheckBox with specified label text and position.
@@ -33,7 +42,8 @@ namespace WorldMachineLoader.API.UI.Controls
         public CheckBox(string text, Vec2 position) : base(position)
         {
             Text = text;
-            bounds = new Rect(Position.X + 2, Position.Y + 26, 16, 16);
+            _label = new Label(Text, position + new Vec2(21, 3));
+            _bounds = new Rect(Position.X + 2, Position.Y + 26, 16, 16);
         }
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
@@ -47,7 +57,7 @@ namespace WorldMachineLoader.API.UI.Controls
             Game1.gMan.ColorBoxBlit(outerRect, fgColor);
             Game1.gMan.ColorBoxBlit(innerRect, bgColor);
 
-            Game1.gMan.TextBlit(GraphicsManager.FontType.OS, (new Vec2(21, -1) + Position) + screenPos, Text, fgColor);
+            _label.Draw(theme, screenPos, alpha);
 
             if (IsChecked)
                 Game1.gMan.MainBlit("the_world_machine/window_buttons", Position + screenPos, new Rect(32, 0, 16, 16), fgColor, 0, GraphicsManager.BlendMode.Normal, 2);
@@ -55,9 +65,11 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public override void Update(Vec2 parentPos, bool canInteract)
         {
+            _label.Update(parentPos, canInteract);
+
             if (canInteract)
             {
-                Vec2 v = Game1.mouseCursorMan.MousePos - parentPos; bool hovering = bounds.IsVec2InRect(v);
+                Vec2 v = Game1.mouseCursorMan.MousePos - parentPos; bool hovering = _bounds.IsVec2InRect(v);
                 if (hovering)
                     Game1.mouseCursorMan.SetState(OneShotMG.src.MouseCursorManager.State.Clickable);
 

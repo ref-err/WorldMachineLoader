@@ -24,6 +24,7 @@ namespace WorldMachineLoader.API.UI.Controls
         public Button(string text, Vec2 position, Action buttonAction, int width = 56, int height = 16) : base(position)
         {
             _button = new TextButton(text, position, delegate { OnPressed(EventArgs.Empty); buttonAction(); }, width, height);
+            Size = new Vec2(width, height);
         }
 
         /// <summary>

@@ -13,6 +13,12 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public int Value { get; set; }
 
+        public FontType Font
+        {
+            get => _label.Font;
+            set => _label.Font = value;
+        }
+
         public event EventHandler ValueChanged;
 
         private Label _label;
@@ -34,7 +40,15 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
-            _valueTextSize = Game1.gMan.TextSize(GraphicsManager.FontType.OS, Value.ToString());
+            switch (Font)
+            {
+                case FontType.OS:
+                    _valueTextSize = Game1.gMan.TextSize(GraphicsManager.FontType.OS, Value.ToString());
+                    break;
+                case FontType.Terminus:
+                    _valueTextSize = Game1.gMan.TextSize(GraphicsManager.FontType.Game, Value.ToString()) / 2;
+                    break;
+            }
 
             _decreaseButton.Draw(theme, screenPos, alpha);
             _increaseButton.Draw(theme, screenPos + new Vec2(_valueTextSize.X - 6, 0), alpha);

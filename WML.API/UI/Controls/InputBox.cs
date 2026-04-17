@@ -46,6 +46,8 @@ namespace WorldMachineLoader.API.UI.Controls
         /// </summary>
         public bool IsFocused { get; set; } = false;
 
+        public FontType Font { get; set; } = FontType.OS;
+
         public event EventHandler TextChanged;
 
         public event EventHandler FocusChanged;
@@ -55,6 +57,9 @@ namespace WorldMachineLoader.API.UI.Controls
         private StringBuilder _text = new StringBuilder();
         private KeyboardState _prevState;
         private Rect _bounds;
+        private GraphicsManager.FontType _font;
+        private int _scale = 2;
+        private Vec2 _drawPos;
 
         /// <summary>
         /// Create an InputBox at position with the specified width.
@@ -92,6 +97,21 @@ namespace WorldMachineLoader.API.UI.Controls
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
         {
+            _drawPos = new Vec2(Position.X + screenPos.X + 4, Position.Y + screenPos.Y);
+
+            switch (Font)
+            {
+                case FontType.OS:
+                    _font = GraphicsManager.FontType.OS;
+                    _scale = 2; 
+                    break;
+                case FontType.Terminus:
+                    _font = GraphicsManager.FontType.Game;
+                    _scale = 1;
+                    _drawPos = new Vec2(_drawPos.X, _drawPos.Y + 4) * 2;
+                    break;
+            }
+
             GameColor bgColor = theme.Background();
             GameColor fgColor = theme.Primary();
 
@@ -105,9 +125,9 @@ namespace WorldMachineLoader.API.UI.Controls
             placeholderColor.a = 127;
 
             if (string.IsNullOrEmpty(Text) && IsFocused)
-                Game1.gMan.TextBlit(GraphicsManager.FontType.OS, new Vec2(Position.X + screenPos.X + 4, Position.Y + screenPos.Y), "_", fgColor);
+                Game1.gMan.TextBlit(_font, _drawPos, "_", fgColor, scale: _scale);
             else if (string.IsNullOrEmpty(Text))
-                Game1.gMan.TextBlit(GraphicsManager.FontType.OS, new Vec2(Position.X + screenPos.X + 4, Position.Y + screenPos.Y), Placeholder, placeholderColor);
+                Game1.gMan.TextBlit(_font, _drawPos, Placeholder, placeholderColor, scale: _scale);
             else
             {
                 string textToDisplay;
@@ -116,7 +136,7 @@ namespace WorldMachineLoader.API.UI.Controls
                     textToDisplay = _text.Length >= Limit ? Text : Text + "_";
                 else
                     textToDisplay = Text;
-                Game1.gMan.TextBlit(GraphicsManager.FontType.OS, new Vec2(Position.X + screenPos.X + 4, Position.Y + screenPos.Y), textToDisplay, fgColor);
+                Game1.gMan.TextBlit(_font, _drawPos, textToDisplay, fgColor, scale: _scale);
             }
         }
 
