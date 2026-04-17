@@ -48,6 +48,7 @@ namespace WorldMachineLoader.API.UI.Controls
                 var srcRect = new Rect(0, 0, Texture.Width, Texture.Height);
                 Game1.gMan.MainBlit(Texture, (Position + screenPos) * 2, srcRect, 1f, 1f, alpha / 255f, 0, GraphicsManager.BlendMode.Normal, default, 1f, 1f, 1f, 0);
             }
+            Size = new Vec2(Texture.Bounds.Width, Texture.Height);
         }
 
         /// <summary>

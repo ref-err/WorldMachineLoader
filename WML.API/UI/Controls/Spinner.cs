@@ -60,6 +60,8 @@ namespace WorldMachineLoader.API.UI.Controls
             Game1.gMan.ColorBoxBlit(rect2, theme.Background());
 
             _label.Draw(theme, screenPos + new Vec2(1, 0), alpha);
+
+            Size = new Vec2(42 + _valueTextSize.X, 16);
         }
 
         public override void Update(Vec2 parentPos, bool canInteract)

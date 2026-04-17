@@ -61,6 +61,8 @@ namespace WorldMachineLoader.API.UI.Controls
 
             if (IsChecked)
                 Game1.gMan.MainBlit("the_world_machine/window_buttons", Position + screenPos, new Rect(32, 0, 16, 16), fgColor, 0, GraphicsManager.BlendMode.Normal, 2);
+
+            Size = new Vec2(22 + _label.Size.X, 16);
         }
 
         public override void Update(Vec2 parentPos, bool canInteract)

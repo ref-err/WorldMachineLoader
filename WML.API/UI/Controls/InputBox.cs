@@ -138,6 +138,8 @@ namespace WorldMachineLoader.API.UI.Controls
                     textToDisplay = Text;
                 Game1.gMan.TextBlit(_font, _drawPos, textToDisplay, fgColor, scale: _scale);
             }
+
+            Size = new Vec2(Width + 2, 18);
         }
 
         public override void Update(Vec2 parentPos, bool canInteract)

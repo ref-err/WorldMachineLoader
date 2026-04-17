@@ -19,6 +19,7 @@ namespace WorldMachineLoader.API.UI.Controls
         public ButtonIcon(string iconPath, Vec2 size, Vec2 position, Action action) : base(position)
         {
             _iconButton = new IconButton(iconPath, size, position, delegate { OnPressed(EventArgs.Empty); action(); }, OneShotMG.src.EngineSpecificCode.TextureCache.CacheType.TheWorldMachine);
+            Size = size;
         }
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)

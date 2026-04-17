@@ -31,6 +31,8 @@ namespace WorldMachineLoader.API.UI.Controls
 
             var pos = Value ? screenPos + new Vec2(18, 0) : screenPos;
             _button.Draw(theme, pos, alpha);
+
+            Size = new Vec2(34, 16);
         }
 
         public override void Update(Vec2 parentPos, bool canInteract)

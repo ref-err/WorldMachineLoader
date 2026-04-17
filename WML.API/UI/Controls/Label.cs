@@ -64,9 +64,11 @@ namespace WorldMachineLoader.API.UI.Controls
             {
                 case FontType.OS:
                     Game1.gMan.TextBlit(GraphicsManager.FontType.OS, Position + screenPos, Text, color);
+                    Size = Game1.gMan.TextSize(GraphicsManager.FontType.OS, Text);
                     break;
                 case FontType.Terminus:
                     Game1.gMan.TextBlit(GraphicsManager.FontType.Game, (Position + screenPos + new Vec2(0, 4)) * 2, Text, color, scale: 1);
+                    Size = Game1.gMan.TextSize(GraphicsManager.FontType.Game, Text);
                     break;
             }
         }
