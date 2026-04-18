@@ -12,6 +12,13 @@ namespace WorldMachineLoader.API.UI.Controls
         Terminus
     }
 
+    public enum TextAlign
+    {
+        Left,
+        Center,
+        Right
+    }
+
     /// <summary>
     /// Represents a control for displaying text on the screen.
     /// </summary>
@@ -37,6 +44,8 @@ namespace WorldMachineLoader.API.UI.Controls
         /// </summary>
         public FontType Font { get; set; } = FontType.OS;
 
+        public TextAlign Alignment { get; set; } = TextAlign.Left;
+
         public event EventHandler TextChanged;
 
         /// <summary>
@@ -60,15 +69,39 @@ namespace WorldMachineLoader.API.UI.Controls
         {
             GameColor color = theme.Primary(alpha);
 
+            Vec2 pos = Position + screenPos;
+
+            if (Font == FontType.Terminus)
+                pos = (pos + new Vec2(0, 4)) * 2;
+
             switch (Font)
             {
                 case FontType.OS:
-                    Game1.gMan.TextBlit(GraphicsManager.FontType.OS, Position + screenPos, Text, color);
                     Size = Game1.gMan.TextSize(GraphicsManager.FontType.OS, Text);
                     break;
                 case FontType.Terminus:
-                    Game1.gMan.TextBlit(GraphicsManager.FontType.Game, (Position + screenPos + new Vec2(0, 4)) * 2, Text, color, scale: 1);
                     Size = Game1.gMan.TextSize(GraphicsManager.FontType.Game, Text);
+                    break;
+            }
+
+            switch (Alignment)
+            {
+                case TextAlign.Center:
+                    pos.X -= Size.X / 2;
+                    break;
+
+                case TextAlign.Right:
+                    pos.X -= Size.X;
+                    break;
+            }
+
+            switch (Font)
+            {
+                case FontType.OS:
+                    Game1.gMan.TextBlit(GraphicsManager.FontType.OS, pos, Text, color);
+                    break;
+                case FontType.Terminus:
+                    Game1.gMan.TextBlit(GraphicsManager.FontType.Game, pos, Text, color, scale: 1);
                     break;
             }
         }
