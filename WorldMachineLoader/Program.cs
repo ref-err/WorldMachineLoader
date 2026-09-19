@@ -50,7 +50,8 @@ namespace WorldMachineLoader
 
             LoggerManager.CurrentLevel = Settings.Instance.VerbosityLevel;
 
-            if (!Settings.Instance.DisableUpdateCheck)
+            //if (!Settings.Instance.DisableUpdateCheck)
+            if (false)
             {
                 Logger.Log("Checking for updates... (You can disable this in \"settings.json\")", Logger.LogLevel.Info, Logger.VerbosityLevel.Minimal);
                 if (CheckForUpdate(out string remote, out string updateErr))

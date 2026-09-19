@@ -186,6 +186,7 @@ namespace WorldMachineLoader.Loader
             {
                 Logger.Log($"Couldn't parse mod \"{modDirName}\" metadata!", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                 Logger.Log($"Exception: {ex.Message}", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                Logger.Log($"Full exception message: {ex}", Logger.LogLevel.Error, Logger.VerbosityLevel.Diagnostic);
             }
             catch (FileLoadException ex)
             {
@@ -193,6 +194,7 @@ namespace WorldMachineLoader.Loader
                 {
                     Logger.Log($"Couldn't load mod \"{modDirName}\", because it is marked as downloaded from the internet.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
                     Logger.Log($"To fix this, go to assembly's file properties and unblock it. Make sure you trust this file.", Logger.LogLevel.Error, Logger.VerbosityLevel.Minimal);
+                    Logger.Log($"Full exception message: {ex}", Logger.LogLevel.Error, Logger.VerbosityLevel.Diagnostic);
                 }
             }
             catch (Exception ex)

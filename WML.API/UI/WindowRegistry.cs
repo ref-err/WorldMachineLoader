@@ -84,7 +84,7 @@ namespace WorldMachineLoader.API.UI
             {
                 if (_windows.TryGetValue(key, out var info))
                 {
-                    logger.Log($"Trying to create window of type {info.WindowType.GetType().FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
+                    logger.Log($"Trying to create window of type {info.WindowType.FullName}", Logger.LogLevel.Info, Logger.VerbosityLevel.Detailed);
                     return Activator.CreateInstance(info.WindowType) as ModWindow;
                 }
             }

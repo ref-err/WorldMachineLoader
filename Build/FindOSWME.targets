@@ -18,9 +18,6 @@ game install path and sets the 'GamePath' property.
         <!-- Direct Steam Library paths -->
         <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files\Steam\steamapps\common\OneShot World Machine Edition</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\OneShot World Machine Edition</GamePath>
-		
-		<!-- My own Steam Library path -->
-		<GamePath Condition="!Exists('$(GamePath)')">D:\games\steamapps\common\OneShot World Machine Edition</GamePath>
       </PropertyGroup>
     </When>
   </Choose>

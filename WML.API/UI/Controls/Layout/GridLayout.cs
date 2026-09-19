@@ -13,6 +13,7 @@ namespace WorldMachineLoader.API.UI.Controls.Layout
         public GridLayout(Vec2 position, int gap) : base(position)
         {
             Gap = gap;
+            Size = new Vec2(0, 0);
         }
 
         public override void Draw(TWMTheme theme, Vec2 screenPos, byte alpha)
